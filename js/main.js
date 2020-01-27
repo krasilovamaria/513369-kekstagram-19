@@ -2,7 +2,6 @@
 // Данные для моки
 var MESSAGES = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
 var NAMES = ['Марс', 'Юпитер', 'Луна', 'Солнце', 'Звезда', 'Космос'];
-var QUANTITY_MIN_OBJECT = 1;
 var QUANTITY_MAX_OBJECT = 25;
 var QUANTITY_MIN_COMMENT = 1;
 var QUANTITY_MAX_COMMENT = 6;
@@ -36,13 +35,13 @@ function getComments() {
   return comments;
 }
 
-// Создает массив из QUANTITY_OBJECT сгенерированных JS объектов
+// Создает массив из сгенерированных JS объектов
 function getArrayPhotos() {
   var photos = [];
 
-  for (var i = 0; i < QUANTITY_MAX_OBJECT; i++) {
+  for (var i = 0; i <= QUANTITY_MAX_OBJECT; i++) {
     photos[i] = {
-      url: 'photos/' + i + 1 + '.jpg',
+      url: 'photos/' + i + 1 + '.jpg', // зачем здесь +1 ??? тогда вместо 25 получается 251
       description: 'description',
       likes: getRandomArbitrary(QUANTITY_MIN_LIKE, QUANTITY_MAX_LIKE),
       comments: getComments()
@@ -55,38 +54,38 @@ function getArrayPhotos() {
 // Шаблон template в документе
 var templatePicture = document.querySelector('#picture').content;
 
-// функцию для заполнения одного отдельно элемента, пусть она берет объект с данными параметром и возвращает готовый элемент
-// function getPhotoElement(data) {var element = template.cloneNode() ... return element}
+// Заполняет один элемент, принимает объект с данным параметром и возвращает готовый элемент
 function getPhotoElement(data) {
+  // Копирует template
+  var photoItem = templatePicture.cloneNode(true);
   // Находит элементы, которые нужно заполнить
   var pictureImg = photoItem.querySelector('.picture__img');
   var pictureComments = photoItem.querySelector('.picture__comments');
   var pictureLikes = photoItem.querySelector('.picture__likes');
   // Заполняет шаблон
-  pictureImg.src = arrays[i].url;
-  pictureLikes.textContent = arrays[i].likes;
-  pictureComments.textContent = arrays[i].comments.length;
+  pictureImg.src = data.url; // undefined is not an object (evaluating 'data.url')
+  // я же в data передаю photos[i] на строке 84 почему не считывает как объект??
+  pictureLikes.textContent = data.likes;
+  pictureComments.textContent = data.comments.length;
 
   return photoItem;
 }
 
 // Отрисовывает сгенерированные DOM-элементы в блок .pictures
-// а другая функция пусть ее вызывает в цикле и результат уже собирает во фрагмент
-// и тогда getPhotosInDom должна будет принять массив photos^ для каждого элемента вызвать getPhotoElement и добавить его к фрагменту
-// ну и вернуть заполненный фрагмент например, или сразу его отрисовать
 function getPhotosInDom(photos) {
   photos = getArrayPhotos();
 
-  for (var i = 0; i < 25; i++) {
+  for (var i = 0; i < photos.length; i++) {
     // Находит контейнер для фотографий
     var pictures = document.querySelector('.pictures');
     // Создает фрагмент
     var fragment = document.createDocumentFragment();
     // Добавляет моки в фрагмент
-    fragment.appendChild(getPhotoElement());
+    fragment.appendChild(getPhotoElement(photos[i]));
   }
 
   // Добавляет фрагмент в блок pictures
   return pictures.appendChild(fragment);
 }
 
+getPhotosInDom();
