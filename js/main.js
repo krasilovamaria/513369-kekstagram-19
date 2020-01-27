@@ -1,5 +1,5 @@
 'use strict';
-// Создает данные для моки
+// Данные для моки
 var MESSAGES = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
 var NAMES = ['Марс', 'Юпитер', 'Луна', 'Солнце', 'Звезда', 'Космос'];
 var QUANTITY_MIN_OBJECT = 1;
@@ -21,7 +21,7 @@ function makeRandomNumberWithArr(arr) {
   return number;
 }
 
-// Функция для создания комментариев
+// Создает comments
 function getComments() {
   var comments = [];
 
@@ -36,7 +36,7 @@ function getComments() {
   return comments;
 }
 
-// Функция для создания массива из QUANTITY_OBJECT сгенерированных JS объектов
+// Создает массив из QUANTITY_OBJECT сгенерированных JS объектов
 function getArrayPhotos() {
   var photos = [];
 
@@ -55,7 +55,7 @@ function getArrayPhotos() {
 // Шаблон template в документе
 var templatePicture = document.querySelector('#picture').content;
 
-// Функция, которая клониурет узел(template) и на его основе создает DOM-элементы
+// Клониурет узел(template) и на его основе создает DOM-элементы
 function getPhotosInDom() {
   var objPhotos = getArrayPhotos();
 
@@ -75,4 +75,12 @@ function getPhotosInDom() {
   return photoItems;
 }
 
-getPhotosInDom();
+// Отрисовывает сгенерированные DOM-элементы в блок .pictures
+// Находит контейнер для фотографий
+var pictures = document.querySelector('pictures');
+// Создает фрагмент
+var fragment = document.createDocumentFragment();
+// Добавляет моки в фрагмент
+fragment.appendChild(getPhotosInDom());
+// Добавляет фрагмент в блок pictures
+pictures.appendChild(fragment);
