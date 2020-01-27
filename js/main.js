@@ -19,7 +19,7 @@ function getArrayPhotos() {
   for (var i = 0; i < 25; i++) {
     arr[i] = {
       url: 'photos/' + i + '.jpg',
-      description: ' ', // не поняла что сюда записывать
+      description: ' ', // не поняла, что сюда записывать
       likes: getRandomArbitrary(15, 200),
       comments: {
         avatar: 'img/avatar' + getRandomArbitrary(1, 6) + '.svg',
@@ -31,23 +31,26 @@ function getArrayPhotos() {
   return arr;
 }
 
-/*
-На основе данных, созданных в предыдущем пункте и шаблона #picture создайте DOM-элементы,
-соответствующие фотографиям и заполните их данными из массива:
-Адрес изображения url подставьте как src изображения.
-Количество лайков likes подставьте как текстовое содержание элемента .picture__likes.
-Количество комментариев comments подставьте как текстовое содержание элемента .picture__comments.
-*/
-
 // Шаблон template в документе
 var templatePicture = document.querySelector('#picture').content;
-// Нужный элемент в template
-var pictureImg = templatePicture.querySelector('.picture__img');
-var pictureComments = templatePicture.querySelector('.picture__comments');
-var pictureLikes = templatePicture.querySelector('.picture__likes');
 
-pictureImg.src = '???';
-pictureLikes.textContent = '???';
-pictureComments.textContent = '???';
+// Функция, которая клониурет узел(template) и на его основе создает DOM-элементы
+function getPhotosInDom() {
+  var objPhotos = getArrayPhotos(); // и как мне их использовать?????
 
-var objectsPhotos = getArrayPhotos();
+  for (var i = 0; i < 25; i++) {
+    // Копирует template
+    var photoItems = templatePicture.cloneNode(true);
+    // Находит элементы, которые нужно заполнить
+    var pictureImg = photoItems.querySelector('.picture__img');
+    var pictureComments = photoItems.querySelector('.picture__comments');
+    var pictureLikes = photoItems.querySelector('.picture__likes');
+    // Заполняет шаблон
+    pictureImg.src = 'photos/' + i + '.jpg';
+    pictureLikes.textContent = getRandomArbitrary(15, 200);
+    pictureComments.textContent = getRandomArbitrary(1, 6);
+  }
+
+  return photoItems;
+}
+
