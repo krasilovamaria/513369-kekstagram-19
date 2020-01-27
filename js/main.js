@@ -30,7 +30,6 @@ function getArrayPhotos() {
   }
   return arr;
 }
-getArrayPhotos();
 
 /*
 На основе данных, созданных в предыдущем пункте и шаблона #picture создайте DOM-элементы,
@@ -40,3 +39,15 @@ getArrayPhotos();
 Количество комментариев comments подставьте как текстовое содержание элемента .picture__comments.
 */
 
+// Шаблон template в документе
+var templatePicture = document.querySelector('#picture').content;
+// Нужный элемент в template
+var pictureImg = templatePicture.querySelector('.picture__img');
+var pictureComments = templatePicture.querySelector('.picture__comments');
+var pictureLikes = templatePicture.querySelector('.picture__likes');
+
+pictureImg.src = '???';
+pictureLikes.textContent = '???';
+pictureComments.textContent = '???';
+
+var objectsPhotos = getArrayPhotos();
