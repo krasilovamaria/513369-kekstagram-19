@@ -55,32 +55,38 @@ function getArrayPhotos() {
 // Шаблон template в документе
 var templatePicture = document.querySelector('#picture').content;
 
-// Клониурет узел(template) и на его основе создает DOM-элементы
-function getPhotosInDom(arrays) {
-  arrays = getArrayPhotos();
-
-  for (var i = QUANTITY_MIN_OBJECT; i < arrays.length; i++) {
-    // Копирует template
-    var photoItem = templatePicture.cloneNode(true);
-    // Находит элементы, которые нужно заполнить
-    var pictureImg = photoItem.querySelector('.picture__img');
-    var pictureComments = photoItem.querySelector('.picture__comments');
-    var pictureLikes = photoItem.querySelector('.picture__likes');
-    // Заполняет шаблон
-    pictureImg.src = arrays[i].url;
-    pictureLikes.textContent = arrays[i].likes;
-    pictureComments.textContent = arrays[i].comments.length;
-  }
+// функцию для заполнения одного отдельно элемента, пусть она берет объект с данными параметром и возвращает готовый элемент
+// function getPhotoElement(data) {var element = template.cloneNode() ... return element}
+function getPhotoElement(data) {
+  // Находит элементы, которые нужно заполнить
+  var pictureImg = photoItem.querySelector('.picture__img');
+  var pictureComments = photoItem.querySelector('.picture__comments');
+  var pictureLikes = photoItem.querySelector('.picture__likes');
+  // Заполняет шаблон
+  pictureImg.src = arrays[i].url;
+  pictureLikes.textContent = arrays[i].likes;
+  pictureComments.textContent = arrays[i].comments.length;
 
   return photoItem;
 }
 
 // Отрисовывает сгенерированные DOM-элементы в блок .pictures
-// Находит контейнер для фотографий
-var pictures = document.querySelector('pictures');
-// Создает фрагмент
-var fragment = document.createDocumentFragment();
-// Добавляет моки в фрагмент
-fragment.appendChild(getPhotosInDom());
-// Добавляет фрагмент в блок pictures
-pictures.appendChild(fragment);
+// а другая функция пусть ее вызывает в цикле и результат уже собирает во фрагмент
+// и тогда getPhotosInDom должна будет принять массив photos^ для каждого элемента вызвать getPhotoElement и добавить его к фрагменту
+// ну и вернуть заполненный фрагмент например, или сразу его отрисовать
+function getPhotosInDom(photos) {
+  photos = getArrayPhotos();
+
+  for (var i = 0; i < 25; i++) {
+    // Находит контейнер для фотографий
+    var pictures = document.querySelector('.pictures');
+    // Создает фрагмент
+    var fragment = document.createDocumentFragment();
+    // Добавляет моки в фрагмент
+    fragment.appendChild(getPhotoElement());
+  }
+
+  // Добавляет фрагмент в блок pictures
+  return pictures.appendChild(fragment);
+}
+
