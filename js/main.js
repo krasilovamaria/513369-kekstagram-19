@@ -15,20 +15,19 @@ function getRandomArbitrary(min, max) {
 
 // Функция, которая принимает массив в параметр и вернет его случайный элемент
 function getRandomItem(items) {
-  var number = items[getRandomArbitrary(items.length)];
-
-  return number;
+  return items[getRandomArbitrary(0, items.length)];
 }
 
 // Создает comments
 function getComments() {
   var comments = [];
+  var countComments = getRandomArbitrary(QUANTITY_MIN_COMMENT, QUANTITY_MAX_COMMENT);
 
-  for (var i = 0; i < QUANTITY_MAX_COMMENT; i++) {
+  for (var i = 0; i < countComments; i++) {
     comments[i] = {
-      avatar: 'img/avatar' + getRandomArbitrary(QUANTITY_MIN_COMMENT, QUANTITY_MAX_COMMENT) + '.svg',
-      message: getRandomItem(MESSAGES),
-      name: getRandomItem(NAMES)
+      avatar: 'img/avatar' + countComments + '.svg',
+      message: getRandomItem(0, MESSAGES),
+      name: getRandomItem(0, NAMES)
     };
   }
 
@@ -72,7 +71,7 @@ function getPhotoElement(data) {
 }
 
 // Отрисовывает сгенерированные DOM-элементы в блок .pictures
-function getPhotosInDom(photos) {
+function renderPhotosInDom(photos) {
   // Находит контейнер для фотографий
   var pictures = document.querySelector('.pictures');
   // Создает фрагмент
@@ -87,4 +86,4 @@ function getPhotosInDom(photos) {
   return pictures.appendChild(fragment);
 }
 
-getPhotosInDom(getArrayPhotos());
+renderPhotosInDom(getArrayPhotos());
