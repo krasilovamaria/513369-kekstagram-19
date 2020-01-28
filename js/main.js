@@ -25,7 +25,7 @@ function getComments() {
 
   for (var i = 0; i < countComments; i++) {
     comments[i] = {
-      avatar: 'img/avatar' + countComments + '.svg',
+      avatar: 'img/avatar' + getRandomArbitrary(QUANTITY_MIN_COMMENT, QUANTITY_MAX_COMMENT) + '.svg',
       message: getRandomItem(0, MESSAGES),
       name: getRandomItem(0, NAMES)
     };
