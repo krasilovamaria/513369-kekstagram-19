@@ -14,8 +14,8 @@ function getRandomArbitrary(min, max) {
 }
 
 // Функция, которая принимает массив в параметр и вернет его случайный элемент
-function getRandomNumber(arrays) {
-  var number = arrays[getRandomArbitrary(arrays.length)];
+function getRandomItem(items) {
+  var number = items[getRandomArbitrary(items.length)];
 
   return number;
 }
@@ -27,8 +27,8 @@ function getComments() {
   for (var i = 0; i < QUANTITY_MAX_COMMENT; i++) {
     comments[i] = {
       avatar: 'img/avatar' + getRandomArbitrary(QUANTITY_MIN_COMMENT, QUANTITY_MAX_COMMENT) + '.svg',
-      message: getRandomNumber(MESSAGES),
-      name: getRandomNumber(NAMES)
+      message: getRandomItem(MESSAGES),
+      name: getRandomItem(NAMES)
     };
   }
 
@@ -39,9 +39,9 @@ function getComments() {
 function getArrayPhotos() {
   var photos = [];
 
-  for (var i = 0; i <= QUANTITY_MAX_OBJECT; i++) {
+  for (var i = 0; i < QUANTITY_MAX_OBJECT; i++) {
     photos[i] = {
-      url: 'photos/' + i + 1 + '.jpg', // зачем здесь +1 ??? тогда вместо 25 получается 251
+      url: 'photos/' + (i + 1) + '.jpg',
       description: 'description',
       likes: getRandomArbitrary(QUANTITY_MIN_LIKE, QUANTITY_MAX_LIKE),
       comments: getComments()
@@ -63,23 +63,22 @@ function getPhotoElement(data) {
   var pictureComments = photoItem.querySelector('.picture__comments');
   var pictureLikes = photoItem.querySelector('.picture__likes');
   // Заполняет шаблон
-  pictureImg.src = data.url; // undefined is not an object (evaluating 'data.url')
-  // я же в data передаю photos[i] на строке 84 почему не считывает как объект??
+  pictureImg.src = data.url;
   pictureLikes.textContent = data.likes;
-  pictureComments.textContent = data.comments.length;
+  pictureComments.textContent = data.comments.length; // с length получается что всегда 6 комментов у всех фотографий
+  // надо, видимо, сюда как-то применить getRandomItem() не могу понять как
 
   return photoItem;
 }
 
 // Отрисовывает сгенерированные DOM-элементы в блок .pictures
 function getPhotosInDom(photos) {
-  photos = getArrayPhotos();
+  // Находит контейнер для фотографий
+  var pictures = document.querySelector('.pictures');
+  // Создает фрагмент
+  var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < photos.length; i++) {
-    // Находит контейнер для фотографий
-    var pictures = document.querySelector('.pictures');
-    // Создает фрагмент
-    var fragment = document.createDocumentFragment();
     // Добавляет моки в фрагмент
     fragment.appendChild(getPhotoElement(photos[i]));
   }
@@ -88,4 +87,4 @@ function getPhotosInDom(photos) {
   return pictures.appendChild(fragment);
 }
 
-getPhotosInDom();
+getPhotosInDom(getArrayPhotos());
