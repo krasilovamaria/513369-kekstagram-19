@@ -64,8 +64,7 @@ function getPhotoElement(data) {
   // Заполняет шаблон
   pictureImg.src = data.url;
   pictureLikes.textContent = data.likes;
-  pictureComments.textContent = data.comments.length; // с length получается что всегда 6 комментов у всех фотографий
-  // надо, видимо, сюда как-то применить getRandomItem() не могу понять как
+  pictureComments.textContent = data.comments.length;
 
   return photoItem;
 }
@@ -87,3 +86,36 @@ function renderPhotosInDom(photos) {
 }
 
 renderPhotosInDom(getArrayPhotos());
+
+// Находит элемент big-picture
+var bigPicture = document.querySelector('.big-picture');
+
+// Показывает первую фотографию в полноразмерном режиме
+function showBigPicture(data) {
+  // Удаляет класс hidden
+  bigPicture.classList.remove('hidden');
+  // Находит элементы, которые нужно заполнить
+  var bigPictureImg = bigPicture.querySelector('img');
+  var likesCount = bigPicture.querySelector('.likes-count');
+  var commentsCount = bigPicture.querySelector('.comments-count');
+  // Заполняет фрагмент
+  bigPictureImg.src = data.url;
+  likesCount.textContent = data.likes;
+  commentsCount.textContent = data.comments.length;
+  /*
+  Список комментариев под фотографией: комментарии должны вставляться в блок .social__comments. Разметка каждого комментария должна выглядеть так:
+      <li class="social__comment">
+      <img
+      class="social__picture"
+      src="{{аватар}}"
+      alt="{{имя комментатора}}"
+      width="35" height="35">
+      <p class="social__text">{{текст комментария}</p>
+      </li>
+  Описание фотографии description вставьте строкой в блок .social__caption.
+  */
+}
+
+showBigPicture(getArrayPhotos()); // не могу понять какой объект мне сюда передать
+// снова нужно createDocumentFragment ???
+// надо переделывать renderPhotosInDom(photos) под универсальную? ну в смысле контейнер передавать параметром
