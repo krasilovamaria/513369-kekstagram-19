@@ -26,8 +26,8 @@ function getComments() {
   for (var i = 0; i < countComments; i++) {
     comments[i] = {
       avatar: 'img/avatar-' + getRandomArbitrary(QUANTITY_MIN_COMMENT, QUANTITY_MAX_COMMENT) + '.svg',
-      message: getRandomItem(0, MESSAGES),
-      name: getRandomItem(0, NAMES)
+      message: getRandomItem(MESSAGES),
+      name: getRandomItem(NAMES)
     };
   }
 
@@ -113,6 +113,8 @@ function showBigPicture(data) {
     socialCommentImg.src = data.comments[i].avatar;
     socialCommentImg.alt = data.comments[i].name;
     socialText.textContent = data.comments[i].message;
+    socialCommentImg.width = 35;
+    socialCommentImg.height = 35;
   }
   // Описание фотографии description
   var socialCaption = document.querySelector('.social__caption');
@@ -122,3 +124,13 @@ function showBigPicture(data) {
 }
 
 showBigPicture(getArrayPhotos()[0]);
+
+// Cкрывает блоки счётчика комментариев
+var socialCommentCount = document.querySelector('.social__comment-count');
+socialCommentCount.classList.add('hidden');
+var commentsLoader = document.querySelector('.comments-loader');
+commentsLoader.classList.add('hidden');
+
+// Добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
+var body = document.querySelector('body');
+body.classList.add('modal-open');
