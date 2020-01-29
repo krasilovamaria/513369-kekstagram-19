@@ -25,7 +25,7 @@ function getComments() {
 
   for (var i = 0; i < countComments; i++) {
     comments[i] = {
-      avatar: 'img/avatar' + getRandomArbitrary(QUANTITY_MIN_COMMENT, QUANTITY_MAX_COMMENT) + '.svg',
+      avatar: 'img/avatar-' + getRandomArbitrary(QUANTITY_MIN_COMMENT, QUANTITY_MAX_COMMENT) + '.svg',
       message: getRandomItem(0, MESSAGES),
       name: getRandomItem(0, NAMES)
     };
@@ -110,9 +110,9 @@ function showBigPicture(data) {
     var socialCommentImg = socialComment.querySelector('img');
     var socialText = socialComment.querySelector('.social__text');
     // Заполняет фрагмент
-    socialCommentImg.src = data.comments.avatar; // как здесь исправить ошибку???
-    socialCommentImg.alt = data.comments.name;
-    socialText.textContent = data.comments.message;
+    socialCommentImg.src = data.comments[i].avatar;
+    socialCommentImg.alt = data.comments[i].name;
+    socialText.textContent = data.comments[i].message;
   }
   // Описание фотографии description
   var socialCaption = document.querySelector('.social__caption');
