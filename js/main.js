@@ -102,20 +102,23 @@ function showBigPicture(data) {
   bigPictureImg.src = data.url;
   likesCount.textContent = data.likes;
   commentsCount.textContent = data.comments.length;
-  /*
-  Список комментариев под фотографией: комментарии должны вставляться в блок .social__comments. Разметка каждого комментария должна выглядеть так:
-      <li class="social__comment">
-      <img
-      class="social__picture"
-      src="{{аватар}}"
-      alt="{{имя комментатора}}"
-      width="35" height="35">
-      <p class="social__text">{{текст комментария}</p>
-      </li>
-  Описание фотографии description вставьте строкой в блок .social__caption.
-  */
+  // Находит блок для комментариев
+  var socialComments = document.querySelector('.social__comments');
+  for (var i = 0; i < data.comments.length; i++) {
+    // Находит элементы, которые нужно заполнить
+    var socialComment = socialComments.querySelector('.social__comment');
+    var socialCommentImg = socialComment.querySelector('img');
+    var socialText = socialComment.querySelector('.social__text');
+    // Заполняет фрагмент
+    socialCommentImg.src = data.comments.avatar; // как здесь исправить ошибку???
+    socialCommentImg.alt = data.comments.name;
+    socialText.textContent = data.comments.message;
+  }
+  // Описание фотографии description
+  var socialCaption = document.querySelector('.social__caption');
+  socialCaption.textContent = data.description;
+
+  return data;
 }
 
-showBigPicture(getArrayPhotos()); // не могу понять какой объект мне сюда передать
-// снова нужно createDocumentFragment ???
-// надо переделывать renderPhotosInDom(photos) под универсальную? ну в смысле контейнер передавать параметром
+showBigPicture(getArrayPhotos()[0]);
