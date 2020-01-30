@@ -87,29 +87,27 @@ function renderPhotosInDom(photos) {
 
 renderPhotosInDom(getArrayPhotos());
 
-// Находит элемент big-picture
-var bigPicture = document.querySelector('.big-picture');
-
 // Находит блок для комментариев
 var socialComments = document.querySelector('.social__comments');
 
 // Заполняет комментарий
 function getCommentElement(data) {
-  var commentItem = socialComments.cloneNode(true);
+  var socialComment = document.querySelector('.social__comment');
+  var commentItem = socialComment.cloneNode(true);
   // Находит элементы, которые нужно заполнить
-  var socialComment = commentItem.querySelector('.social__comment');
   var socialCommentImg = socialComment.querySelector('img');
   var socialText = socialComment.querySelector('.social__text');
   // Заполняет фрагмент
-  socialCommentImg.src = data.comments[i].avatar; // и как мне сюда передать элемент массива теперь??
-  socialCommentImg.alt = data.comments[i].name;
-  socialText.textContent = data.comments[i].message;
-  socialCommentImg.width = 35;
-  socialCommentImg.height = 35;
+  socialCommentImg.src = data.avatar;
+  socialCommentImg.alt = data.name;
+  socialText.textContent = data.message;
 
   return commentItem;
 }
 
+// Находит элемент big-picture
+
+var bigPicture = document.querySelector('.big-picture');
 // Показывает фотографию в полноразмерном режиме
 function showBigPicture(item) {
   // Удаляет класс hidden
@@ -123,10 +121,13 @@ function showBigPicture(item) {
   likesCount.textContent = item.likes;
   commentsCount.textContent = item.comments.length;
   // Создает фрагмент
-  var fragment = document.createDocumentFragment(); // ты говорил надо без fragment, а как без него тогда???
-
+  var fragment = document.createDocumentFragment();
   for (var i = 0; i < item.comments.length; i++) {
-    fragment.appendChild(getCommentElement(item[i]));
+    fragment.appendChild(getCommentElement(item.comments[i]));
+    // Чистит блок комментариев
+    socialComments.removeChild(socialComments.firstChild); // что я пишу неправильно, что существующие в разметке комменты не удаляются??
+    // Добавляет комментарии
+    socialComments.appendChild(fragment);
   }
 
   // Описание фотографии description
