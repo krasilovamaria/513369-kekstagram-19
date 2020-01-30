@@ -90,8 +90,28 @@ renderPhotosInDom(getArrayPhotos());
 // Находит элемент big-picture
 var bigPicture = document.querySelector('.big-picture');
 
-// Показывает первую фотографию в полноразмерном режиме
-function showBigPicture(data) {
+// Находит блок для комментариев
+var socialComments = document.querySelector('.social__comments');
+
+// Заполняет комментарий
+function getCommentElement(data) {
+  var commentItem = socialComments.cloneNode(true);
+  // Находит элементы, которые нужно заполнить
+  var socialComment = commentItem.querySelector('.social__comment');
+  var socialCommentImg = socialComment.querySelector('img');
+  var socialText = socialComment.querySelector('.social__text');
+  // Заполняет фрагмент
+  socialCommentImg.src = data.comments[i].avatar; // и как мне сюда передать элемент массива теперь??
+  socialCommentImg.alt = data.comments[i].name;
+  socialText.textContent = data.comments[i].message;
+  socialCommentImg.width = 35;
+  socialCommentImg.height = 35;
+
+  return commentItem;
+}
+
+// Показывает фотографию в полноразмерном режиме
+function showBigPicture(item) {
   // Удаляет класс hidden
   bigPicture.classList.remove('hidden');
   // Находит элементы, которые нужно заполнить
@@ -99,38 +119,32 @@ function showBigPicture(data) {
   var likesCount = bigPicture.querySelector('.likes-count');
   var commentsCount = bigPicture.querySelector('.comments-count');
   // Заполняет фрагмент
-  bigPictureImg.src = data.url;
-  likesCount.textContent = data.likes;
-  commentsCount.textContent = data.comments.length;
-  // Находит блок для комментариев
-  var socialComments = document.querySelector('.social__comments');
-  for (var i = 0; i < data.comments.length; i++) {
-    // Находит элементы, которые нужно заполнить
-    var socialComment = socialComments.querySelector('.social__comment');
-    var socialCommentImg = socialComment.querySelector('img');
-    var socialText = socialComment.querySelector('.social__text');
-    // Заполняет фрагмент
-    socialCommentImg.src = data.comments[i].avatar;
-    socialCommentImg.alt = data.comments[i].name;
-    socialText.textContent = data.comments[i].message;
-    socialCommentImg.width = 35;
-    socialCommentImg.height = 35;
+  bigPictureImg.src = item.url;
+  likesCount.textContent = item.likes;
+  commentsCount.textContent = item.comments.length;
+  // Создает фрагмент
+  var fragment = document.createDocumentFragment(); // ты говорил надо без fragment, а как без него тогда???
+
+  for (var i = 0; i < item.comments.length; i++) {
+    fragment.appendChild(getCommentElement(item[i]));
   }
+
   // Описание фотографии description
   var socialCaption = document.querySelector('.social__caption');
-  socialCaption.textContent = data.description;
+  socialCaption.textContent = item.description;
 
-  return data;
+  // Cкрывает блоки счётчика комментариев
+  var socialCommentCount = document.querySelector('.social__comment-count');
+  socialCommentCount.classList.add('hidden');
+  var commentsLoader = document.querySelector('.comments-loader');
+  commentsLoader.classList.add('hidden');
+
+  // Добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
+  var body = document.querySelector('body');
+  body.classList.add('modal-open');
+
+  return item;
 }
 
 showBigPicture(getArrayPhotos()[0]);
 
-// Cкрывает блоки счётчика комментариев
-var socialCommentCount = document.querySelector('.social__comment-count');
-socialCommentCount.classList.add('hidden');
-var commentsLoader = document.querySelector('.comments-loader');
-commentsLoader.classList.add('hidden');
-
-// Добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
-var body = document.querySelector('body');
-body.classList.add('modal-open');
