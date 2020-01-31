@@ -25,9 +25,9 @@ function getComments() {
 
   for (var i = 0; i < countComments; i++) {
     comments[i] = {
-      avatar: 'img/avatar' + getRandomArbitrary(QUANTITY_MIN_COMMENT, QUANTITY_MAX_COMMENT) + '.svg',
-      message: getRandomItem(0, MESSAGES),
-      name: getRandomItem(0, NAMES)
+      avatar: 'img/avatar-' + getRandomArbitrary(QUANTITY_MIN_COMMENT, QUANTITY_MAX_COMMENT) + '.svg',
+      message: getRandomItem(MESSAGES),
+      name: getRandomItem(NAMES)
     };
   }
 
@@ -64,8 +64,7 @@ function getPhotoElement(data) {
   // Заполняет шаблон
   pictureImg.src = data.url;
   pictureLikes.textContent = data.likes;
-  pictureComments.textContent = data.comments.length; // с length получается что всегда 6 комментов у всех фотографий
-  // надо, видимо, сюда как-то применить getRandomItem() не могу понять как
+  pictureComments.textContent = data.comments.length;
 
   return photoItem;
 }
@@ -87,3 +86,67 @@ function renderPhotosInDom(photos) {
 }
 
 renderPhotosInDom(getArrayPhotos());
+
+// Находит блок для комментариев
+var socialCommentTemplate = document.querySelector('.social__comments');
+var socialComment = document.querySelector('.social__comment');
+
+// Заполняет комментарий
+function getCommentElement(data) {
+  var commentItemCopy = socialComment.cloneNode(true);
+  // Находит элементы, которые нужно заполнить
+  var socialCommentImg = commentItemCopy.querySelector('img');
+  var socialText = commentItemCopy.querySelector('.social__text');
+  // Заполняет фрагмент
+  socialCommentImg.src = data.avatar;
+  socialCommentImg.alt = data.name;
+  socialText.textContent = data.message;
+
+  return commentItemCopy;
+}
+
+// Находит блок для показа фотографии в полнорамзерном режиме
+var bigPicture = document.querySelector('.big-picture');
+
+// Показывает фотографию в полноразмерном режиме
+function showBigPicture(item) {
+  // Удаляет класс hidden
+  bigPicture.classList.remove('hidden');
+  // Находит элементы, которые нужно заполнить
+  var bigPictureImg = bigPicture.querySelector('img');
+  var likesCount = bigPicture.querySelector('.likes-count');
+  var commentsCount = bigPicture.querySelector('.comments-count');
+  // Заполняет фрагмент
+  bigPictureImg.src = item.url;
+  likesCount.textContent = item.likes;
+  commentsCount.textContent = item.comments.length;
+  // Создает фрагмент, для вставки комменатриев
+  var fragment = document.createDocumentFragment();
+  // Заполняет новые комментарии
+  for (var i = 0; i < item.comments.length; i++) {
+    fragment.appendChild(getCommentElement(item.comments[i]));
+  }
+  // Чистит блок комментариев в разметке
+  socialCommentTemplate.innerHTML = '';
+  // Добавляет новые комментарии
+  socialCommentTemplate.appendChild(fragment);
+
+  // Описание фотографии description
+  var socialCaption = document.querySelector('.social__caption');
+  socialCaption.textContent = item.description;
+
+  // Cкрывает блоки счётчика комментариев
+  var socialCommentCount = document.querySelector('.social__comment-count');
+  socialCommentCount.classList.add('hidden');
+  var commentsLoader = document.querySelector('.comments-loader');
+  commentsLoader.classList.add('hidden');
+
+  // Добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
+  var body = document.querySelector('body');
+  body.classList.add('modal-open');
+
+  return item;
+}
+
+showBigPicture(getArrayPhotos()[0]);
+
