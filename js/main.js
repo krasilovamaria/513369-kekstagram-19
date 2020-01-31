@@ -106,8 +106,8 @@ function getCommentElement(data) {
 }
 
 // Находит элемент big-picture
-
 var bigPicture = document.querySelector('.big-picture');
+
 // Показывает фотографию в полноразмерном режиме
 function showBigPicture(item) {
   // Удаляет класс hidden
@@ -122,13 +122,14 @@ function showBigPicture(item) {
   commentsCount.textContent = item.comments.length;
   // Создает фрагмент
   var fragment = document.createDocumentFragment();
+  // Заполняет новые комментарии
   for (var i = 0; i < item.comments.length; i++) {
     fragment.appendChild(getCommentElement(item.comments[i]));
-    // Чистит блок комментариев
-    socialComments.removeChild(socialComments.firstChild); // что я пишу неправильно, что существующие в разметке комменты не удаляются??
-    // Добавляет комментарии
-    socialComments.appendChild(fragment);
   }
+  // Чистит блок комментариев в разметке
+  socialComments.innerHTML = '';
+  // Добавляет новые комментарии
+  socialComments.appendChild(fragment);
 
   // Описание фотографии description
   var socialCaption = document.querySelector('.social__caption');
