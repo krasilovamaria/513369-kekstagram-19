@@ -88,24 +88,24 @@ function renderPhotosInDom(photos) {
 renderPhotosInDom(getArrayPhotos());
 
 // Находит блок для комментариев
-var socialComments = document.querySelector('.social__comments');
+var socialCommentTemplate = document.querySelector('.social__comments');
+var socialComment = document.querySelector('.social__comment');
 
 // Заполняет комментарий
 function getCommentElement(data) {
-  var socialComment = document.querySelector('.social__comment');
-  var commentItem = socialComment.cloneNode(true);
+  var commentItemCopy = socialComment.cloneNode(true);
   // Находит элементы, которые нужно заполнить
-  var socialCommentImg = socialComment.querySelector('img');
-  var socialText = socialComment.querySelector('.social__text');
+  var socialCommentImg = commentItemCopy.querySelector('img');
+  var socialText = commentItemCopy.querySelector('.social__text');
   // Заполняет фрагмент
   socialCommentImg.src = data.avatar;
   socialCommentImg.alt = data.name;
   socialText.textContent = data.message;
 
-  return commentItem;
+  return commentItemCopy;
 }
 
-// Находит элемент big-picture
+// Находит блок для показа фотографии в полнорамзерном режиме
 var bigPicture = document.querySelector('.big-picture');
 
 // Показывает фотографию в полноразмерном режиме
@@ -120,16 +120,16 @@ function showBigPicture(item) {
   bigPictureImg.src = item.url;
   likesCount.textContent = item.likes;
   commentsCount.textContent = item.comments.length;
-  // Создает фрагмент
+  // Создает фрагмент, для вставки комменатриев
   var fragment = document.createDocumentFragment();
   // Заполняет новые комментарии
   for (var i = 0; i < item.comments.length; i++) {
     fragment.appendChild(getCommentElement(item.comments[i]));
   }
   // Чистит блок комментариев в разметке
-  socialComments.innerHTML = '';
+  socialCommentTemplate.innerHTML = '';
   // Добавляет новые комментарии
-  socialComments.appendChild(fragment);
+  socialCommentTemplate.appendChild(fragment);
 
   // Описание фотографии description
   var socialCaption = document.querySelector('.social__caption');
