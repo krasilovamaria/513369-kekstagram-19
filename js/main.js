@@ -105,7 +105,7 @@ function getCommentElement(data) {
   return commentItemCopy;
 }
 
-// Находит блок для показа фотографии в полнорамзерном режиме
+// Находит блок для показа фотографии в полноразмерном режиме
 var bigPicture = document.querySelector('.big-picture');
 
 // Показывает фотографию в полноразмерном режиме
@@ -148,5 +148,17 @@ function showBigPicture(item) {
   return item;
 }
 
-showBigPicture(getArrayPhotos()[0]);
+// Находит кнопку для выхода из полноэкранного просмотра изображения
+var pictureClose = document.querySelector('#picture-cancel');
+// Закрывает фотографию в полноразмерном режиме
+pictureClose.addEventListener('click', function () {
+  bigPicture.classList.add('hidden');
+});
 
+// Находит минитюру изображений, чтобы при клике показать большое изображение
+var pictureMiniMode = document.querySelector('.picture__img');
+// Открывает первую миниатюрную фотографию
+pictureMiniMode.addEventListener('click', function () {
+  bigPicture.classList.remove('hidden');
+  showBigPicture(getArrayPhotos()[0]);
+});
