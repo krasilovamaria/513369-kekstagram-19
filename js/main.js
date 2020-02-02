@@ -190,6 +190,14 @@ function openPopup() {
       formImg.classList.add('hidden');
     }
   });
+  effectNone.style = getNoneEffect();
+  effectСhrome.addEventListener('click', getChrome);
+  effectSepia.addEventListener('click', getSepia);
+  effectMarvin.addEventListener('click', getMarvin);
+  effectPhobos.addEventListener('click', getPhobos);
+  effectHeat.addEventListener('click', getHeat);
+  // Позволяет передвигать pin
+  pinOnSlaider.addEventListener('mouseup', changeValueEffect);
 }
 
 // Открывает форму редактирования изображения после загрузки изображения
@@ -210,4 +218,97 @@ buttonClosePopup.addEventListener('click', closePopup);
 
 // !! Применение эффекта для изображения и редактирование размера изображения !!
 
+// Находит блок с эффектами для изображения
+var imgUploadEffects = document.querySelector('.img-upload__effects');
+// Находит фотографию, на которую нужно наложить фильтра
+var imgForEffect = document.querySelector('.img-upload__preview img');
+// Находит слайдер(изменение глубины эффекта)
+var slaiderPopup = document.querySelector('.img-upload__effect-level');
+// Находит фото без эффекта
+var effectNone = imgUploadEffects.querySelector('#effect-none');
+// Находит остальные эффекты
+var effectСhrome = imgUploadEffects.querySelector('#effect-chrome');
+var effectSepia = imgUploadEffects.querySelector('#effect-sepia');
+var effectMarvin = imgUploadEffects.querySelector('#effect-marvin');
+var effectPhobos = imgUploadEffects.querySelector('#effect-phobos');
+var effectHeat = imgUploadEffects.querySelector('#effect-heat');
 
+// Фильтр без эффекта
+function getNoneEffect() {
+  // Скрывает слайдер
+  slaiderPopup.classList.add('hidden');
+}
+
+// Заполняет эффект
+function getEffect(effect) {
+  // Показывает слайдер
+  slaiderPopup.classList.remove('hidden');
+  // Сбрасывает присвоенный фильтр(класс), чтобы можно было переключаться между фильтрами
+  imgForEffect.classList = [];
+  return imgForEffect.classList.add('effects__preview--' + effect);
+}
+
+// Применяет эффекты, чтобы при открытии формы редактирования можно было переключаться между фильтрами
+function getChrome() {
+  return getEffect('chrome');
+}
+
+function getSepia() {
+  return getEffect('sepia');
+}
+
+function getMarvin() {
+  return getEffect('marvin');
+}
+
+function getPhobos() {
+  return getEffect('phobos');
+}
+
+function getHeat() {
+  return getEffect('heat');
+}
+
+// Интенисвность эффекта
+// Находит ползунок в слайдере, который меняет интенсивность эффекта
+var pinOnSlaider = slaiderPopup.querySelector('.effect-level__pin');
+// Находит уровень эффекта, накладываемого на изображение
+var valueEffectOnPopup = document.querySelector('.effect-level__value');
+
+// Изменяет интенсивность эффекта
+function changeValueEffect() { // HHEEELLLLPPPPPPP
+  // возвращает true/false, в зависимости от того, есть ли у элемента класс class
+  if (imgForEffect.classList.contains('effects__preview--chrome')) {
+    // меняет интенсивность эффекта
+    imgForEffect.filter = 'grayscale(0..1)';
+    valueEffectOnPopup.value = ''; // ?????
+
+  } else if (imgForEffect.classList.contains('effects__preview--sepia')) {
+    imgForEffect.filter = 'sepia(0..1)';
+    valueEffectOnPopup.value = '';
+
+  } else if (imgForEffect.classList.contains('effects__preview--marvin')) {
+    imgForEffect.filter = 'invert(0..100%)';
+    valueEffectOnPopup.value = '';
+
+  } else if (imgForEffect.classList.contains('effects__preview--phobos')) {
+    imgForEffect.filter = 'blur(0..3px)';
+    valueEffectOnPopup.value = '';
+
+  } else if (imgForEffect.classList.contains('effects__preview--heat')) {
+    imgForEffect.filter = 'brightness(1..3)';
+    valueEffectOnPopup.value = '';
+  }
+
+  // не могу понять что должна вернуть
+}
+
+// Редактирование размера изображения
+// Находит кнопки для изменения изображения
+var scaleButtonSmaller = document.querySelector('.scale__control--smaller');
+var scaleButtonBigger = document.querySelector('.scale__control--bigger');
+var scaleValue = document.querySelector('.scale__control--value');
+
+function changeScaleOnSmaller() {
+ // Грусть тоска печалька
+}
