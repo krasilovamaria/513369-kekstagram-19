@@ -161,4 +161,53 @@ var pictureMiniMode = document.querySelector('.picture__img');
 pictureMiniMode.addEventListener('click', function () {
   bigPicture.classList.remove('hidden');
   showBigPicture(getArrayPhotos()[0]);
+
+  // Закрывает фотографию с клавиатуры
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Escape') {
+      bigPicture.classList.add('hidden');
+    }
+  });
 });
+
+// !! Загрузка изображения и показ формы редактирования !!
+
+// Находит поле для загрузки изображения
+var uploadInput = document.querySelector('#upload-file');
+// Находит форму редактирования изображения
+var formImg = document.querySelector('.img-upload__overlay');
+var body = document.querySelector('body');
+
+// Открывает форму редактирования изображения
+function openPopup() {
+  formImg.classList.remove('hidden');
+  // Добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
+  body.classList.add('modal-open');
+
+  // Закрывает форму с помощью клавиатуры
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Escape') {
+      formImg.classList.add('hidden');
+    }
+  });
+}
+
+// Открывает форму редактирования изображения после загрузки изображения
+uploadInput.addEventListener('change', openPopup);
+
+// Закрывает форму редактирования изображения
+// Находит кнопку для закрытия формы редактирования изображения
+var buttonClosePopup = document.querySelector('#upload-cancel');
+
+function closePopup() {
+  formImg.classList.add('hidden');
+  body.classList.remove('modal-open');
+  // Cбрасывает значение поля выбора файла
+  uploadInput.innerHTML = '';
+}
+
+buttonClosePopup.addEventListener('click', closePopup);
+
+// !! Применение эффекта для изображения и редактирование размера изображения !!
+
+
