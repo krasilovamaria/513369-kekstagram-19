@@ -8,7 +8,11 @@ var QUANTITY_MAX_COMMENT = 6;
 var QUANTITY_MIN_LIKE = 15;
 var QUANTITY_MAX_LIKE = 200;
 var ESC_KEY = 'Escape';
-var ENTER_KEY = 'Enter';
+var STEP = 25;
+var MAX_SIZE_SCALE = 100;
+var BLUR = 3;
+var BRIGHTNESS = 3;
+// var ENTER_KEY = 'Enter';
 
 // Функция генерации случайных чисел
 function getRandomArbitrary(min, max) {
@@ -202,6 +206,9 @@ function openPopup() {
   effectHeat.addEventListener('click', getHeat);
   // Позволяет передвигать pin
   pinOnSlaider.addEventListener('mouseup', changeValueEffect);
+  // Меняет размер изображения
+  scaleButtonSmaller.addEventListener('click', changeScaleSmaller);
+  scaleButtonBigger.addEventListener('click', changeScaleBigger);
 }
 
 // Открывает форму редактирования изображения после загрузки изображения
@@ -215,7 +222,7 @@ function closePopup() {
   formImg.classList.add('hidden');
   body.classList.remove('modal-open');
   // Cбрасывает значение поля выбора файла
-  valueEffectOnPopup.value = '';
+  valueEffect.value = '';
   // снимает обработчик при закрытии формы
   document.removeEventListener('keydown', onPopupEscPress);
 }
@@ -283,35 +290,36 @@ function getHeat() {
 // Находит ползунок в слайдере, который меняет интенсивность эффекта
 var pinOnSlaider = slaiderPopup.querySelector('.effect-level__pin');
 // Находит уровень эффекта, накладываемого на изображение
-var valueEffectOnPopup = document.querySelector('.effect-level__value');
+var valueEffect = document.querySelector('.effect-level__value');
+// Находит линию для перемещения пина
+// var lineForPin = document.querySelector('.effect-level__line');
 
 // Изменяет интенсивность эффекта
 function changeValueEffect() {
+  var beginPinPosition = 20; // временно
+  var widthSlider = 495; // временно
+  // от ширины линии находит позицию пина
+  var currentPinPosition = beginPinPosition / widthSlider * 100;
   // возвращает true/false, в зависимости от того, есть ли у элемента класс class
   if (imgForEffect.classList.contains('effects__preview--chrome')) {
-    // меняет интенсивность эффекта
-    imgForEffect.filter = 'grayscale(0..1)';
-    // "Для определения уровня насыщенности, нужно рассчитать
-    // положение ползунка слайдера относительно всего блока и
-    // воспользоваться пропорцией, чтобы понять, какой уровень эффекта нужно применить."
-    valueEffectOnPopup.value = '';
-    // ползунок пока не двигается, можно его положение в константу записать, и от нее уже вычислять значение от 0 до 1
+    imgForEffect.style.filter = 'grayscale(' + currentPinPosition / 100 + ')';
+    valueEffect.value = currentPinPosition / 100;
 
   } else if (imgForEffect.classList.contains('effects__preview--sepia')) {
-    imgForEffect.filter = 'sepia(0..1)';
-    valueEffectOnPopup.value = '';
+    imgForEffect.style.filter = 'sepia(' + currentPinPosition / 100 + ')';
+    valueEffect.value = currentPinPosition / 100;
 
   } else if (imgForEffect.classList.contains('effects__preview--marvin')) {
-    imgForEffect.filter = 'invert(0..100%)';
-    valueEffectOnPopup.value = '';
+    imgForEffect.style.filter = 'invert(' + currentPinPosition / 100 + '%)';
+    valueEffect.value = currentPinPosition / 100;
 
   } else if (imgForEffect.classList.contains('effects__preview--phobos')) {
-    imgForEffect.filter = 'blur(0..3px)';
-    valueEffectOnPopup.value = '';
+    imgForEffect.style.filter = 'blur(' + currentPinPosition / 100 * BLUR + 'px)';
+    valueEffect.value = currentPinPosition / 100 * BLUR;
 
   } else if (imgForEffect.classList.contains('effects__preview--heat')) {
-    imgForEffect.filter = 'brightness(1..3)';
-    valueEffectOnPopup.value = '';
+    imgForEffect.style.filter = 'brightness(' + currentPinPosition / BRIGHTNESS + ')';
+    valueEffect.value = currentPinPosition / 100 * BRIGHTNESS;
   }
 }
 
@@ -320,9 +328,21 @@ function changeValueEffect() {
 var scaleButtonSmaller = document.querySelector('.scale__control--smaller');
 var scaleButtonBigger = document.querySelector('.scale__control--bigger');
 var scaleValue = document.querySelector('.scale__control--value');
+var stepForScale = 0;
 
-function changeScaleOnSmaller() {
-  // "При нажатии на кнопки .scale__control--smaller и .scale__control--bigger
-  // должно изменяться значение поля .scale__control--value;", тут все по аналогии
-  // с интенсивностью, "если в поле стоит значение 75%, то в стиле изображения должно быть написано transform: scale(0.75)."
+function changeScaleSmaller() { // как-то странно работает, если сразу нажимаю на кнопку не изменяет,
+  // только после увеличения работает
+  if (stepForScale > STEP) {
+    stepForScale -= STEP;
+    imgForEffect.style.transform = 'scale(' + stepForScale / MAX_SIZE_SCALE + ')';
+    scaleValue.value = stepForScale + '%';
+  }
+}
+
+function changeScaleBigger() {
+  if (stepForScale < MAX_SIZE_SCALE) {
+    stepForScale += STEP;
+    imgForEffect.style.transform = 'scale(' + stepForScale / MAX_SIZE_SCALE + ')';
+    scaleValue.value = stepForScale + '%';
+  }
 }
