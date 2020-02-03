@@ -7,6 +7,8 @@ var QUANTITY_MIN_COMMENT = 1;
 var QUANTITY_MAX_COMMENT = 6;
 var QUANTITY_MIN_LIKE = 15;
 var QUANTITY_MAX_LIKE = 200;
+var ESC_KEY = 'Escape';
+var ENTER_KEY = 'Enter';
 
 // Функция генерации случайных чисел
 function getRandomArbitrary(min, max) {
@@ -162,9 +164,9 @@ pictureMiniMode.addEventListener('click', function () {
   bigPicture.classList.remove('hidden');
   showBigPicture(getArrayPhotos()[0]);
 
-  // Закрывает фотографию с клавиатуры
+  // Закрывает фотографию с клавиатуры (переделать попозже)
   document.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Escape') {
+    if (evt.key === ESC_KEY) {
       bigPicture.classList.add('hidden');
     }
   });
@@ -173,24 +175,26 @@ pictureMiniMode.addEventListener('click', function () {
 // !! Загрузка изображения и показ формы редактирования !!
 
 // Находит поле для загрузки изображения
-var uploadInput = document.querySelector('#upload-file');
+var onInputLoad = document.querySelector('#upload-file');
 // Находит форму редактирования изображения
 var formImg = document.querySelector('.img-upload__overlay');
 var body = document.querySelector('body');
+
+// Закрывает форму с помощью клавиатуры
+function onPopupEscPress(evt) {
+  if (evt.key === ESC_KEY) {
+    closePopup();
+  }
+}
 
 // Открывает форму редактирования изображения
 function openPopup() {
   formImg.classList.remove('hidden');
   // Добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
   body.classList.add('modal-open');
-
-  // Закрывает форму с помощью клавиатуры
-  document.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Escape') {
-      formImg.classList.add('hidden');
-    }
-  });
-  effectNone.style = getNoneEffect();
+  // Позволяет закрыть форму с помощью клавиатуры
+  document.addEventListener('keydown', onPopupEscPress);
+  effectNone.addEventListener('click', getNoneEffect);
   effectСhrome.addEventListener('click', getChrome);
   effectSepia.addEventListener('click', getSepia);
   effectMarvin.addEventListener('click', getMarvin);
@@ -201,7 +205,7 @@ function openPopup() {
 }
 
 // Открывает форму редактирования изображения после загрузки изображения
-uploadInput.addEventListener('change', openPopup);
+onInputLoad.addEventListener('change', openPopup);
 
 // Закрывает форму редактирования изображения
 // Находит кнопку для закрытия формы редактирования изображения
@@ -211,7 +215,9 @@ function closePopup() {
   formImg.classList.add('hidden');
   body.classList.remove('modal-open');
   // Cбрасывает значение поля выбора файла
-  uploadInput.innerHTML = '';
+  valueEffectOnPopup.value = '';
+  // снимает обработчик при закрытии формы
+  document.removeEventListener('keydown', onPopupEscPress);
 }
 
 buttonClosePopup.addEventListener('click', closePopup);
@@ -235,38 +241,43 @@ var effectHeat = imgUploadEffects.querySelector('#effect-heat');
 
 // Фильтр без эффекта
 function getNoneEffect() {
+  imgForEffect.classList = 'effects__preview--none';
   // Скрывает слайдер
   slaiderPopup.classList.add('hidden');
 }
 
 // Заполняет эффект
-function getEffect(effect) {
+var currentFilter;
+function changeFilter(filterName) {
+  if (currentFilter) {
+    // Сбрасывает присвоенный фильтр(класс), чтобы можно было переключаться между фильтрами
+    imgForEffect.classList.remove(currentFilter);
+  }
+  imgForEffect.classList.add('effects__preview--' + filterName);
+  currentFilter = filterName;
   // Показывает слайдер
   slaiderPopup.classList.remove('hidden');
-  // Сбрасывает присвоенный фильтр(класс), чтобы можно было переключаться между фильтрами
-  imgForEffect.classList = [];
-  return imgForEffect.classList.add('effects__preview--' + effect);
 }
 
 // Применяет эффекты, чтобы при открытии формы редактирования можно было переключаться между фильтрами
 function getChrome() {
-  return getEffect('chrome');
+  return changeFilter('chrome');
 }
 
 function getSepia() {
-  return getEffect('sepia');
+  return changeFilter('sepia');
 }
 
 function getMarvin() {
-  return getEffect('marvin');
+  return changeFilter('marvin');
 }
 
 function getPhobos() {
-  return getEffect('phobos');
+  return changeFilter('phobos');
 }
 
 function getHeat() {
-  return getEffect('heat');
+  return changeFilter('heat');
 }
 
 // Интенисвность эффекта
@@ -276,12 +287,16 @@ var pinOnSlaider = slaiderPopup.querySelector('.effect-level__pin');
 var valueEffectOnPopup = document.querySelector('.effect-level__value');
 
 // Изменяет интенсивность эффекта
-function changeValueEffect() { // HHEEELLLLPPPPPPP
+function changeValueEffect() {
   // возвращает true/false, в зависимости от того, есть ли у элемента класс class
   if (imgForEffect.classList.contains('effects__preview--chrome')) {
     // меняет интенсивность эффекта
     imgForEffect.filter = 'grayscale(0..1)';
-    valueEffectOnPopup.value = ''; // ?????
+    // "Для определения уровня насыщенности, нужно рассчитать
+    // положение ползунка слайдера относительно всего блока и
+    // воспользоваться пропорцией, чтобы понять, какой уровень эффекта нужно применить."
+    valueEffectOnPopup.value = '';
+    // ползунок пока не двигается, можно его положение в константу записать, и от нее уже вычислять значение от 0 до 1
 
   } else if (imgForEffect.classList.contains('effects__preview--sepia')) {
     imgForEffect.filter = 'sepia(0..1)';
@@ -299,8 +314,6 @@ function changeValueEffect() { // HHEEELLLLPPPPPPP
     imgForEffect.filter = 'brightness(1..3)';
     valueEffectOnPopup.value = '';
   }
-
-  // не могу понять что должна вернуть
 }
 
 // Редактирование размера изображения
@@ -310,5 +323,7 @@ var scaleButtonBigger = document.querySelector('.scale__control--bigger');
 var scaleValue = document.querySelector('.scale__control--value');
 
 function changeScaleOnSmaller() {
- // Грусть тоска печалька
+  // "При нажатии на кнопки .scale__control--smaller и .scale__control--bigger
+  // должно изменяться значение поля .scale__control--value;", тут все по аналогии
+  // с интенсивностью, "если в поле стоит значение 75%, то в стиле изображения должно быть написано transform: scale(0.75)."
 }
