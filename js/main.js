@@ -253,8 +253,7 @@ function changeFilter(filterName) {
     // Сбрасывает присвоенный фильтр(класс), чтобы можно было переключаться между фильтрами
     imgForEffect.classList.remove(currentFilter);
   }
-  imgForEffect.classList.add('effects__preview--' + filterName);
-  currentFilter = filterName;
+  currentFilter = imgForEffect.classList.add('effects__preview--' + filterName);
   // Показывает слайдер
   slaiderPopup.classList.remove('hidden');
 }
