@@ -12,6 +12,7 @@ var STEP = 25;
 var MAX_SIZE_SCALE = 100;
 var BLUR = 3;
 var BRIGHTNESS = 3;
+var MIN_VALUE_BRIGHTNESS = 3;
 // var ENTER_KEY = 'Enter';
 
 // Функция генерации случайных чисел
@@ -179,7 +180,7 @@ pictureMiniMode.addEventListener('click', function () {
 // !! Загрузка изображения и показ формы редактирования !!
 
 // Находит поле для загрузки изображения
-var onInputLoad = document.querySelector('#upload-file');
+var inputLoad = document.querySelector('#upload-file');
 // Находит форму редактирования изображения
 var formImg = document.querySelector('.img-upload__overlay');
 var body = document.querySelector('body');
@@ -212,7 +213,7 @@ function openPopup() {
 }
 
 // Открывает форму редактирования изображения после загрузки изображения
-onInputLoad.addEventListener('change', openPopup);
+inputLoad.addEventListener('change', openPopup);
 
 // Закрывает форму редактирования изображения
 // Находит кнопку для закрытия формы редактирования изображения
@@ -222,7 +223,7 @@ function closePopup() {
   formImg.classList.add('hidden');
   body.classList.remove('modal-open');
   // Cбрасывает значение поля выбора файла
-  valueEffect.value = '';
+  inputLoad.value = '';
   // снимает обработчик при закрытии формы
   document.removeEventListener('keydown', onPopupEscPress);
 }
@@ -247,20 +248,20 @@ var effectPhobos = imgUploadEffects.querySelector('#effect-phobos');
 var effectHeat = imgUploadEffects.querySelector('#effect-heat');
 
 // Фильтр без эффекта
-function getNoneEffect() {
-  imgForEffect.classList = 'effects__preview--none';
+function getNoneEffect() { // ????????Мне сюда также условие писать как и в changeFilter, чтобы воспользоваться classList.remove???
   // Скрывает слайдер
   slaiderPopup.classList.add('hidden');
 }
 
 // Заполняет эффект
 var currentFilter;
-function changeFilter(filterName) {
+function changeFilter(filterName) { // ????????Не понимаю почему класс не удаляется при переключении между фильтрами
   if (currentFilter) {
     // Сбрасывает присвоенный фильтр(класс), чтобы можно было переключаться между фильтрами
     imgForEffect.classList.remove(currentFilter);
   }
-  currentFilter = imgForEffect.classList.add('effects__preview--' + filterName);
+  imgForEffect.classList.add('effects__preview--' + filterName);
+  currentFilter = filterName;
   // Показывает слайдер
   slaiderPopup.classList.remove('hidden');
 }
@@ -296,30 +297,32 @@ var valueEffect = document.querySelector('.effect-level__value');
 
 // Изменяет интенсивность эффекта
 function changeValueEffect() {
-  var beginPinPosition = 20; // временно
-  var widthSlider = 495; // временно
+  // var beginPinPosition = 20;
+  // var widthSlider = 495;
   // от ширины линии находит позицию пина
-  var currentPinPosition = beginPinPosition / widthSlider * 100;
+  var currentPinPosition = 20; // beginPinPosition / widthSlider * 100
+  var levelForValue;
+  valueEffect.value = levelForValue;
   // возвращает true/false, в зависимости от того, есть ли у элемента класс class
   if (imgForEffect.classList.contains('effects__preview--chrome')) {
     imgForEffect.style.filter = 'grayscale(' + currentPinPosition / 100 + ')';
-    valueEffect.value = currentPinPosition / 100;
+    levelForValue = currentPinPosition / 100;
 
   } else if (imgForEffect.classList.contains('effects__preview--sepia')) {
     imgForEffect.style.filter = 'sepia(' + currentPinPosition / 100 + ')';
-    valueEffect.value = currentPinPosition / 100;
+    levelForValue = currentPinPosition / 100;
 
   } else if (imgForEffect.classList.contains('effects__preview--marvin')) {
     imgForEffect.style.filter = 'invert(' + currentPinPosition / 100 + '%)';
-    valueEffect.value = currentPinPosition / 100;
+    levelForValue = currentPinPosition / 100;
 
   } else if (imgForEffect.classList.contains('effects__preview--phobos')) {
     imgForEffect.style.filter = 'blur(' + currentPinPosition / 100 * BLUR + 'px)';
-    valueEffect.value = currentPinPosition / 100 * BLUR;
+    levelForValue = currentPinPosition / 100 * BLUR;
 
   } else if (imgForEffect.classList.contains('effects__preview--heat')) {
-    imgForEffect.style.filter = 'brightness(' + currentPinPosition / BRIGHTNESS + ')';
-    valueEffect.value = currentPinPosition / 100 * BRIGHTNESS;
+    imgForEffect.style.filter = 'brightness(' + MIN_VALUE_BRIGHTNESS + currentPinPosition / BRIGHTNESS + ')';
+    levelForValue = currentPinPosition / 100 * BRIGHTNESS;
   }
 }
 
@@ -328,21 +331,21 @@ function changeValueEffect() {
 var scaleButtonSmaller = document.querySelector('.scale__control--smaller');
 var scaleButtonBigger = document.querySelector('.scale__control--bigger');
 var scaleValue = document.querySelector('.scale__control--value');
-var stepForScale = 0;
+var currentScale = 100;
 
 function changeScaleSmaller() { // как-то странно работает, если сразу нажимаю на кнопку не изменяет,
   // только после увеличения работает
-  if (stepForScale > STEP) {
-    stepForScale -= STEP;
-    imgForEffect.style.transform = 'scale(' + stepForScale / MAX_SIZE_SCALE + ')';
-    scaleValue.value = stepForScale + '%';
+  if (currentScale > STEP) {
+    currentScale -= STEP;
+    imgForEffect.style.transform = 'scale(' + currentScale / MAX_SIZE_SCALE + ')';
+    scaleValue.value = currentScale + '%';
   }
 }
 
 function changeScaleBigger() {
-  if (stepForScale < MAX_SIZE_SCALE) {
-    stepForScale += STEP;
-    imgForEffect.style.transform = 'scale(' + stepForScale / MAX_SIZE_SCALE + ')';
-    scaleValue.value = stepForScale + '%';
+  if (currentScale < MAX_SIZE_SCALE) {
+    currentScale += STEP;
+    imgForEffect.style.transform = 'scale(' + currentScale / MAX_SIZE_SCALE + ')';
+    scaleValue.value = currentScale + '%';
   }
 }
