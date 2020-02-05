@@ -251,8 +251,8 @@ var effectPhobos = imgUploadEffects.querySelector('#effect-phobos');
 var effectHeat = imgUploadEffects.querySelector('#effect-heat');
 var currentFilter;
 
-// Фильтр без эффекта
-function removeEffect(filterName) {
+// Заполняет эффект
+function changeFilter(filterName) {
   if (currentFilter) {
     // Сбрасывает присвоенный фильтр(класс)
     imgForEffect.classList.remove(currentFilter);
@@ -260,17 +260,9 @@ function removeEffect(filterName) {
   imgForEffect.classList.add('effects__preview--' + filterName);
   currentFilter = 'effects__preview--' + filterName;
   // Скрывает слайдер
-  slaiderPopup.classList.add('hidden');
-}
-
-// Заполняет эффект
-function changeFilter(filterName) {
-  if (currentFilter) {
-    // Сбрасывает присвоенный фильтр(класс), чтобы можно было переключаться между фильтрами
-    imgForEffect.classList.remove(currentFilter);
+  if (currentFilter === 'effects__preview--none') {
+    slaiderPopup.classList.add('hidden');
   }
-  imgForEffect.classList.add('effects__preview--' + filterName);
-  currentFilter = 'effects__preview--' + filterName;
   // Показывает слайдер
   slaiderPopup.classList.remove('hidden');
   // При переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%)
@@ -279,7 +271,10 @@ function changeFilter(filterName) {
 
 // Применяет эффекты, чтобы при открытии формы редактирования можно было переключаться между фильтрами
 function getNoneEffect() {
-  return removeEffect('none');
+  // Объявленные стили сбрасываются присваиванием значения null
+  imgForEffect.style.filter = null;
+
+  return changeFilter('none');
 }
 
 function getChrome() {
@@ -335,11 +330,10 @@ function changeValueEffect() {
     levelForValue = currentPinPosition / 100;
 
   } else if (imgForEffect.classList.contains('effects__preview--heat')) {
-    imgForEffect.style.filter = 'brightness(' + MIN_VALUE_BRIGHTNESS + currentPinPosition / BRIGHTNESS + ')';
-    var brightnessValue = MIN_VALUE_BRIGHTNESS + currentPinPosition / 100 * (BRIGHTNESS - MIN_VALUE_BRIGHTNESS);
-    levelForValue = brightnessValue;
+    imgForEffect.style.filter = 'brightness(' + MIN_VALUE_BRIGHTNESS + currentPinPosition / 100 * (BRIGHTNESS - MIN_VALUE_BRIGHTNESS) + ')';
+    levelForValue = currentPinPosition / 100;
   }
-  // запсывает уровень интенсивности в css
+  // записывает уровень интенсивности в input для отправки на сервер
   valueEffect.value = levelForValue;
 }
 
@@ -367,7 +361,6 @@ function changeScaleBigger() {
 }
 
 // !! Валидация хеш-тегов !!
-
 var textHashtags = document.querySelector('.text__hashtags');
 // Валидация хеш-тегов
 function getValidityHashtags() {
@@ -376,24 +369,19 @@ function getValidityHashtags() {
   // Набор хэш-тегов из input превращает в массив
   var arrayHashtags = inputHashtags.split(' ');
   // Цикл, который ходит по полученному массиву и проверяет каждый из хэш-тегов на предмет соответствия ограничениям
+  // тут можно сразу проверить длину массива, "нельзя указать больше пяти хэш-тегов"
   for (var i = 0; i < arrayHashtags.length; i++) {
     // если первый символ не равен #
-    if (arrayHashtags[i].charAt(0) !== '#') {
+    if (arrayHashtags[i].charAt(0) !== '#') { // нам еще нужна проверка на "хэш-теги разделяются пробелами;" - можно поискать символ внутри тега, например с indexOf
       textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа # (решётка)');
     }
-    // если строка после решётки содержит пробел и другие символы
-    else if (arrayHashtags[i].substring(1, arrayHashtags[i].length) === ' ')// ?????КАК ЗДЕСЬ НАПИСАТЬ И 'ДРУГИЕ СИМВОЛЫ'??? {
+    // если строка после решётки другие символы (пробелов внутри после split уже не будет)
+    else if (arrayHashtags[i].substring(1, arrayHashtags[i].length) === ' ') {
       textHashtags.setCustomValidity('Хэш-тег должен состоять только из букв и чисел и не может содержать пробелы');
     }
-    // если хеш-тег состоит только из одной решётки;
-    else if (arrayHashtags[i] === '#') { // ?????КАК ЗДЕСЬ НАПИСАТЬ ЧТО !ТОЛЬКО! ОДНОЙ РЕШЕТКИ РАВЕН ???
-      textHashtags.setCustomValidity('Хэш-тег не может состоять только из одного символа # (решётка)');
-    }
-    // если максимальная длина одного хэш-тега больше 20 символов, включая решётку
-    else if () {
-
-    }
-    /*
+  // если хеш-тег состоит только из одной решётки;
+  // если максимальная длина одного хэш-тега больше 20 символов, включая решётку
+  /*
     хэш-теги нечувствительны к регистру: #ХэшТег и #хэштег считаются одним и тем же тегом;
     хэш-теги разделяются пробелами;
     один и тот же хэш-тег не может быть использован дважды;
@@ -401,5 +389,4 @@ function getValidityHashtags() {
     хэш-теги необязательны;
     если фокус находится в поле ввода хэш-тега,
     нажатие на Esc не должно приводить к закрытию формы редактирования изображения.*/
-  }
 }
