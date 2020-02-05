@@ -13,6 +13,7 @@ var MAX_SIZE_SCALE = 100;
 var BLUR = 3;
 var BRIGHTNESS = 3;
 var MIN_VALUE_BRIGHTNESS = 1;
+var BEGIN_VALUE_LEVEL = 100;
 // var ENTER_KEY = 'Enter';
 
 // Функция генерации случайных чисел
@@ -270,8 +271,8 @@ function changeFilter(filterName) {
   currentFilter = 'effects__preview--' + filterName;
   // Показывает слайдер
   slaiderPopup.classList.remove('hidden');
-  // там нам еще нужно уровень установить в 100%
-  // "При переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%)"
+  // При переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%)
+  valueEffect.value = BEGIN_VALUE_LEVEL;
 }
 
 // Применяет эффекты, чтобы при открытии формы редактирования можно было переключаться между фильтрами
@@ -333,10 +334,8 @@ function changeValueEffect() {
 
   } else if (imgForEffect.classList.contains('effects__preview--heat')) {
     imgForEffect.style.filter = 'brightness(' + MIN_VALUE_BRIGHTNESS + currentPinPosition / BRIGHTNESS + ')';
-    levelForValue = currentPinPosition / 100 * BRIGHTNESS;
-    // тут я вижу что то такое:
-    // var brightnessValue = MIN_VALUE_BRIGHTNESS + currentPinPosition / 100 *
-    // (BRIGHTNESS - MIN_VALUE_BRIGHTNESS); похоже на вычисления в getRandomArbitrary
+    var brightnessValue = MIN_VALUE_BRIGHTNESS + currentPinPosition / 100 * (BRIGHTNESS - MIN_VALUE_BRIGHTNESS);
+    levelForValue = brightnessValue;
   }
   // запсывает уровень интенсивности в css
   valueEffect.value = levelForValue;
