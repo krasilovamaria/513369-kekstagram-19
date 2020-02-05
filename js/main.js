@@ -12,7 +12,7 @@ var STEP = 25;
 var MAX_SIZE_SCALE = 100;
 var BLUR = 3;
 var BRIGHTNESS = 3;
-var MIN_VALUE_BRIGHTNESS = 3;
+var MIN_VALUE_BRIGHTNESS = 1;
 // var ENTER_KEY = 'Enter';
 
 // Функция генерации случайных чисел
@@ -246,27 +246,39 @@ var effectSepia = imgUploadEffects.querySelector('#effect-sepia');
 var effectMarvin = imgUploadEffects.querySelector('#effect-marvin');
 var effectPhobos = imgUploadEffects.querySelector('#effect-phobos');
 var effectHeat = imgUploadEffects.querySelector('#effect-heat');
+var currentFilter;
 
 // Фильтр без эффекта
-function getNoneEffect() { // ????????Мне сюда также условие писать как и в changeFilter, чтобы воспользоваться classList.remove???
+function removeEffect(filterName) {
+  if (currentFilter) {
+    // Сбрасывает присвоенный фильтр(класс)
+    imgForEffect.classList.remove(currentFilter);
+  }
+  imgForEffect.classList.add('effects__preview--' + filterName);
+  currentFilter = 'effects__preview--' + filterName;
   // Скрывает слайдер
   slaiderPopup.classList.add('hidden');
 }
 
 // Заполняет эффект
-var currentFilter;
-function changeFilter(filterName) { // ????????Не понимаю почему класс не удаляется при переключении между фильтрами
+function changeFilter(filterName) {
   if (currentFilter) {
     // Сбрасывает присвоенный фильтр(класс), чтобы можно было переключаться между фильтрами
     imgForEffect.classList.remove(currentFilter);
   }
   imgForEffect.classList.add('effects__preview--' + filterName);
-  currentFilter = filterName;
+  currentFilter = 'effects__preview--' + filterName;
   // Показывает слайдер
   slaiderPopup.classList.remove('hidden');
+  // там нам еще нужно уровень установить в 100%
+  // "При переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%)"
 }
 
 // Применяет эффекты, чтобы при открытии формы редактирования можно было переключаться между фильтрами
+function getNoneEffect() {
+  return removeEffect('none');
+}
+
 function getChrome() {
   return changeFilter('chrome');
 }
@@ -302,7 +314,6 @@ function changeValueEffect() {
   // от ширины линии находит позицию пина
   var currentPinPosition = 20; // beginPinPosition / widthSlider * 100
   var levelForValue;
-  valueEffect.value = levelForValue;
   // возвращает true/false, в зависимости от того, есть ли у элемента класс class
   if (imgForEffect.classList.contains('effects__preview--chrome')) {
     imgForEffect.style.filter = 'grayscale(' + currentPinPosition / 100 + ')';
@@ -318,12 +329,17 @@ function changeValueEffect() {
 
   } else if (imgForEffect.classList.contains('effects__preview--phobos')) {
     imgForEffect.style.filter = 'blur(' + currentPinPosition / 100 * BLUR + 'px)';
-    levelForValue = currentPinPosition / 100 * BLUR;
+    levelForValue = currentPinPosition / 100;
 
   } else if (imgForEffect.classList.contains('effects__preview--heat')) {
     imgForEffect.style.filter = 'brightness(' + MIN_VALUE_BRIGHTNESS + currentPinPosition / BRIGHTNESS + ')';
     levelForValue = currentPinPosition / 100 * BRIGHTNESS;
+    // тут я вижу что то такое:
+    // var brightnessValue = MIN_VALUE_BRIGHTNESS + currentPinPosition / 100 *
+    // (BRIGHTNESS - MIN_VALUE_BRIGHTNESS); похоже на вычисления в getRandomArbitrary
   }
+  // запсывает уровень интенсивности в css
+  valueEffect.value = levelForValue;
 }
 
 // Редактирование размера изображения
@@ -333,8 +349,7 @@ var scaleButtonBigger = document.querySelector('.scale__control--bigger');
 var scaleValue = document.querySelector('.scale__control--value');
 var currentScale = 100;
 
-function changeScaleSmaller() { // как-то странно работает, если сразу нажимаю на кнопку не изменяет,
-  // только после увеличения работает
+function changeScaleSmaller() {
   if (currentScale > STEP) {
     currentScale -= STEP;
     imgForEffect.style.transform = 'scale(' + currentScale / MAX_SIZE_SCALE + ')';
@@ -349,3 +364,18 @@ function changeScaleBigger() {
     scaleValue.value = currentScale + '%';
   }
 }
+
+// Валидация хеш-тегов
+/*
+хэш-тег начинается с символа # (решётка);
+строка после решётки должна состоять из букв и чисел и не может содержать пробелы,
+спецсимволы (#, @, $ и т.п.), символы пунктуации (тире, дефис, запятая и т.п.), эмодзи и т.д.;
+хеш-тег не может состоять только из одной решётки;
+максимальная длина одного хэш-тега 20 символов, включая решётку;
+хэш-теги нечувствительны к регистру: #ХэшТег и #хэштег считаются одним и тем же тегом;
+хэш-теги разделяются пробелами;
+один и тот же хэш-тег не может быть использован дважды;
+нельзя указать больше пяти хэш-тегов;
+хэш-теги необязательны;
+если фокус находится в поле ввода хэш-тега,
+нажатие на Esc не должно приводить к закрытию формы редактирования изображения.*/
