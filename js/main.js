@@ -15,6 +15,7 @@ var BRIGHTNESS = 3;
 var MIN_VALUE_BRIGHTNESS = 1;
 var BEGIN_VALUE_LEVEL = 100;
 var QUANTITY_MAX_HASHTAGS = 5;
+var MAX_LENGTH_HASHTAG = 20;
 // var ENTER_KEY = 'Enter';
 
 // Функция генерации случайных чисел
@@ -369,34 +370,57 @@ function getValidityHashtags() {
   var inputHashtags = textHashtags.value;
   // Набор хэш-тегов из input превращает в массив
   var arrayHashtags = inputHashtags.split(' ');
+  var validityResult;
 
   // Цикл, который ходит по полученному массиву и проверяет каждый из хэш-тегов на предмет соответствия ограничениям
   for (var i = 0; i <= arrayHashtags.length; i++) {
     if (arrayHashtags.length >= QUANTITY_MAX_HASHTAGS) {
       // Проверяет длину массива, чтобы было не больше пяти хэш-тегов
-      textHashtags.setCustomValidity('Нельзя указывать больше пяти хэш-тегов');
+      textHashtags.setCustomValidity('Нельзя указывать больше пяти хэш-тегов, максимальная длина одного хэш-тега должна быть не больше 20 символов, включая решётку');
+      validityResult = false;
+      break;
     } else if ((arrayHashtags[i].charAt(0) !== '#') && (arrayHashtags[i].indexOf(' ') === '-1')) {
       // Если первый символ не равен # и хэш-теги разделяются пробелами, -1 возвращает indexOf если не находит пробел
-      textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа # (решётка)');
+      textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа # (решётка) и хеш-теги должны быть разделены пробелами');
+      validityResult = false;
+      break;
     } else if (arrayHashtags[i].substring(1, arrayHashtags[i].length) === ' ') {
       // Если строка после решётки другие символы (пробелов внутри после split уже не будет)
       textHashtags.setCustomValidity('Хэш-тег должен состоять только из букв и чисел и не может содержать пробелы');
+      validityResult = false;
+      break;
+    } else if (arrayHashtags[i].length >= MAX_LENGTH_HASHTAG) {
+      textHashtags.setCustomValidity('Максимальная длина одного хэш-тега должна быть не больше 20 символов, включая решётку');
+      validityResult = false;
+      break;
+    } else if (arrayHashtags[i] === '#') {
+      textHashtags.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
+      validityResult = false;
+      break;
+    } else if (arrayHashtags[i] === arrayHashtags[i]) { // ???ТУТ ТОЖЕ С indexOf?? ИЛИ КАК???
+      textHashtags.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
+      validityResult = false;
+      break;
+    } else if (arrayHashtags[i].toLowerCase()) { // ???НЕ ЗНАЮ КАК СДЕЛАТЬ
+      // Если #ХэшТег и #хэштег считаются одним и тем же тегом
+      textHashtags.setCustomValidity('');
+      validityResult = true;
+      break;
+    } else if (arrayHashtags[i] === '') {
+      // Хэш-теги необязательны;
+      textHashtags.setCustomValidity('');
+      validityResult = true;
+      break;
+    } else if (textHashtags.onfocus) {
+      // если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения
+      document.addEventListener('keydown', function (evt) {
+        if (evt.key === ESC_KEY) {
+          // прекращает текущее действие
+          evt.stopPropagation();
+        }
+      });
     }
   }
+  return validityResult; // ???КАК ПРАВИЛЬНО НЕ МОГУ ПОНЯТЬ???
 }
 
-// если хеш-тег состоит только из одной решётки;
-// если максимальная длина одного хэш-тега больше 20 символов, включая решётку
-/*
-хэш-теги нечувствительны к регистру: #ХэшТег и #хэштег считаются одним и тем же тегом;
-хэш-теги разделяются пробелами;
-один и тот же хэш-тег не может быть использован дважды;
-хэш-теги необязательны;
-если фокус находится в поле ввода хэш-тега,
-нажатие на Esc не должно приводить к закрытию формы редактирования изображения.*/
-
-var names = 'пурб, мурб';
-var arrayNames = names.split(' ');
-for (var i = 0; i < arrayNames.length; i++) {
-  console.log(arrayNames[i].indexOf('п'));
-}
