@@ -402,5 +402,4 @@ function getValidityHashtags() {
     если фокус находится в поле ввода хэш-тега,
     нажатие на Esc не должно приводить к закрытию формы редактирования изображения.*/
   }
-  return console.log(arrayHashtags[i[0]]);
 }
