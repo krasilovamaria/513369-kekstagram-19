@@ -404,9 +404,3 @@ function getValidityHashtags() {
   }
   return console.log(arrayHashtags[i[0]]);
 }
-
-var names = 'мурб, пурб';
-var newname = names.split(' ');
-for (var i = 0; i < newname.length; i++) {
-  console.log(newname[i].substring(1, newname[i].length));
-}
