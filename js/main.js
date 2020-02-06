@@ -215,6 +215,8 @@ function openPopup() {
   scaleButtonBigger.addEventListener('click', changeScaleBigger);
   // Валидация хеш-тегов
   textHashtags.addEventListener('change', getValidityHashtags);
+  // Не дает закрыть форму, если в фокусе input для хеш-тегов
+  textHashtags.addEventListener('change', onInputStopEsc);
 }
 
 // Открывает форму редактирования изображения после загрузки изображения
@@ -229,7 +231,7 @@ function closePopup() {
   body.classList.remove('modal-open');
   // Cбрасывает значение поля выбора файла
   inputLoad.value = '';
-  // снимает обработчик при закрытии формы
+  // Снимает обработчик при закрытии формы
   document.removeEventListener('keydown', onPopupEscPress);
 }
 
@@ -264,11 +266,12 @@ function changeFilter(filterName) {
   // Скрывает слайдер
   if (currentFilter === 'effects__preview--none') {
     slaiderPopup.classList.add('hidden');
+  } else {
+    // Показывает слайдер
+    slaiderPopup.classList.remove('hidden');
+    // При переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%)
+    valueEffect.value = BEGIN_VALUE_LEVEL;
   }
-  // Показывает слайдер
-  slaiderPopup.classList.remove('hidden');
-  // При переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%)
-  valueEffect.value = BEGIN_VALUE_LEVEL;
 }
 
 // Применяет эффекты, чтобы при открытии формы редактирования можно было переключаться между фильтрами
@@ -332,7 +335,7 @@ function changeValueEffect() {
     levelForValue = currentPinPosition / 100;
 
   } else if (imgForEffect.classList.contains('effects__preview--heat')) {
-    imgForEffect.style.filter = 'brightness(' + MIN_VALUE_BRIGHTNESS + currentPinPosition / 100 * (BRIGHTNESS - MIN_VALUE_BRIGHTNESS) + ')';
+    imgForEffect.style.filter = 'brightness(' + (MIN_VALUE_BRIGHTNESS + currentPinPosition / 100 * (BRIGHTNESS - MIN_VALUE_BRIGHTNESS)) + ')';
     levelForValue = currentPinPosition / 100;
   }
   // записывает уровень интенсивности в input для отправки на сервер
@@ -364,23 +367,28 @@ function changeScaleBigger() {
 
 // !! Валидация хеш-тегов !!
 var textHashtags = document.querySelector('.text__hashtags');
+// Находит значения из input
+var inputHashtags = textHashtags.value;
+
 // Валидация хеш-тегов
 function getValidityHashtags() {
-  // Находит значения из input
-  var inputHashtags = textHashtags.value;
   // Набор хэш-тегов из input превращает в массив
   var arrayHashtags = inputHashtags.split(' ');
-  var validityResult;
+  var validityResult = true;
+
+  if (arrayHashtags.length >= QUANTITY_MAX_HASHTAGS) {
+    // Проверяет длину массива, чтобы было не больше пяти хэш-тегов
+    textHashtags.setCustomValidity('Нельзя указывать больше пяти хэш-тегов, максимальная длина одного хэш-тега должна быть не больше 20 символов, включая решётку');
+    validityResult = false;
+  } else if (inputHashtags === '') {
+    // Хэш-теги необязательны;
+    textHashtags.setCustomValidity('');
+    validityResult = true;
+  }
 
   // Цикл, который ходит по полученному массиву и проверяет каждый из хэш-тегов на предмет соответствия ограничениям
-  for (var i = 0; i <= arrayHashtags.length; i++) {
-    if (arrayHashtags.length >= QUANTITY_MAX_HASHTAGS) {
-      // Проверяет длину массива, чтобы было не больше пяти хэш-тегов
-      textHashtags.setCustomValidity('Нельзя указывать больше пяти хэш-тегов, максимальная длина одного хэш-тега должна быть не больше 20 символов, включая решётку');
-      validityResult = false;
-      break;
-    } else if ((arrayHashtags[i].charAt(0) !== '#') && (arrayHashtags[i].indexOf(' ') === '-1')) {
-      // Если первый символ не равен # и хэш-теги разделяются пробелами, -1 возвращает indexOf если не находит пробел
+  for (var i = 0; i <= arrayHashtags.length - 1; i++) {
+    if (arrayHashtags[i].indexOf('#') === 0) {
       textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа # (решётка) и хеш-теги должны быть разделены пробелами');
       validityResult = false;
       break;
@@ -397,30 +405,32 @@ function getValidityHashtags() {
       textHashtags.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
       validityResult = false;
       break;
-    } else if (arrayHashtags[i] === arrayHashtags[i]) { // ???ТУТ ТОЖЕ С indexOf?? ИЛИ КАК???
+    } else if (arrayHashtags[i].indexOf(arrayHashtags[i], arrayHashtags[0])) {
       textHashtags.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
       validityResult = false;
       break;
-    } else if (arrayHashtags[i].toLowerCase()) { // ???НЕ ЗНАЮ КАК СДЕЛАТЬ
+    }
+  }
+  for (var j = i + 1; j < arrayHashtags.length; j++) {
+    if (arrayHashtags[i].toLowerCase() === arrayHashtags[j].toLowerCase()) {
       // Если #ХэшТег и #хэштег считаются одним и тем же тегом
       textHashtags.setCustomValidity('');
       validityResult = true;
       break;
-    } else if (arrayHashtags[i] === '') {
-      // Хэш-теги необязательны;
-      textHashtags.setCustomValidity('');
-      validityResult = true;
-      break;
-    } else if (textHashtags.onfocus) {
-      // если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения
-      document.addEventListener('keydown', function (evt) {
-        if (evt.key === ESC_KEY) {
-          // прекращает текущее действие
-          evt.stopPropagation();
-        }
-      });
     }
   }
-  return validityResult; // ???КАК ПРАВИЛЬНО НЕ МОГУ ПОНЯТЬ???
+  if (validityResult) {
+    textHashtags.setCustomValidity('');
+  }
 }
 
+// Если фокус находится в поле ввода хэш-тега, нажатие на Esc не приводит к закрытию формы редактирования изображения
+function onInputStopEsc() { // ??????КАК ИСПРАВИТЬ???
+  document.addEventListener('keydown', function (evt) { // ловит событие
+    if (evt.key === ESC_KEY) { // если выбран esc
+      if (inputHashtags === document.activeElement) { // если в фокусе inputHashtags
+        evt.preventDefault(); // отмени действие
+      }
+    }
+  });
+}
