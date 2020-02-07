@@ -188,10 +188,12 @@ var inputLoad = document.querySelector('#upload-file');
 var formImg = document.querySelector('.img-upload__overlay');
 var body = document.querySelector('body');
 
-// Закрывает форму с помощью клавиатуры
+// Закрывает форму с помощью клавиатуры, только если нажата нужная клавиша и фокус не в тегах
 function onPopupEscPress(evt) {
   if (evt.key === ESC_KEY) {
-    closePopup();
+    if (textHashtags !== document.activeElement) {
+      closePopup();
+    }
   }
 }
 
@@ -215,8 +217,6 @@ function openPopup() {
   scaleButtonBigger.addEventListener('click', changeScaleBigger);
   // Валидация хеш-тегов
   textHashtags.addEventListener('change', getValidityHashtags);
-  // Не дает закрыть форму, если в фокусе input для хеш-тегов
-  textHashtags.addEventListener('change', onInputStopEsc);
 }
 
 // Открывает форму редактирования изображения после загрузки изображения
@@ -367,13 +367,13 @@ function changeScaleBigger() {
 
 // !! Валидация хеш-тегов !!
 var textHashtags = document.querySelector('.text__hashtags');
-// Находит значения из input
-var inputHashtags = textHashtags.value;
 
 // Валидация хеш-тегов
 function getValidityHashtags() {
   // Набор хэш-тегов из input превращает в массив
-  var arrayHashtags = inputHashtags.split(' ');
+  var arrayHashtags = inputHashtags.toLowerCase().split(' ');
+  // Находит значения из input
+  var inputHashtags = textHashtags.value;
   var validityResult = true;
 
   if (arrayHashtags.length >= QUANTITY_MAX_HASHTAGS) {
@@ -388,8 +388,8 @@ function getValidityHashtags() {
 
   // Цикл, который ходит по полученному массиву и проверяет каждый из хэш-тегов на предмет соответствия ограничениям
   for (var i = 0; i <= arrayHashtags.length - 1; i++) {
-    if (arrayHashtags[i].indexOf('#') === 0) {
-      textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа # (решётка) и хеш-теги должны быть разделены пробелами');
+    if ((arrayHashtags[i].indexOf('#') !== 0) && (arrayHashtags[i].indexOf('#', 1) !== -1)) {
+      textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа # (решётка)');
       validityResult = false;
       break;
     } else if (arrayHashtags[i].substring(1, arrayHashtags[i].length) === ' ') {
@@ -405,32 +405,15 @@ function getValidityHashtags() {
       textHashtags.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
       validityResult = false;
       break;
-    } else if (arrayHashtags[i].indexOf(arrayHashtags[i], arrayHashtags[0])) {
+    } else if (arrayHashtags[i].indexOf(arrayHashtags[i], i + 1)) {
+      // 'если найдет такой тег, то вернет 0, эту проверку нужно добавить в условие; UPD ниже у тебя эта проверка дублируется'
+      // ??ТУТ НЕ ПОНЯЛА, ЕСЛИ НАШЕЛ ТАКОЙ ЖЕ ТЕГ СРЕДИ МАССИВА ТО 0, ТОГДА validityResult = false; ЗАЧЕМ ТОГДА ЕЩЕ ПРОВЕРКА???
       textHashtags.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
       validityResult = false;
-      break;
-    }
-  }
-  for (var j = i + 1; j < arrayHashtags.length; j++) {
-    if (arrayHashtags[i].toLowerCase() === arrayHashtags[j].toLowerCase()) {
-      // Если #ХэшТег и #хэштег считаются одним и тем же тегом
-      textHashtags.setCustomValidity('');
-      validityResult = true;
       break;
     }
   }
   if (validityResult) {
     textHashtags.setCustomValidity('');
   }
-}
-
-// Если фокус находится в поле ввода хэш-тега, нажатие на Esc не приводит к закрытию формы редактирования изображения
-function onInputStopEsc() { // ??????КАК ИСПРАВИТЬ???
-  document.addEventListener('keydown', function (evt) { // ловит событие
-    if (evt.key === ESC_KEY) { // если выбран esc
-      if (inputHashtags === document.activeElement) { // если в фокусе inputHashtags
-        evt.preventDefault(); // отмени действие
-      }
-    }
-  });
 }
