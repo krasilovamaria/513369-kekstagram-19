@@ -370,10 +370,10 @@ var textHashtags = document.querySelector('.text__hashtags');
 
 // Валидация хеш-тегов
 function getValidityHashtags() {
-  // Набор хэш-тегов из input превращает в массив
-  var arrayHashtags = inputHashtags.toLowerCase().split(' ');
   // Находит значения из input
   var inputHashtags = textHashtags.value;
+  // Набор хэш-тегов из input превращает в массив
+  var arrayHashtags = inputHashtags.toLowerCase().split(' ');
   var validityResult = true;
 
   if (arrayHashtags.length >= QUANTITY_MAX_HASHTAGS) {
@@ -388,11 +388,11 @@ function getValidityHashtags() {
 
   // Цикл, который ходит по полученному массиву и проверяет каждый из хэш-тегов на предмет соответствия ограничениям
   for (var i = 0; i <= arrayHashtags.length - 1; i++) {
-    if ((arrayHashtags[i].indexOf('#') !== 0) && (arrayHashtags[i].indexOf('#', 1) !== -1)) {
-      textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа # (решётка)');
+    if ((arrayHashtags[i].indexOf('#') !== 0) || (arrayHashtags[i].indexOf('#', 1) !== -1)) {
+      textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа # (решётка) и Хэш-теги должны разделятся пробелами');
       validityResult = false;
       break;
-    } else if (arrayHashtags[i].substring(1, arrayHashtags[i].length) === ' ') {
+    } else if ((arrayHashtags[i].substring(1, arrayHashtags[i].length) === ' ') || (!arrayHashtags[i].match(/^#[a-zA-Z0-9а-яА-Я]+$/))) {
       // Если строка после решётки другие символы (пробелов внутри после split уже не будет)
       textHashtags.setCustomValidity('Хэш-тег должен состоять только из букв и чисел и не может содержать пробелы');
       validityResult = false;
@@ -405,9 +405,7 @@ function getValidityHashtags() {
       textHashtags.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
       validityResult = false;
       break;
-    } else if (arrayHashtags[i].indexOf(arrayHashtags[i], i + 1)) {
-      // 'если найдет такой тег, то вернет 0, эту проверку нужно добавить в условие; UPD ниже у тебя эта проверка дублируется'
-      // ??ТУТ НЕ ПОНЯЛА, ЕСЛИ НАШЕЛ ТАКОЙ ЖЕ ТЕГ СРЕДИ МАССИВА ТО 0, ТОГДА validityResult = false; ЗАЧЕМ ТОГДА ЕЩЕ ПРОВЕРКА???
+    } else if (arrayHashtags.indexOf(arrayHashtags[i], i + 1) !== -1) {
       textHashtags.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
       validityResult = false;
       break;
