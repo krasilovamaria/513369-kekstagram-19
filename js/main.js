@@ -8,15 +8,15 @@ var QUANTITY_MAX_COMMENT = 6;
 var QUANTITY_MIN_LIKE = 15;
 var QUANTITY_MAX_LIKE = 200;
 var ESC_KEY = 'Escape';
-var STEP = 25;
-var MAX_SIZE_SCALE = 100;
 var BLUR = 3;
 var BRIGHTNESS = 3;
 var MIN_VALUE_BRIGHTNESS = 1;
 var BEGIN_VALUE_LEVEL = 100;
 var QUANTITY_MAX_HASHTAGS = 5;
 var MAX_LENGTH_HASHTAG = 20;
-// var ENTER_KEY = 'Enter';
+var UPLOAD_RESIZE_STEP = 25;
+var UPLOAD_RESIZE_MIN = 25;
+var UPLOAD_RESIZE_MAX = 100;
 
 // функция генерации случайных чисел
 function getRandomArbitrary(min, max) {
@@ -201,21 +201,26 @@ function openPopup() {
   body.classList.add('modal-open');
   // позволяет закрыть форму с помощью клавиатуры
   document.addEventListener('keydown', onPopupEscPress);
+
   for (var i = 0; i < effects.length; i++) {
     effects[i].addEventListener('change', onEffectChange);
   }
+
+  //  меняет элемент, на котором произошло событие
   function onEffectChange(evt) {
     var filterName = evt.target.value;
     changeFilter(filterName);
   }
+
   // позволяет передвигать pin
   pinOnSlaider.addEventListener('mouseup', changeValueEffect);
   // меняет размер изображения
-  scaleButtonSmaller.addEventListener('click', changeScaleSmaller);
-  scaleButtonBigger.addEventListener('click', changeScaleBigger);
+  uploadResizeInc.addEventListener('click', onResizeInc);
+  uploadResizeDec.addEventListener('click', onResizeDec);
   // валидация хеш-тегов
   textHashtags.addEventListener('change', getValidityHashtags);
 }
+
 // открывает форму редактирования изображения после загрузки изображения
 inputLoad.addEventListener('change', openPopup);
 // находит кнопку для закрытия формы редактирования изображения
@@ -229,14 +234,15 @@ function closePopup() {
   inputLoad.value = '';
   // снимает обработчик при закрытии формы
   document.removeEventListener('keydown', onPopupEscPress);
-  // Возвращает масштаб к 100%
-  currentScale = 100;
-  // Эффект сбрасывается на «Оригинал»;
+  // возвращает масштаб к 100%
+  setScaleValue(100);
+  // сбрасывает эффект на «Оригинал»;
   imgForEffect.style.filter = filterCssFunction['none'];
-  // Поля для ввода хэш-тегов и комментария очищаются
+  // очищает поля для ввода хэш-тегов и комментария
   textHashtags.value = '';
   textDescription.value = '';
 }
+
 buttonClosePopup.addEventListener('click', closePopup);
 
 // !! Применение эффекта для изображения и редактирование размера изображения !!
@@ -343,23 +349,45 @@ var textDescription = document.querySelector('.text__description');
 
 // !! Редактирование размера изображения !!
 // находит кнопки для изменения изображения
-var scaleButtonSmaller = document.querySelector('.scale__control--smaller');
-var scaleButtonBigger = document.querySelector('.scale__control--bigger');
-var scaleValue = document.querySelector('.scale__control--value');
-var currentScale = 100;
+var uploadResizeField = document.querySelector('.scale__control--value');
+var uploadResizeInc = document.querySelector('.scale__control--bigger');
+var uploadResizeDec = document.querySelector('.scale__control--smaller');
 
-function changeScaleSmaller() {
-  if (currentScale > STEP) {
-    currentScale -= STEP;
-    imgForEffect.style.transform = 'scale(' + currentScale / MAX_SIZE_SCALE + ')';
-    scaleValue.value = currentScale + '%';
-  }
+// возвращает целое число
+function getScaleValue() {
+  // parseInt() принимает строку в качестве аргумента и возвращает целое число
+  // 10 - основание системы счисления числовой строки
+  return parseInt(uploadResizeField.value, 10);
 }
 
-function changeScaleBigger() {
-  if (currentScale < MAX_SIZE_SCALE) {
-    currentScale += STEP;
-    imgForEffect.style.transform = 'scale(' + currentScale / MAX_SIZE_SCALE + ')';
-    scaleValue.value = currentScale + '%';
-  }
+// переводит в проценты
+function setScaleValue(value) {
+  uploadResizeField.value = value + '%';
+}
+
+// диапазон
+function getScaleValueInRange(value) {
+  return Math.min(UPLOAD_RESIZE_MAX, Math.max(UPLOAD_RESIZE_MIN, value));
+}
+
+// создает свойство css для транформации изображения
+function setScaleForUploadImage(scale) {
+  imgForEffect.style.transform = 'scale(' + (scale / 100) + ')';
+}
+
+// трансформирует изображение
+function changeScale(step) {
+  var currentScaleValue = getScaleValue();
+  var newScaleValue = getScaleValueInRange(currentScaleValue + step);
+
+  setScaleValue(newScaleValue);
+  setScaleForUploadImage(newScaleValue);
+}
+
+function onResizeInc() {
+  changeScale(UPLOAD_RESIZE_STEP);
+}
+
+function onResizeDec() {
+  changeScale(-UPLOAD_RESIZE_STEP);
 }
