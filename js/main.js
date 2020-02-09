@@ -213,7 +213,7 @@ function openPopup() {
   }
 
   // позволяет передвигать pin
-  pinOnSlaider.addEventListener('mouseup', changeValueEffect);
+  filterLevelPin.addEventListener('mouseup', changeValueEffect);
   // меняет размер изображения
   uploadResizeInc.addEventListener('click', onResizeInc);
   uploadResizeDec.addEventListener('click', onResizeDec);
@@ -263,7 +263,7 @@ function changeFilter(filterName) {
   // скрывает слайдер
   slaiderPopup.classList.toggle('hidden', currentFilter === 'none');
   // при переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%)
-  valueEffect.value = BEGIN_VALUE_LEVEL;
+  filterLevelValue.value = BEGIN_VALUE_LEVEL;
   imgForEffect.style.filter = '';
 }
 
@@ -291,18 +291,64 @@ var filterCssFunction = {
 
 // !! Интенсивность эффекта !!
 // находит ползунок в слайдере, который меняет интенсивность эффекта
-var pinOnSlaider = slaiderPopup.querySelector('.effect-level__pin');
+var filterLevelPin = slaiderPopup.querySelector('.effect-level__pin');
 // находит уровень эффекта, накладываемого на изображение
-var valueEffect = document.querySelector('.effect-level__value');
+var filterLevelValue = document.querySelector('.effect-level__value');
+var filterLevelBar = document.querySelector('.effect-level__line');
+// начальное значение уровня интенсивности
+var defaultFilterLevel = 100;
+
+function setFilterLevel(level) {
+  var effect = filterCssFunction[currentFilter](level);
+}
+
+function getPinOffsetOfInPercent(value) {
+  // находит точку на линии, где находится пин, offsetWidth возвращает ширину элемента
+  var valueInRange = Math.min(filterLevelBar.offSetWidth, Math.max(0, value));
+  return valueInRange * 100 / filterLevelBar.offSetWidth;
+}
+
+// находит позицию пина в процентах
+function setFilterPinPosition(position) {
+  filterLevelPin.style.left = position + '%';
+  filterLevelValue.style.width = position + '%';
+}
+
+filterLevelPin.addEventListener('mousedown', function (evt) {
+  // clientX числовое значение горизонтальной координаты
+  var startPosition = evt.clientX;
+
+  function onMouseMove(moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = startPosition - moveEvt.clientX;
+    // offsetLeft возвращает смещение в пикселях верхнего левого угла текущего элемента от родительского
+    var newPosition = filterLevelPin.offsetLeft - shift;
+    var newOffset = getPinOffsetOfInPercent(newPosition);
+    setFilterPinPosition(newOffset);
+    setFilterLevel(newOffset);
+    startPosition = moveEvt.clientX;
+  }
+
+  function onMouseUp(upEvt) {
+    upEvt.preventDefault();
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  }
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseUp', onMouseUp);
+});
+
 // изменяет интенсивность эффекта
 function changeValueEffect() {
   // var beginPinPosition = 20;
   // var widthSlider = 495;
   // от ширины линии находит позицию пина
   var currentPinPosition = 20; // beginPinPosition / widthSlider * 100
-  imgForEffect.style.filter = filterCssFunction[currentFilter](currentPinPosition);
+  imgForEffect.style.filter = setFilterLevel(currentPinPosition);
   // записывает уровень интенсивности в input для отправки на сервер
-  valueEffect.value = currentPinPosition / 100;
+  filterLevelValue.value = currentPinPosition / 100;
 }
 
 // !! Валидация хеш-тегов !!
