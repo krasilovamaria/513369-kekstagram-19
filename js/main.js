@@ -17,6 +17,7 @@ var MAX_LENGTH_HASHTAG = 20;
 var UPLOAD_RESIZE_STEP = 25;
 var UPLOAD_RESIZE_MIN = 25;
 var UPLOAD_RESIZE_MAX = 100;
+var DEFAULT_FILTER = 'none';
 
 // функция генерации случайных чисел
 function getRandomArbitrary(min, max) {
@@ -212,8 +213,6 @@ function openPopup() {
     changeFilter(filterName);
   }
 
-  // позволяет передвигать pin
-  filterLevelPin.addEventListener('mouseup', changeValueEffect);
   // меняет размер изображения
   uploadResizeInc.addEventListener('click', onResizeInc);
   uploadResizeDec.addEventListener('click', onResizeDec);
@@ -246,11 +245,11 @@ function closePopup() {
 buttonClosePopup.addEventListener('click', closePopup);
 
 // !! Применение эффекта для изображения и редактирование размера изображения !!
-// находит фотографию, на которую нужно наложить фильтра
+// находит фотографию, на которую нужно наложить фильтр
 var imgForEffect = document.querySelector('.img-upload__preview img');
 // находит слайдер(изменение глубины эффекта)
 var slaiderPopup = document.querySelector('.img-upload__effect-level');
-var currentFilter;
+var currentFilter = DEFAULT_FILTER;
 
 // заполняет эффект
 function changeFilter(filterName) {
@@ -289,7 +288,6 @@ var filterCssFunction = {
   }
 };
 
-// !! Интенсивность эффекта !!
 // находит ползунок в слайдере, который меняет интенсивность эффекта
 var filterLevelPin = slaiderPopup.querySelector('.effect-level__pin');
 // находит уровень эффекта, накладываемого на изображение
@@ -300,6 +298,20 @@ var defaultFilterLevel = 100;
 
 function setFilterLevel(level) {
   var effect = filterCssFunction[currentFilter](level);
+  filterLevelValue.value = level.toFixed();
+  imgForEffect.style.filter = effect;
+}
+
+function setDefaultLevel() {
+  setFilterLevel(defaultFilterLevel);
+  setFilterPinPosition(defaultFilterLevel);
+}
+
+function setFilterForUploadImage(filterName) {
+  slaiderPopup.classList.toggle('hidden', filterName === DEFAULT_FILTER);
+
+  currentFilter = filterName;
+  setDefaultLevel();
 }
 
 function getPinOffsetOfInPercent(value) {
@@ -320,7 +332,6 @@ filterLevelPin.addEventListener('mousedown', function (evt) {
 
   function onMouseMove(moveEvt) {
     moveEvt.preventDefault();
-
     var shift = startPosition - moveEvt.clientX;
     // offsetLeft возвращает смещение в пикселях верхнего левого угла текущего элемента от родительского
     var newPosition = filterLevelPin.offsetLeft - shift;
@@ -339,17 +350,6 @@ filterLevelPin.addEventListener('mousedown', function (evt) {
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseUp', onMouseUp);
 });
-
-// изменяет интенсивность эффекта
-function changeValueEffect() {
-  // var beginPinPosition = 20;
-  // var widthSlider = 495;
-  // от ширины линии находит позицию пина
-  var currentPinPosition = 20; // beginPinPosition / widthSlider * 100
-  imgForEffect.style.filter = setFilterLevel(currentPinPosition);
-  // записывает уровень интенсивности в input для отправки на сервер
-  filterLevelValue.value = currentPinPosition / 100;
-}
 
 // !! Валидация хеш-тегов !!
 var textHashtags = document.querySelector('.text__hashtags');
