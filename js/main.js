@@ -8,15 +8,14 @@ var QUANTITY_MAX_COMMENT = 6;
 var QUANTITY_MIN_LIKE = 15;
 var QUANTITY_MAX_LIKE = 200;
 var ESC_KEY = 'Escape';
-var BLUR = 3;
-var BRIGHTNESS = 3;
-var MIN_VALUE_BRIGHTNESS = 1;
-var BEGIN_VALUE_LEVEL = 100;
 var QUANTITY_MAX_HASHTAGS = 5;
 var MAX_LENGTH_HASHTAG = 20;
 var UPLOAD_RESIZE_STEP = 25;
 var UPLOAD_RESIZE_MIN = 25;
 var UPLOAD_RESIZE_MAX = 100;
+var MAX_BLUR = 3;
+var MIN_HEAT = 1;
+var MAX_HEAT = 3;
 var DEFAULT_FILTER = 'none';
 
 // функция генерации случайных чисел
@@ -187,8 +186,6 @@ var inputLoad = document.querySelector('#upload-file');
 // форма редактирования изображения
 var formImg = document.querySelector('.img-upload__overlay');
 var body = document.querySelector('body');
-// находит все кнопки смены фильтра
-var effects = document.querySelectorAll('.effects__radio');
 // закрывает форму с помощью клавиатуры, только если нажата нужная клавиша и фокус не в тегах
 function onPopupEscPress(evt) {
   if (evt.key === ESC_KEY && textHashtags !== document.activeElement) {
@@ -202,16 +199,6 @@ function openPopup() {
   body.classList.add('modal-open');
   // позволяет закрыть форму с помощью клавиатуры
   document.addEventListener('keydown', onPopupEscPress);
-
-  for (var i = 0; i < effects.length; i++) {
-    effects[i].addEventListener('change', onEffectChange);
-  }
-
-  //  меняет элемент, на котором произошло событие
-  function onEffectChange(evt) {
-    var filterName = evt.target.value;
-    changeFilter(filterName);
-  }
 
   // меняет размер изображения
   uploadResizeInc.addEventListener('click', onResizeInc);
@@ -234,9 +221,7 @@ function closePopup() {
   // снимает обработчик при закрытии формы
   document.removeEventListener('keydown', onPopupEscPress);
   // возвращает масштаб к 100%
-  setScaleValue(100);
-  // сбрасывает эффект на «Оригинал»;
-  imgForEffect.style.filter = filterCssFunction['none'];
+  // сбрасывает эффект на «Оригинал»
   // очищает поля для ввода хэш-тегов и комментария
   textHashtags.value = '';
   textDescription.value = '';
@@ -245,28 +230,21 @@ function closePopup() {
 buttonClosePopup.addEventListener('click', closePopup);
 
 // !! Применение эффекта для изображения и редактирование размера изображения !!
-// находит фотографию, на которую нужно наложить фильтр
-var imgForEffect = document.querySelector('.img-upload__preview img');
-// находит слайдер(изменение глубины эффекта)
-var slaiderPopup = document.querySelector('.img-upload__effect-level');
+var defaultFilterLevel = 100;
+
+var uploadEffect = document.querySelector('.img-upload__overlay');
+var uploadImagePreview = document.querySelector('.img-upload__preview');
+
+var filterLevelArea = document.querySelector('.img-upload__effect-level');
+var filterLevelPin = document.querySelector('.effect-level__pin');
+var filterLevelBar = document.querySelector('.effect-level__line');
+var filterLevelValue = document.querySelector('.effect-level__depth');
+
+var filterUploadLevelValue = document.querySelector('.effect-level__value');
+
 var currentFilter = DEFAULT_FILTER;
 
-// заполняет эффект
-function changeFilter(filterName) {
-  if (currentFilter) {
-    // сбрасывает присвоенный фильтр(класс)
-    imgForEffect.classList.remove('effects__preview--' + currentFilter);
-  }
-  imgForEffect.classList.add('effects__preview--' + filterName);
-  currentFilter = filterName;
-  // скрывает слайдер
-  slaiderPopup.classList.toggle('hidden', currentFilter === 'none');
-  // при переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%)
-  filterLevelValue.value = BEGIN_VALUE_LEVEL;
-  imgForEffect.style.filter = '';
-}
-
-// применяет эффекты, чтобы при открытии формы редактирования можно было переключаться между фильтрами
+// собирает функции для формирования css строки фильтра в справочник
 var filterCssFunction = {
   'none': function () {
     return '';
@@ -281,25 +259,19 @@ var filterCssFunction = {
     return 'invert(' + level + '%)';
   },
   'phobos': function (level) {
-    return 'blur(' + level / 100 * BLUR + 'px)';
+    return 'blur(' + level / 100 * MAX_BLUR + 'px)';
   },
   'heat': function (level) {
-    return 'brightness(' + (level / 100 * (BRIGHTNESS - MIN_VALUE_BRIGHTNESS) + MIN_VALUE_BRIGHTNESS) + ')';
+    return 'brightness(' + (level / 100 * (MAX_HEAT - MIN_HEAT) + MIN_HEAT) + ')';
   }
-};
 
-// находит ползунок в слайдере, который меняет интенсивность эффекта
-var filterLevelPin = slaiderPopup.querySelector('.effect-level__pin');
-// находит уровень эффекта, накладываемого на изображение
-var filterLevelValue = document.querySelector('.effect-level__value');
-var filterLevelBar = document.querySelector('.effect-level__line');
-// начальное значение уровня интенсивности
-var defaultFilterLevel = 100;
+};
 
 function setFilterLevel(level) {
   var effect = filterCssFunction[currentFilter](level);
-  filterLevelValue.value = level.toFixed();
-  imgForEffect.style.filter = effect;
+  // toFixed() форматирует число, используя запись с фиксированной запятой
+  filterUploadLevelValue.value = level.toFixed();
+  uploadImagePreview.style.filter = effect;
 }
 
 function setDefaultLevel() {
@@ -308,16 +280,17 @@ function setDefaultLevel() {
 }
 
 function setFilterForUploadImage(filterName) {
-  slaiderPopup.classList.toggle('hidden', filterName === DEFAULT_FILTER);
+  filterLevelArea.classList.toggle('hidden', filterName === DEFAULT_FILTER);
 
   currentFilter = filterName;
   setDefaultLevel();
 }
 
+// находит смещение пина
 function getPinOffsetOfInPercent(value) {
-  // находит точку на линии, где находится пин, offsetWidth возвращает ширину элемента
-  var valueInRange = Math.min(filterLevelBar.offSetWidth, Math.max(0, value));
-  return valueInRange * 100 / filterLevelBar.offSetWidth;
+  // offsetWidth ширина элемента
+  var valueInRange = Math.min(filterLevelBar.offsetWidth, Math.max(0, value));
+  return valueInRange * 100 / filterLevelBar.offsetWidth;
 }
 
 // находит позицию пина в процентах
@@ -329,11 +302,11 @@ function setFilterPinPosition(position) {
 filterLevelPin.addEventListener('mousedown', function (evt) {
   // clientX числовое значение горизонтальной координаты
   var startPosition = evt.clientX;
-
   function onMouseMove(moveEvt) {
     moveEvt.preventDefault();
-    var shift = startPosition - moveEvt.clientX;
+
     // offsetLeft возвращает смещение в пикселях верхнего левого угла текущего элемента от родительского
+    var shift = startPosition - moveEvt.clientX;
     var newPosition = filterLevelPin.offsetLeft - shift;
     var newOffset = getPinOffsetOfInPercent(newPosition);
     setFilterPinPosition(newOffset);
@@ -348,7 +321,14 @@ filterLevelPin.addEventListener('mousedown', function (evt) {
   }
 
   document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseUp', onMouseUp);
+  document.addEventListener('mouseup', onMouseUp);
+});
+
+uploadEffect.addEventListener('click', function (evt) {
+  if (evt.target.type === 'radio') {
+    var filterName = evt.target.value;
+    setFilterForUploadImage(filterName);
+  }
 });
 
 // !! Валидация хеш-тегов !!
@@ -398,6 +378,8 @@ var textDescription = document.querySelector('.text__description');
 var uploadResizeField = document.querySelector('.scale__control--value');
 var uploadResizeInc = document.querySelector('.scale__control--bigger');
 var uploadResizeDec = document.querySelector('.scale__control--smaller');
+// находит изображение для трансформации
+var uploadImagePreviewForScale = document.querySelector('.img-upload__preview img');
 
 // возвращает целое число
 function getScaleValue() {
@@ -418,7 +400,7 @@ function getScaleValueInRange(value) {
 
 // создает свойство css для транформации изображения
 function setScaleForUploadImage(scale) {
-  imgForEffect.style.transform = 'scale(' + (scale / 100) + ')';
+  uploadImagePreviewForScale.style.transform = 'scale(' + (scale / 100) + ')';
 }
 
 // трансформирует изображение
