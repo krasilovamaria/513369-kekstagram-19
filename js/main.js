@@ -1,5 +1,5 @@
 'use strict';
-// Данные для моки
+// данные для моки
 var MESSAGES = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
 var NAMES = ['Марс', 'Юпитер', 'Луна', 'Солнце', 'Звезда', 'Космос'];
 var QUANTITY_MAX_OBJECT = 25;
@@ -18,17 +18,17 @@ var QUANTITY_MAX_HASHTAGS = 5;
 var MAX_LENGTH_HASHTAG = 20;
 // var ENTER_KEY = 'Enter';
 
-// Функция генерации случайных чисел
+// функция генерации случайных чисел
 function getRandomArbitrary(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-// Функция, которая принимает массив в параметр и вернет его случайный элемент
+// функция, которая принимает массив в параметр и вернет его случайный элемент
 function getRandomItem(items) {
   return items[getRandomArbitrary(0, items.length)];
 }
 
-// Создает comments
+// создает comments
 function getComments() {
   var comments = [];
   var countComments = getRandomArbitrary(QUANTITY_MIN_COMMENT, QUANTITY_MAX_COMMENT);
@@ -44,7 +44,7 @@ function getComments() {
   return comments;
 }
 
-// Создает массив из сгенерированных JS объектов
+// создает массив из сгенерированных JS объектов
 function getArrayPhotos() {
   var photos = [];
 
@@ -60,18 +60,18 @@ function getArrayPhotos() {
   return photos;
 }
 
-// Шаблон template в документе
+// шаблон template в документе
 var templatePicture = document.querySelector('#picture').content;
 
-// Заполняет один элемент, принимает объект с данным параметром и возвращает готовый элемент
+// заполняет один элемент, принимает объект с данным параметром и возвращает готовый элемент
 function getPhotoElement(data) {
-  // Копирует template
+  // копирует template
   var photoItem = templatePicture.cloneNode(true);
-  // Находит элементы, которые нужно заполнить
+  // находит элементы, которые нужно заполнить
   var pictureImg = photoItem.querySelector('.picture__img');
   var pictureComments = photoItem.querySelector('.picture__comments');
   var pictureLikes = photoItem.querySelector('.picture__likes');
-  // Заполняет шаблон
+  // заполняет шаблон
   pictureImg.src = data.url;
   pictureLikes.textContent = data.likes;
   pictureComments.textContent = data.comments.length;
@@ -79,35 +79,35 @@ function getPhotoElement(data) {
   return photoItem;
 }
 
-// Отрисовывает сгенерированные DOM-элементы в блок .pictures
+// отрисовывает сгенерированные DOM-элементы в блок .pictures
 function renderPhotosInDom(photos) {
-  // Находит контейнер для фотографий
+  // находит контейнер для фотографий
   var pictures = document.querySelector('.pictures');
-  // Создает фрагмент
+  // создает фрагмент
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < photos.length; i++) {
-    // Добавляет моки в фрагмент
+    // добавляет моки в фрагмент
     fragment.appendChild(getPhotoElement(photos[i]));
   }
 
-  // Добавляет фрагмент в блок pictures
+  // добавляет фрагмент в блок pictures
   return pictures.appendChild(fragment);
 }
 
 renderPhotosInDom(getArrayPhotos());
 
-// Находит блок для комментариев
+// находит блок для комментариев
 var socialCommentTemplate = document.querySelector('.social__comments');
 var socialComment = document.querySelector('.social__comment');
 
-// Заполняет комментарий
+// заполняет комментарий
 function getCommentElement(data) {
   var commentItemCopy = socialComment.cloneNode(true);
-  // Находит элементы, которые нужно заполнить
+  // находит элементы, которые нужно заполнить
   var socialCommentImg = commentItemCopy.querySelector('img');
   var socialText = commentItemCopy.querySelector('.social__text');
-  // Заполняет фрагмент
+  // заполняет фрагмент
   socialCommentImg.src = data.avatar;
   socialCommentImg.alt = data.name;
   socialText.textContent = data.message;
@@ -115,64 +115,64 @@ function getCommentElement(data) {
   return commentItemCopy;
 }
 
-// Находит блок для показа фотографии в полноразмерном режиме
+// находит блок для показа фотографии в полноразмерном режиме
 var bigPicture = document.querySelector('.big-picture');
 
-// Показывает фотографию в полноразмерном режиме
+// показывает фотографию в полноразмерном режиме
 function showBigPicture(item) {
-  // Удаляет класс hidden
+  // удаляет класс hidden
   bigPicture.classList.remove('hidden');
-  // Находит элементы, которые нужно заполнить
+  // находит элементы, которые нужно заполнить
   var bigPictureImg = bigPicture.querySelector('img');
   var likesCount = bigPicture.querySelector('.likes-count');
   var commentsCount = bigPicture.querySelector('.comments-count');
-  // Заполняет фрагмент
+  // заполняет фрагмент
   bigPictureImg.src = item.url;
   likesCount.textContent = item.likes;
   commentsCount.textContent = item.comments.length;
-  // Создает фрагмент, для вставки комменатриев
+  // создает фрагмент, для вставки комменатриев
   var fragment = document.createDocumentFragment();
-  // Заполняет новые комментарии
+  // заполняет новые комментарии
   for (var i = 0; i < item.comments.length; i++) {
     fragment.appendChild(getCommentElement(item.comments[i]));
   }
-  // Чистит блок комментариев в разметке
+  // чистит блок комментариев в разметке
   socialCommentTemplate.innerHTML = '';
-  // Добавляет новые комментарии
+  // добавляет новые комментарии
   socialCommentTemplate.appendChild(fragment);
 
-  // Описание фотографии description
+  // описание фотографии description
   var socialCaption = document.querySelector('.social__caption');
   socialCaption.textContent = item.description;
 
-  // Cкрывает блоки счётчика комментариев
+  // скрывает блоки счётчика комментариев
   var socialCommentCount = document.querySelector('.social__comment-count');
   socialCommentCount.classList.add('hidden');
   var commentsLoader = document.querySelector('.comments-loader');
   commentsLoader.classList.add('hidden');
 
-  // Добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
+  // добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
   var body = document.querySelector('body');
   body.classList.add('modal-open');
 
   return item;
 }
 
-// Находит кнопку для выхода из полноэкранного просмотра изображения
+// находит кнопку для выхода из полноэкранного просмотра изображения
 var pictureClose = document.querySelector('#picture-cancel');
-// Закрывает фотографию в полноразмерном режиме
+// закрывает фотографию в полноразмерном режиме
 pictureClose.addEventListener('click', function () {
   bigPicture.classList.add('hidden');
 });
 
-// Находит минитюру изображений, чтобы при клике показать большое изображение
+// находит минитюру изображений, чтобы при клике показать большое изображение
 var pictureMiniMode = document.querySelector('.picture__img');
-// Открывает первую миниатюрную фотографию
+// открывает первую миниатюрную фотографию
 pictureMiniMode.addEventListener('click', function () {
   bigPicture.classList.remove('hidden');
   showBigPicture(getArrayPhotos()[0]);
 
-  // Закрывает фотографию с клавиатуры (переделать попозже)
+  // закрывает фотографию с клавиатуры (переделать попозже)
   document.addEventListener('keydown', function (evt) {
     if (evt.key === ESC_KEY) {
       bigPicture.classList.add('hidden');
@@ -181,176 +181,168 @@ pictureMiniMode.addEventListener('click', function () {
 });
 
 // !! Загрузка изображения и показ формы редактирования !!
-
-// Находит поле для загрузки изображения
-var contentLoadHandler = document.querySelector('#upload-file');
-// Находит форму редактирования изображения
+// поле для загрузки изображения
+var inputLoad = document.querySelector('#upload-file');
+// форма редактирования изображения
 var formImg = document.querySelector('.img-upload__overlay');
 var body = document.querySelector('body');
-
-// Закрывает форму с помощью клавиатуры, только если нажата нужная клавиша и фокус не в тегах
+// находит все кнопки смены фильтра
+var effects = document.querySelectorAll('.effects__radio');
+// закрывает форму с помощью клавиатуры, только если нажата нужная клавиша и фокус не в тегах
 function onPopupEscPress(evt) {
-  if (evt.key === ESC_KEY) {
-    if (textHashtags !== document.activeElement) {
-      closePopup();
-    }
+  if (evt.key === ESC_KEY && textHashtags !== document.activeElement) {
+    closePopup();
   }
 }
-
-// Открывает форму редактирования изображения
+// открывает форму редактирования изображения
 function openPopup() {
   formImg.classList.remove('hidden');
-  // Добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
+  // добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
   body.classList.add('modal-open');
-  // Позволяет закрыть форму с помощью клавиатуры
+  // позволяет закрыть форму с помощью клавиатуры
   document.addEventListener('keydown', onPopupEscPress);
-  effectNone.addEventListener('click', getNoneEffect);
-  effectСhrome.addEventListener('click', getChrome);
-  effectSepia.addEventListener('click', getSepia);
-  effectMarvin.addEventListener('click', getMarvin);
-  effectPhobos.addEventListener('click', getPhobos);
-  effectHeat.addEventListener('click', getHeat);
-  // Позволяет передвигать pin
-  sidebarClickHandler.addEventListener('mouseup', changeValueEffect);
-  // Меняет размер изображения
+  for (var i = 0; i < effects.length; i++) {
+    effects[i].addEventListener('change', onEffectChange);
+  }
+  function onEffectChange(evt) {
+    var filterName = evt.target.value;
+    changeFilter(filterName);
+  }
+  // позволяет передвигать pin
+  pinOnSlaider.addEventListener('mouseup', changeValueEffect);
+  // меняет размер изображения
   scaleButtonSmaller.addEventListener('click', changeScaleSmaller);
   scaleButtonBigger.addEventListener('click', changeScaleBigger);
-  // Валидация хеш-тегов
+  // валидация хеш-тегов
   textHashtags.addEventListener('change', getValidityHashtags);
 }
-
-// Открывает форму редактирования изображения после загрузки изображения
-contentLoadHandler.addEventListener('change', openPopup);
-
-// Закрывает форму редактирования изображения
-// Находит кнопку для закрытия формы редактирования изображения
+// открывает форму редактирования изображения после загрузки изображения
+inputLoad.addEventListener('change', openPopup);
+// находит кнопку для закрытия формы редактирования изображения
 var buttonClosePopup = document.querySelector('#upload-cancel');
 
+// закрывает форму редактирования изображения
 function closePopup() {
   formImg.classList.add('hidden');
   body.classList.remove('modal-open');
-  // Cбрасывает значение поля выбора файла
-  contentLoadHandler.value = '';
+  // сбрасывает значение поля выбора файла
+  inputLoad.value = '';
+  // снимает обработчик при закрытии формы
+  document.removeEventListener('keydown', onPopupEscPress);
   // Возвращает масштаб к 100%
   currentScale = 100;
   // Эффект сбрасывается на «Оригинал»;
-  imgForEffect = getNoneEffect();
+  imgForEffect.style.filter = filterCssFunction['none'];
   // Поля для ввода хэш-тегов и комментария очищаются
   textHashtags.value = '';
   textDescription.value = '';
-  // Снимает обработчик при закрытии формы
-  document.removeEventListener('keydown', onPopupEscPress);
 }
-
 buttonClosePopup.addEventListener('click', closePopup);
 
 // !! Применение эффекта для изображения и редактирование размера изображения !!
-
-// Находит блок с эффектами для изображения
-var imgUploadEffects = document.querySelector('.img-upload__effects');
-// Находит фотографию, на которую нужно наложить фильтра
+// находит фотографию, на которую нужно наложить фильтра
 var imgForEffect = document.querySelector('.img-upload__preview img');
-// Находит слайдер(изменение глубины эффекта)
+// находит слайдер(изменение глубины эффекта)
 var slaiderPopup = document.querySelector('.img-upload__effect-level');
-// Находит фото без эффекта
-var effectNone = imgUploadEffects.querySelector('#effect-none');
-// Находит остальные эффекты
-var effectСhrome = imgUploadEffects.querySelector('#effect-chrome');
-var effectSepia = imgUploadEffects.querySelector('#effect-sepia');
-var effectMarvin = imgUploadEffects.querySelector('#effect-marvin');
-var effectPhobos = imgUploadEffects.querySelector('#effect-phobos');
-var effectHeat = imgUploadEffects.querySelector('#effect-heat');
 var currentFilter;
 
-// Заполняет эффект
+// заполняет эффект
 function changeFilter(filterName) {
   if (currentFilter) {
-    // Сбрасывает присвоенный фильтр(класс)
-    imgForEffect.classList.remove(currentFilter);
+    // сбрасывает присвоенный фильтр(класс)
+    imgForEffect.classList.remove('effects__preview--' + currentFilter);
   }
   imgForEffect.classList.add('effects__preview--' + filterName);
-  currentFilter = 'effects__preview--' + filterName;
-  // Скрывает слайдер
-  if (currentFilter === 'effects__preview--none') {
-    slaiderPopup.classList.add('hidden');
-  } else {
-    // Показывает слайдер
-    slaiderPopup.classList.remove('hidden');
-    // При переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%)
-    valueEffect.value = BEGIN_VALUE_LEVEL;
+  currentFilter = filterName;
+  // скрывает слайдер
+  slaiderPopup.classList.toggle('hidden', currentFilter === 'none');
+  // при переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%)
+  valueEffect.value = BEGIN_VALUE_LEVEL;
+  imgForEffect.style.filter = '';
+}
+
+// применяет эффекты, чтобы при открытии формы редактирования можно было переключаться между фильтрами
+var filterCssFunction = {
+  'none': function () {
+    return '';
+  },
+  'chrome': function (level) {
+    return 'grayscale(' + level / 100 + ')';
+  },
+  'sepia': function (level) {
+    return 'sepia(' + level / 100 + ')';
+  },
+  'marvin': function (level) {
+    return 'invert(' + level + '%)';
+  },
+  'phobos': function (level) {
+    return 'blur(' + level / 100 * BLUR + 'px)';
+  },
+  'heat': function (level) {
+    return 'brightness(' + (level / 100 * (BRIGHTNESS - MIN_VALUE_BRIGHTNESS) + MIN_VALUE_BRIGHTNESS) + ')';
   }
-}
+};
 
-// Применяет эффекты, чтобы при открытии формы редактирования можно было переключаться между фильтрами
-function getNoneEffect() {
-  // Объявленные стили сбрасываются присваиванием значения null
-  imgForEffect.style.filter = null;
-
-  return changeFilter('none');
-}
-
-function getChrome() {
-  return changeFilter('chrome');
-}
-
-function getSepia() {
-  return changeFilter('sepia');
-}
-
-function getMarvin() {
-  return changeFilter('marvin');
-}
-
-function getPhobos() {
-  return changeFilter('phobos');
-}
-
-function getHeat() {
-  return changeFilter('heat');
-}
-
-// Интенисвность эффекта
-// Находит ползунок в слайдере, который меняет интенсивность эффекта
-var sidebarClickHandler = slaiderPopup.querySelector('.effect-level__pin');
-// Находит уровень эффекта, накладываемого на изображение
+// !! Интенсивность эффекта !!
+// находит ползунок в слайдере, который меняет интенсивность эффекта
+var pinOnSlaider = slaiderPopup.querySelector('.effect-level__pin');
+// находит уровень эффекта, накладываемого на изображение
 var valueEffect = document.querySelector('.effect-level__value');
-// Находит линию для перемещения пина
-// var lineForPin = document.querySelector('.effect-level__line');
-
-// Изменяет интенсивность эффекта
+// изменяет интенсивность эффекта
 function changeValueEffect() {
   // var beginPinPosition = 20;
   // var widthSlider = 495;
   // от ширины линии находит позицию пина
   var currentPinPosition = 20; // beginPinPosition / widthSlider * 100
-  var levelForValue;
-  // возвращает true/false, в зависимости от того, есть ли у элемента класс class
-  if (imgForEffect.classList.contains('effects__preview--chrome')) {
-    imgForEffect.style.filter = 'grayscale(' + currentPinPosition / 100 + ')';
-    levelForValue = currentPinPosition / 100;
-
-  } else if (imgForEffect.classList.contains('effects__preview--sepia')) {
-    imgForEffect.style.filter = 'sepia(' + currentPinPosition / 100 + ')';
-    levelForValue = currentPinPosition / 100;
-
-  } else if (imgForEffect.classList.contains('effects__preview--marvin')) {
-    imgForEffect.style.filter = 'invert(' + currentPinPosition / 100 + '%)';
-    levelForValue = currentPinPosition / 100;
-
-  } else if (imgForEffect.classList.contains('effects__preview--phobos')) {
-    imgForEffect.style.filter = 'blur(' + currentPinPosition / 100 * BLUR + 'px)';
-    levelForValue = currentPinPosition / 100;
-
-  } else if (imgForEffect.classList.contains('effects__preview--heat')) {
-    imgForEffect.style.filter = 'brightness(' + (MIN_VALUE_BRIGHTNESS + currentPinPosition / 100 * (BRIGHTNESS - MIN_VALUE_BRIGHTNESS)) + ')';
-    levelForValue = currentPinPosition / 100;
-  }
+  imgForEffect.style.filter = filterCssFunction[currentFilter](currentPinPosition);
   // записывает уровень интенсивности в input для отправки на сервер
-  valueEffect.value = levelForValue;
+  valueEffect.value = currentPinPosition / 100;
 }
 
-// Редактирование размера изображения
-// Находит кнопки для изменения изображения
+// !! Валидация хеш-тегов !!
+var textHashtags = document.querySelector('.text__hashtags');
+// валидация хеш-тегов
+function getValidityHashtags() {
+  textHashtags.setCustomValidity(''); // сбросим при изменении, найдем ошибку - поставим
+  // находит значения из input
+  var inputHashtags = textHashtags.value;
+  if (inputHashtags === '') {
+    // хэш-теги необязательны;
+    return;
+  }
+  // набор хэш-тегов из input превращает в массив
+  var arrayHashtags = inputHashtags.toLowerCase().split(' ');
+  if (arrayHashtags.length >= QUANTITY_MAX_HASHTAGS) {
+    textHashtags.setCustomValidity('Нельзя указывать больше пяти хэш-тегов');
+    // дальше не будем проверять отдельные теги
+    return;
+  }
+  // объект для проверки тегов на уникальность, записывает встреченные теги
+  var uniqTag = {};
+  // цикл, который ходит по полученному массиву и проверяет каждый из хэш-тегов на предмет соответствия ограничениям
+  for (var i = 0; i < arrayHashtags.length; i++) {
+    if (!arrayHashtags[i].match(/^#[a-zA-Z0-9а-яА-Я]+$/)) {
+      textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа # (решётка) и должен состоять только из букв и чисел');
+      break;
+    }
+    if (arrayHashtags[i].length > MAX_LENGTH_HASHTAG) {
+      textHashtags.setCustomValidity('Максимальная длина одного хэш-тега должна быть не больше 20 символов, включая решётку');
+      break;
+    }
+    if (uniqTag[arrayHashtags[i]]) {
+      textHashtags.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
+      break;
+    }
+    // если все в порядке, записывает тег в список уникальных
+    uniqTag[arrayHashtags[i]] = true;
+  }
+}
+
+// Находит поле для ввода комментариев
+var textDescription = document.querySelector('.text__description');
+
+// !! Редактирование размера изображения !!
+// находит кнопки для изменения изображения
 var scaleButtonSmaller = document.querySelector('.scale__control--smaller');
 var scaleButtonBigger = document.querySelector('.scale__control--bigger');
 var scaleValue = document.querySelector('.scale__control--value');
@@ -371,56 +363,3 @@ function changeScaleBigger() {
     scaleValue.value = currentScale + '%';
   }
 }
-
-// !! Валидация хеш-тегов !!
-var textHashtags = document.querySelector('.text__hashtags');
-
-// Валидация хеш-тегов
-function getValidityHashtags() {
-  // Находит значения из input
-  var inputHashtags = textHashtags.value;
-  // Набор хэш-тегов из input превращает в массив
-  var arrayHashtags = inputHashtags.toLowerCase().split(' ');
-  var validityResult = true;
-
-  if (arrayHashtags.length >= QUANTITY_MAX_HASHTAGS) {
-    // Проверяет длину массива, чтобы было не больше пяти хэш-тегов
-    textHashtags.setCustomValidity('Нельзя указывать больше пяти хэш-тегов, максимальная длина одного хэш-тега должна быть не больше 20 символов, включая решётку');
-    validityResult = false;
-  } else if (inputHashtags === '') {
-    // Хэш-теги необязательны;
-    textHashtags.setCustomValidity('');
-    validityResult = true;
-  }
-
-  // Цикл, который ходит по полученному массиву и проверяет каждый из хэш-тегов на предмет соответствия ограничениям
-  for (var i = 0; i <= arrayHashtags.length - 1; i++) {
-    if ((arrayHashtags[i].indexOf('#') !== 0) || (arrayHashtags[i].indexOf('#', 1) !== -1)) {
-      textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа # (решётка) и Хэш-теги должны разделятся пробелами');
-      validityResult = false;
-      break;
-    } else if (!arrayHashtags[i].match(/^#[a-zA-Z0-9а-яА-Я]+$/)) {
-      textHashtags.setCustomValidity('Хэш-тег должен состоять только из букв и чисел и не может содержать пробелы');
-      validityResult = false;
-      break;
-    } else if (arrayHashtags[i].length >= MAX_LENGTH_HASHTAG) {
-      textHashtags.setCustomValidity('Максимальная длина одного хэш-тега должна быть не больше 20 символов, включая решётку');
-      validityResult = false;
-      break;
-    } else if (arrayHashtags[i] === '#') {
-      textHashtags.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
-      validityResult = false;
-      break;
-    } else if (arrayHashtags.indexOf(arrayHashtags[i], i + 1) !== -1) {
-      textHashtags.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
-      validityResult = false;
-      break;
-    }
-  }
-  if (validityResult) {
-    textHashtags.setCustomValidity('');
-  }
-}
-
-// Находит поле для ввода комментариев
-var textDescription = document.querySelector('.text__description');
