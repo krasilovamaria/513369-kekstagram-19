@@ -183,8 +183,6 @@ pictureMiniMode.addEventListener('click', function () {
 // !! Загрузка изображения и показ формы редактирования !!
 // поле для загрузки изображения
 var inputLoad = document.querySelector('#upload-file');
-// форма редактирования изображения
-var formImg = document.querySelector('.img-upload__overlay');
 var body = document.querySelector('body');
 // закрывает форму с помощью клавиатуры, только если нажата нужная клавиша и фокус не в тегах
 function onPopupEscPress(evt) {
@@ -194,12 +192,11 @@ function onPopupEscPress(evt) {
 }
 // открывает форму редактирования изображения
 function openPopup() {
-  formImg.classList.remove('hidden');
+  uploadEffect.classList.remove('hidden');
   // добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
   body.classList.add('modal-open');
   // позволяет закрыть форму с помощью клавиатуры
   document.addEventListener('keydown', onPopupEscPress);
-
   // меняет размер изображения
   uploadResizeInc.addEventListener('click', onResizeInc);
   uploadResizeDec.addEventListener('click', onResizeDec);
@@ -214,14 +211,16 @@ var buttonClosePopup = document.querySelector('#upload-cancel');
 
 // закрывает форму редактирования изображения
 function closePopup() {
-  formImg.classList.add('hidden');
+  uploadEffect.classList.add('hidden');
   body.classList.remove('modal-open');
   // сбрасывает значение поля выбора файла
   inputLoad.value = '';
   // снимает обработчик при закрытии формы
   document.removeEventListener('keydown', onPopupEscPress);
   // возвращает масштаб к 100%
+  uploadResizeField.setAttribute('value', '100%');
   // сбрасывает эффект на «Оригинал»
+  uploadImagePreview.style.filter = filterCssFunction['none'];
   // очищает поля для ввода хэш-тегов и комментария
   textHashtags.value = '';
   textDescription.value = '';
@@ -264,7 +263,6 @@ var filterCssFunction = {
   'heat': function (level) {
     return 'brightness(' + (level / 100 * (MAX_HEAT - MIN_HEAT) + MIN_HEAT) + ')';
   }
-
 };
 
 function setFilterLevel(level) {
