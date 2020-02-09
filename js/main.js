@@ -183,7 +183,7 @@ pictureMiniMode.addEventListener('click', function () {
 // !! Загрузка изображения и показ формы редактирования !!
 
 // Находит поле для загрузки изображения
-var inputLoad = document.querySelector('#upload-file');
+var contentLoadHandler = document.querySelector('#upload-file');
 // Находит форму редактирования изображения
 var formImg = document.querySelector('.img-upload__overlay');
 var body = document.querySelector('body');
@@ -211,7 +211,7 @@ function openPopup() {
   effectPhobos.addEventListener('click', getPhobos);
   effectHeat.addEventListener('click', getHeat);
   // Позволяет передвигать pin
-  pinOnSlaider.addEventListener('mouseup', changeValueEffect);
+  sidebarClickHandler.addEventListener('mouseup', changeValueEffect);
   // Меняет размер изображения
   scaleButtonSmaller.addEventListener('click', changeScaleSmaller);
   scaleButtonBigger.addEventListener('click', changeScaleBigger);
@@ -220,7 +220,7 @@ function openPopup() {
 }
 
 // Открывает форму редактирования изображения после загрузки изображения
-inputLoad.addEventListener('change', openPopup);
+contentLoadHandler.addEventListener('change', openPopup);
 
 // Закрывает форму редактирования изображения
 // Находит кнопку для закрытия формы редактирования изображения
@@ -230,7 +230,14 @@ function closePopup() {
   formImg.classList.add('hidden');
   body.classList.remove('modal-open');
   // Cбрасывает значение поля выбора файла
-  inputLoad.value = '';
+  contentLoadHandler.value = '';
+  // Возвращает масштаб к 100%
+  currentScale = 100;
+  // Эффект сбрасывается на «Оригинал»;
+  imgForEffect = getNoneEffect();
+  // Поля для ввода хэш-тегов и комментария очищаются
+  textHashtags.value = '';
+  textDescription.value = '';
   // Снимает обработчик при закрытии формы
   document.removeEventListener('keydown', onPopupEscPress);
 }
@@ -304,7 +311,7 @@ function getHeat() {
 
 // Интенисвность эффекта
 // Находит ползунок в слайдере, который меняет интенсивность эффекта
-var pinOnSlaider = slaiderPopup.querySelector('.effect-level__pin');
+var sidebarClickHandler = slaiderPopup.querySelector('.effect-level__pin');
 // Находит уровень эффекта, накладываемого на изображение
 var valueEffect = document.querySelector('.effect-level__value');
 // Находит линию для перемещения пина
@@ -392,8 +399,7 @@ function getValidityHashtags() {
       textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа # (решётка) и Хэш-теги должны разделятся пробелами');
       validityResult = false;
       break;
-    } else if ((arrayHashtags[i].substring(1, arrayHashtags[i].length) === ' ') || (!arrayHashtags[i].match(/^#[a-zA-Z0-9а-яА-Я]+$/))) {
-      // Если строка после решётки другие символы (пробелов внутри после split уже не будет)
+    } else if (!arrayHashtags[i].match(/^#[a-zA-Z0-9а-яА-Я]+$/)) {
       textHashtags.setCustomValidity('Хэш-тег должен состоять только из букв и чисел и не может содержать пробелы');
       validityResult = false;
       break;
@@ -415,3 +421,6 @@ function getValidityHashtags() {
     textHashtags.setCustomValidity('');
   }
 }
+
+// Находит поле для ввода комментариев
+var textDescription = document.querySelector('.text__description');
