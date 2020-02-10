@@ -17,6 +17,7 @@ var MAX_BLUR = 3;
 var MIN_HEAT = 1;
 var MAX_HEAT = 3;
 var DEFAULT_FILTER = 'none';
+var DEFAULT_FILTER_LEVEL = 100;
 
 // функция генерации случайных чисел
 function getRandomArbitrary(min, max) {
@@ -205,10 +206,13 @@ function openPopup() {
 }
 
 // открывает форму редактирования изображения после загрузки изображения
-inputLoad.addEventListener('change', openPopup);
+inputLoad.addEventListener('change', onInputLoadChange);
+function onInputLoadChange() {
+  openPopup();
+}
+
 // находит кнопку для закрытия формы редактирования изображения
 var buttonClosePopup = document.querySelector('#upload-cancel');
-
 // закрывает форму редактирования изображения
 function closePopup() {
   uploadEffect.classList.add('hidden');
@@ -218,9 +222,9 @@ function closePopup() {
   // снимает обработчик при закрытии формы
   document.removeEventListener('keydown', onPopupEscPress);
   // возвращает масштаб к 100%
-  uploadResizeField.setAttribute('value', '100%');
+  uploadResizeField.value = DEFAULT_FILTER_LEVEL;
   // сбрасывает эффект на «Оригинал»
-  uploadImagePreview.style.filter = filterCssFunction['none'];
+  uploadImagePreview.style.filter = filterCssFunction[DEFAULT_FILTER]();
   // очищает поля для ввода хэш-тегов и комментария
   textHashtags.value = '';
   textDescription.value = '';
@@ -229,15 +233,10 @@ function closePopup() {
 buttonClosePopup.addEventListener('click', closePopup);
 
 // !! Применение эффекта для изображения и редактирование размера изображения !!
-var defaultFilterLevel = 100;
-
 var uploadEffect = document.querySelector('.img-upload__overlay');
 var uploadImagePreview = document.querySelector('.img-upload__preview');
 
 var filterLevelArea = document.querySelector('.img-upload__effect-level');
-var filterLevelPin = document.querySelector('.effect-level__pin');
-var filterLevelBar = document.querySelector('.effect-level__line');
-var filterLevelValue = document.querySelector('.effect-level__depth');
 
 var filterUploadLevelValue = document.querySelector('.effect-level__value');
 
@@ -273,8 +272,7 @@ function setFilterLevel(level) {
 }
 
 function setDefaultLevel() {
-  setFilterLevel(defaultFilterLevel);
-  setFilterPinPosition(defaultFilterLevel);
+  setFilterLevel(DEFAULT_FILTER_LEVEL);
 }
 
 function setFilterForUploadImage(filterName) {
@@ -283,44 +281,6 @@ function setFilterForUploadImage(filterName) {
   currentFilter = filterName;
   setDefaultLevel();
 }
-
-// находит смещение пина
-function getPinOffsetOfInPercent(value) {
-  // offsetWidth ширина элемента
-  var valueInRange = Math.min(filterLevelBar.offsetWidth, Math.max(0, value));
-  return valueInRange * 100 / filterLevelBar.offsetWidth;
-}
-
-// находит позицию пина в процентах
-function setFilterPinPosition(position) {
-  filterLevelPin.style.left = position + '%';
-  filterLevelValue.style.width = position + '%';
-}
-
-filterLevelPin.addEventListener('mousedown', function (evt) {
-  // clientX числовое значение горизонтальной координаты
-  var startPosition = evt.clientX;
-  function onMouseMove(moveEvt) {
-    moveEvt.preventDefault();
-
-    // offsetLeft возвращает смещение в пикселях верхнего левого угла текущего элемента от родительского
-    var shift = startPosition - moveEvt.clientX;
-    var newPosition = filterLevelPin.offsetLeft - shift;
-    var newOffset = getPinOffsetOfInPercent(newPosition);
-    setFilterPinPosition(newOffset);
-    setFilterLevel(newOffset);
-    startPosition = moveEvt.clientX;
-  }
-
-  function onMouseUp(upEvt) {
-    upEvt.preventDefault();
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
-  }
-
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
-});
 
 uploadEffect.addEventListener('click', function (evt) {
   if (evt.target.type === 'radio') {
