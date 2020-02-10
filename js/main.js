@@ -1,3 +1,4 @@
+
 'use strict';
 // данные для моки
 var MESSAGES = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
@@ -115,71 +116,6 @@ function getCommentElement(data) {
 
   return commentItemCopy;
 }
-
-// находит блок для показа фотографии в полноразмерном режиме
-var bigPicture = document.querySelector('.big-picture');
-
-// показывает фотографию в полноразмерном режиме
-function showBigPicture(item) {
-  // удаляет класс hidden
-  bigPicture.classList.remove('hidden');
-  // находит элементы, которые нужно заполнить
-  var bigPictureImg = bigPicture.querySelector('img');
-  var likesCount = bigPicture.querySelector('.likes-count');
-  var commentsCount = bigPicture.querySelector('.comments-count');
-  // заполняет фрагмент
-  bigPictureImg.src = item.url;
-  likesCount.textContent = item.likes;
-  commentsCount.textContent = item.comments.length;
-  // создает фрагмент, для вставки комменатриев
-  var fragment = document.createDocumentFragment();
-  // заполняет новые комментарии
-  for (var i = 0; i < item.comments.length; i++) {
-    fragment.appendChild(getCommentElement(item.comments[i]));
-  }
-  // чистит блок комментариев в разметке
-  socialCommentTemplate.innerHTML = '';
-  // добавляет новые комментарии
-  socialCommentTemplate.appendChild(fragment);
-
-  // описание фотографии description
-  var socialCaption = document.querySelector('.social__caption');
-  socialCaption.textContent = item.description;
-
-  // скрывает блоки счётчика комментариев
-  var socialCommentCount = document.querySelector('.social__comment-count');
-  socialCommentCount.classList.add('hidden');
-  var commentsLoader = document.querySelector('.comments-loader');
-  commentsLoader.classList.add('hidden');
-
-  // добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
-  var body = document.querySelector('body');
-  body.classList.add('modal-open');
-
-  return item;
-}
-
-// находит кнопку для выхода из полноэкранного просмотра изображения
-var pictureClose = document.querySelector('#picture-cancel');
-// закрывает фотографию в полноразмерном режиме
-pictureClose.addEventListener('click', function () {
-  bigPicture.classList.add('hidden');
-});
-
-// находит минитюру изображений, чтобы при клике показать большое изображение
-var pictureMiniMode = document.querySelector('.picture__img');
-// открывает первую миниатюрную фотографию
-pictureMiniMode.addEventListener('click', function () {
-  bigPicture.classList.remove('hidden');
-  showBigPicture(getArrayPhotos()[0]);
-
-  // закрывает фотографию с клавиатуры (переделать попозже)
-  document.addEventListener('keydown', function (evt) {
-    if (evt.key === ESC_KEY) {
-      bigPicture.classList.add('hidden');
-    }
-  });
-});
 
 // !! Загрузка изображения и показ формы редактирования !!
 // поле для загрузки изображения
@@ -377,3 +313,68 @@ function onResizeInc() {
 function onResizeDec() {
   changeScale(-UPLOAD_RESIZE_STEP);
 }
+
+// !! Полноразмерный режим любой фотографии и валидация комментариев !!
+// находит блок для показа фотографии в полноразмерном режиме
+var bigPicture = document.querySelector('.big-picture');
+
+// показывает фотографию в полноразмерном режиме
+function showBigPicture(item) {
+  // удаляет класс hidden
+  bigPicture.classList.remove('hidden');
+  // находит элементы, которые нужно заполнить
+  var bigPictureImg = bigPicture.querySelector('img');
+  var likesCount = bigPicture.querySelector('.likes-count');
+  var commentsCount = bigPicture.querySelector('.comments-count');
+  // заполняет фрагмент
+  bigPictureImg.src = item.url;
+  likesCount.textContent = item.likes;
+  commentsCount.textContent = item.comments.length;
+  // создает фрагмент, для вставки комменатриев
+  var fragment = document.createDocumentFragment();
+  // заполняет новые комментарии
+  for (var i = 0; i < item.comments.length; i++) {
+    fragment.appendChild(getCommentElement(item.comments[i]));
+  }
+  // чистит блок комментариев в разметке
+  socialCommentTemplate.innerHTML = '';
+  // добавляет новые комментарии
+  socialCommentTemplate.appendChild(fragment);
+
+  // описание фотографии description
+  var socialCaption = document.querySelector('.social__caption');
+  socialCaption.textContent = item.description;
+
+  // скрывает блоки счётчика комментариев
+  var socialCommentCount = document.querySelector('.social__comment-count');
+  socialCommentCount.classList.add('hidden');
+  var commentsLoader = document.querySelector('.comments-loader');
+  commentsLoader.classList.add('hidden');
+
+  // добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
+  body.classList.add('modal-open');
+
+  return item;
+}
+
+// находит кнопку для выхода из полноэкранного просмотра изображения
+var pictureClose = document.querySelector('#picture-cancel');
+// закрывает фотографию в полноразмерном режиме
+pictureClose.addEventListener('click', function () {
+  bigPicture.classList.add('hidden');
+});
+
+// находит минитюру изображений, чтобы при клике показать большое изображение
+var pictureMiniMode = document.querySelector('.picture__img');
+// открывает первую миниатюрную фотографию
+pictureMiniMode.addEventListener('click', function () {
+  bigPicture.classList.remove('hidden');
+  showBigPicture(getArrayPhotos()[0]);
+
+  // закрывает фотографию с клавиатуры
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === ESC_KEY) {
+      bigPicture.classList.add('hidden');
+    }
+  });
+});
