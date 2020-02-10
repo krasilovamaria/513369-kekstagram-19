@@ -123,7 +123,7 @@ var inputLoad = document.querySelector('#upload-file');
 var body = document.querySelector('body');
 // закрывает форму с помощью клавиатуры, только если нажата нужная клавиша и фокус не в тегах
 function onPopupEscPress(evt) {
-  if (evt.key === ESC_KEY && textHashtags !== document.activeElement) {
+  if (evt.key === ESC_KEY && textHashtags !== document.activeElement && textDescription !== document.activeElement) {
     closePopup();
   }
 }
