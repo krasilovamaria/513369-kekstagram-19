@@ -353,28 +353,34 @@ function showBigPicture(item) {
 
   // добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
   body.classList.add('modal-open');
+  // закрывает фотографию с клавиатуры
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === ESC_KEY) {
+      bigPicture.classList.add('hidden');
+      body.classList.remove('modal-open');
+    }
+  });
 
   return item;
 }
 
 // находит кнопку для выхода из полноэкранного просмотра изображения
 var pictureClose = document.querySelector('#picture-cancel');
-// закрывает фотографию в полноразмерном режиме
+// закрывает фотографию в полноразмерном режим
 pictureClose.addEventListener('click', function () {
   bigPicture.classList.add('hidden');
 });
 
 // находит минитюру изображений, чтобы при клике показать большое изображение
-var pictureMiniMode = document.querySelector('.picture__img');
-// открывает первую миниатюрную фотографию
-pictureMiniMode.addEventListener('click', function () {
-  bigPicture.classList.remove('hidden');
-  showBigPicture(getArrayPhotos()[0]);
+var pictureMiniMode = document.querySelectorAll('.picture__img');
+// массив с изображениями;
+var links = getArrayPhotos();
 
-  // закрывает фотографию с клавиатуры
-  document.addEventListener('keydown', function (evt) {
-    if (evt.key === ESC_KEY) {
-      bigPicture.classList.add('hidden');
-    }
+// открывает миниатюрные фотографии
+for (i = 0; i < links.length; i++) {
+  pictureMiniMode[i].addEventListener('click', function () {
+    bigPicture.classList.remove('hidden');
+    // индекс из цикла по коллекции картинок
+    showBigPicture(links[i]);
   });
-});
+}
