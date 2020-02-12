@@ -1,4 +1,3 @@
-
 'use strict';
 // данные для моки
 var MESSAGES = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
@@ -21,17 +20,17 @@ var DEFAULT_FILTER = 'none';
 var DEFAULT_FILTER_LEVEL = 100;
 
 // функция генерации случайных чисел
-function getRandomArbitrary(min, max) {
+var getRandomArbitrary = function (min, max) {
   return Math.floor(Math.random() * (max - min) + min);
-}
+};
 
 // функция, которая принимает массив в параметр и вернет его случайный элемент
-function getRandomItem(items) {
+var getRandomItem = function (items) {
   return items[getRandomArbitrary(0, items.length)];
-}
+};
 
 // создает comments
-function getComments() {
+var getComments = function () {
   var comments = [];
   var countComments = getRandomArbitrary(QUANTITY_MIN_COMMENT, QUANTITY_MAX_COMMENT);
 
@@ -44,10 +43,10 @@ function getComments() {
   }
 
   return comments;
-}
+};
 
 // создает массив из сгенерированных JS объектов
-function getArrayPhotos() {
+var getArrayPhotos = function () {
   var photos = [];
 
   for (var i = 0; i < QUANTITY_MAX_OBJECT; i++) {
@@ -60,13 +59,13 @@ function getArrayPhotos() {
   }
 
   return photos;
-}
+};
 
 // шаблон template в документе
 var templatePicture = document.querySelector('#picture').content;
 
 // заполняет один элемент, принимает объект с данным параметром и возвращает готовый элемент
-function getPhotoElement(data) {
+var getPhotoElement = function (data) {
   // копирует template
   var photoItem = templatePicture.cloneNode(true);
   // находит элементы, которые нужно заполнить
@@ -79,10 +78,10 @@ function getPhotoElement(data) {
   pictureComments.textContent = data.comments.length;
 
   return photoItem;
-}
+};
 
 // отрисовывает сгенерированные DOM-элементы в блок .pictures
-function renderPhotosInDom(photos) {
+var renderPhotosInDom = function (photos) {
   // находит контейнер для фотографий
   var pictures = document.querySelector('.pictures');
   // создает фрагмент
@@ -95,7 +94,7 @@ function renderPhotosInDom(photos) {
 
   // добавляет фрагмент в блок pictures
   return pictures.appendChild(fragment);
-}
+};
 
 renderPhotosInDom(getArrayPhotos());
 
@@ -104,7 +103,7 @@ var socialCommentTemplate = document.querySelector('.social__comments');
 var socialComment = document.querySelector('.social__comment');
 
 // заполняет комментарий
-function getCommentElement(data) {
+var getCommentElement = function (data) {
   var commentItemCopy = socialComment.cloneNode(true);
   // находит элементы, которые нужно заполнить
   var socialCommentImg = commentItemCopy.querySelector('img');
@@ -115,20 +114,21 @@ function getCommentElement(data) {
   socialText.textContent = data.message;
 
   return commentItemCopy;
-}
+};
 
 // !! Загрузка изображения и показ формы редактирования !!
 // поле для загрузки изображения
 var inputLoad = document.querySelector('#upload-file');
 var body = document.querySelector('body');
 // закрывает форму с помощью клавиатуры, только если нажата нужная клавиша и фокус не в тегах
-function onPopupEscPress(evt) {
+var onPopupEscPress = function (evt) {
   if (evt.key === ESC_KEY && textHashtags !== document.activeElement && textDescription !== document.activeElement) {
     closePopup();
   }
-}
+};
+
 // открывает форму редактирования изображения
-function openPopup() {
+var openPopup = function () {
   uploadEffect.classList.remove('hidden');
   // добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
   body.classList.add('modal-open');
@@ -139,18 +139,18 @@ function openPopup() {
   uploadResizeDec.addEventListener('click', onResizeDec);
   // валидация хеш-тегов
   textHashtags.addEventListener('change', getValidityHashtags);
-}
+};
 
 // открывает форму редактирования изображения после загрузки изображения
 inputLoad.addEventListener('change', onInputLoadChange);
-function onInputLoadChange() {
+var onInputLoadChange = function () {
   openPopup();
-}
+};
 
 // находит кнопку для закрытия формы редактирования изображения
 var buttonClosePopup = document.querySelector('#upload-cancel');
 // закрывает форму редактирования изображения
-function closePopup() {
+var closePopup = function () {
   uploadEffect.classList.add('hidden');
   body.classList.remove('modal-open');
   // сбрасывает значение поля выбора файла
@@ -164,7 +164,7 @@ function closePopup() {
   // очищает поля для ввода хэш-тегов и комментария
   textHashtags.value = '';
   textDescription.value = '';
-}
+};
 
 buttonClosePopup.addEventListener('click', closePopup);
 
@@ -200,23 +200,23 @@ var filterCssFunction = {
   }
 };
 
-function setFilterLevel(level) {
+var setFilterLevel = function (level) {
   var effect = filterCssFunction[currentFilter](level);
   // toFixed() форматирует число, используя запись с фиксированной запятой
   filterUploadLevelValue.value = level.toFixed();
   uploadImagePreview.style.filter = effect;
-}
+};
 
-function setDefaultLevel() {
+var setDefaultLevel = function () {
   setFilterLevel(DEFAULT_FILTER_LEVEL);
-}
+};
 
-function setFilterForUploadImage(filterName) {
+var setFilterForUploadImage = function (filterName) {
   filterLevelArea.classList.toggle('hidden', filterName === DEFAULT_FILTER);
 
   currentFilter = filterName;
   setDefaultLevel();
-}
+};
 
 uploadEffect.addEventListener('click', function (evt) {
   if (evt.target.type === 'radio') {
@@ -228,7 +228,7 @@ uploadEffect.addEventListener('click', function (evt) {
 // !! Валидация хеш-тегов !!
 var textHashtags = document.querySelector('.text__hashtags');
 // валидация хеш-тегов
-function getValidityHashtags() {
+var getValidityHashtags = function () {
   textHashtags.setCustomValidity(''); // сбросим при изменении, найдем ошибку - поставим
   // находит значения из input
   var inputHashtags = textHashtags.value;
@@ -262,7 +262,7 @@ function getValidityHashtags() {
     // если все в порядке, записывает тег в список уникальных
     uniqTag[arrayHashtags[i]] = true;
   }
-}
+};
 
 // Находит поле для ввода комментариев
 var textDescription = document.querySelector('.text__description');
@@ -276,50 +276,50 @@ var uploadResizeDec = document.querySelector('.scale__control--smaller');
 var uploadImagePreviewForScale = document.querySelector('.img-upload__preview img');
 
 // возвращает целое число
-function getScaleValue() {
+var getScaleValue = function () {
   // parseInt() принимает строку в качестве аргумента и возвращает целое число
   // 10 - основание системы счисления числовой строки
   return parseInt(uploadResizeField.value, 10);
-}
+};
 
 // переводит в проценты
-function setScaleValue(value) {
+var setScaleValue = function (value) {
   uploadResizeField.value = value + '%';
-}
+};
 
 // диапазон
-function getScaleValueInRange(value) {
+var getScaleValueInRange = function (value) {
   return Math.min(UPLOAD_RESIZE_MAX, Math.max(UPLOAD_RESIZE_MIN, value));
-}
+};
 
 // создает свойство css для транформации изображения
-function setScaleForUploadImage(scale) {
+var setScaleForUploadImage = function (scale) {
   uploadImagePreviewForScale.style.transform = 'scale(' + (scale / 100) + ')';
-}
+};
 
 // трансформирует изображение
-function changeScale(step) {
+var changeScale = function (step) {
   var currentScaleValue = getScaleValue();
   var newScaleValue = getScaleValueInRange(currentScaleValue + step);
 
   setScaleValue(newScaleValue);
   setScaleForUploadImage(newScaleValue);
-}
+};
 
-function onResizeInc() {
+var onResizeInc = function () {
   changeScale(UPLOAD_RESIZE_STEP);
-}
+};
 
-function onResizeDec() {
+var onResizeDec = function () {
   changeScale(-UPLOAD_RESIZE_STEP);
-}
+};
 
 // !! Полноразмерный режим любой фотографии и валидация комментариев !!
 // находит блок для показа фотографии в полноразмерном режиме
 var bigPicture = document.querySelector('.big-picture');
 
 // показывает фотографию в полноразмерном режиме
-function showBigPicture(item) {
+var showBigPicture = function (item) {
   // удаляет класс hidden
   bigPicture.classList.remove('hidden');
   // находит элементы, которые нужно заполнить
@@ -355,14 +355,14 @@ function showBigPicture(item) {
   body.classList.add('modal-open');
   // закрывает фотографию с клавиатуры
   document.addEventListener('keydown', function (evt) {
+    bigPicture.classList.add('hidden');
     if (evt.key === ESC_KEY) {
-      bigPicture.classList.add('hidden');
       body.classList.remove('modal-open');
     }
   });
 
   return item;
-}
+};
 
 // находит кнопку для выхода из полноэкранного просмотра изображения
 var pictureClose = document.querySelector('#picture-cancel');
@@ -372,15 +372,18 @@ pictureClose.addEventListener('click', function () {
 });
 
 // находит минитюру изображений, чтобы при клике показать большое изображение
-var pictureMiniMode = document.querySelectorAll('.picture__img');
+var miniPictures = document.querySelectorAll('.picture__img');
 // массив с изображениями;
 var links = getArrayPhotos();
 
 // открывает миниатюрные фотографии
-for (i = 0; i < links.length; i++) {
-  pictureMiniMode[i].addEventListener('click', function () {
-    bigPicture.classList.remove('hidden');
-    // индекс из цикла по коллекции картинок
-    showBigPicture(links[i]);
-  });
+for (var b = 0; b < miniPictures.length; b++) {
+  (function (picture) {
+    picture.addEventListener('click', function () {
+      // индекс из цикла по коллекции картинок
+      showBigPicture(links[b]);
+    });
+    // ??? НЕ МОГУ ПОНЯТЬ, ПОЧЕМУ links[b] TypeError: undefined is not an object (evaluating 'item.url')
+    // ЕСЛИ ПИШУ for (var b = 0; b < miniPictures.length; b++) { console.log(links[b]);} ТО ВЫВОДИТ ОБЪЕКТЫ
+  })(miniPictures[b]);
 }
