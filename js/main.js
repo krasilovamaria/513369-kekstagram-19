@@ -318,10 +318,14 @@ var onResizeDec = function () {
 // находит блок для показа фотографии в полноразмерном режиме
 var bigPicture = document.querySelector('.big-picture');
 
+var onPictureEscPress = function (evt) {
+  if (evt.key === ESC_KEY) {
+    closeBigPicture();
+  }
+};
+
 // показывает фотографию в полноразмерном режиме
 var showBigPicture = function (item) {
-  // удаляет класс hidden
-  bigPicture.classList.remove('hidden');
   // находит элементы, которые нужно заполнить
   var bigPictureImg = bigPicture.querySelector('img');
   var likesCount = bigPicture.querySelector('.likes-count');
@@ -353,23 +357,27 @@ var showBigPicture = function (item) {
 
   // добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
   body.classList.add('modal-open');
+  bigPicture.classList.remove('hidden');
   // закрывает фотографию с клавиатуры
-  document.addEventListener('keydown', function (evt) {
-    bigPicture.classList.add('hidden');
-    if (evt.key === ESC_KEY) {
-      body.classList.remove('modal-open');
-    }
-  });
+  document.addEventListener('keydown', onPictureEscPress);
 
   return item;
+};
+
+var closeBigPicture = function () {
+  // снимает обработчик с формы
+  document.removeEventListener('keydown', onPictureEscPress);
+  bigPicture.classList.add('hidden');
+  body.classList.remove('modal-open');
 };
 
 // находит кнопку для выхода из полноэкранного просмотра изображения
 var pictureClose = document.querySelector('#picture-cancel');
 // закрывает фотографию в полноразмерном режим
-pictureClose.addEventListener('click', function () {
-  bigPicture.classList.add('hidden');
-});
+pictureClose.addEventListener('click', onPictureCloseClick);
+var onPictureCloseClick = function () {
+  closeBigPicture();
+};
 
 // находит минитюру изображений, чтобы при клике показать большое изображение
 var miniPictures = document.querySelectorAll('.picture__img');
@@ -378,12 +386,13 @@ var links = getArrayPhotos();
 
 // открывает миниатюрные фотографии
 for (var b = 0; b < miniPictures.length; b++) {
-  (function (picture) {
-    picture.addEventListener('click', function () {
+  (function (data) {
+    miniPictures[b].addEventListener('click', function () {
       // индекс из цикла по коллекции картинок
-      showBigPicture(links[b]);
+      showBigPicture(data);
     });
-    // ??? НЕ МОГУ ПОНЯТЬ, ПОЧЕМУ links[b] TypeError: undefined is not an object (evaluating 'item.url')
-    // ЕСЛИ ПИШУ for (var b = 0; b < miniPictures.length; b++) { console.log(links[b]);} ТО ВЫВОДИТ ОБЪЕКТЫ
-  })(miniPictures[b]);
+  })(links[b]);
 }
+
+// Добавьте поддержку просмотра любой фотографии в полноразмерном режиме с клавиатуры.
+// Выбранная фотография открывается в полноразмерном режиме при нажатии на клавишу Enter.
