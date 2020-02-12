@@ -143,9 +143,9 @@ var openPopup = function () {
 
 // открывает форму редактирования изображения после загрузки изображения
 inputLoad.addEventListener('change', onInputLoadChange);
-var onInputLoadChange = function () {
+function onInputLoadChange() {
   openPopup();
-};
+}
 
 // находит кнопку для закрытия формы редактирования изображения
 var buttonClosePopup = document.querySelector('#upload-cancel');
@@ -375,9 +375,9 @@ var closeBigPicture = function () {
 var pictureClose = document.querySelector('#picture-cancel');
 // закрывает фотографию в полноразмерном режим
 pictureClose.addEventListener('click', onPictureCloseClick);
-var onPictureCloseClick = function () {
+function onPictureCloseClick() {
   closeBigPicture();
-};
+}
 
 // находит минитюру изображений, чтобы при клике показать большое изображение
 var miniPictures = document.querySelectorAll('.picture__img');
