@@ -380,7 +380,7 @@ function onPictureCloseClick() {
 }
 
 // находит минитюру изображений, чтобы при клике показать большое изображение
-var miniPictures = document.querySelectorAll('.picture__img');
+var miniPictures = document.querySelectorAll('a.picture');
 // массив с изображениями;
 var links = getArrayPhotos();
 
