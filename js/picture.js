@@ -11,7 +11,7 @@
   var pictureClose = document.querySelector('#picture-cancel');
 
   var onPictureEscPress = function (evt) {
-    if (evt.key === window.ESC_KEY) {
+    if (evt.key === window.form.ESC_KEY) {
       closeBigPicture();
     }
   };
@@ -30,7 +30,7 @@
     var fragment = document.createDocumentFragment();
     // заполняет новые комментарии
     for (var i = 0; i < item.comments.length; i++) {
-      fragment.appendChild(window.getCommentElement(item.comments[i]));
+      fragment.appendChild(window.data.getCommentElement(item.comments[i]));
     }
     // чистит блок комментариев в разметке
     socialCommentTemplate.innerHTML = '';
@@ -45,7 +45,7 @@
     commentsLoader.classList.add('hidden');
 
     // добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
-    window.gallery.body.classList.add('modal-open');
+    window.form.body.classList.add('modal-open');
     bigPicture.classList.remove('hidden');
     // закрывает фотографию с клавиатуры
     document.addEventListener('keydown', onPictureEscPress);
@@ -57,7 +57,7 @@
   // снимает обработчик с формы
     document.removeEventListener('keydown', onPictureEscPress);
     bigPicture.classList.add('hidden');
-    window.gallery.body.classList.remove('modal-open');
+    window.form.body.classList.remove('modal-open');
   };
 
   // закрывает фотографию в полноразмерном режим
@@ -67,7 +67,7 @@
   }
 
   // массив с изображениями;
-  var links = window.getArrayPhotos();
+  var links = window.data.getArrayPhotos();
 
   // открывает миниатюрные фотографии
   for (var i = 0; i < miniPictures.length; i++) {

@@ -43,11 +43,11 @@
   };
 
   var setDefaultLevel = function () {
-    setFilterLevel(window.gallery.DEFAULT_FILTER_LEVEL);
+    setFilterLevel(window.form.DEFAULT_FILTER_LEVEL);
   };
 
   var setFilterForUploadImage = function (filterName) {
-    filterLevelArea.classList.toggle('hidden', filterName === window.DEFAULT_FILTER);
+    filterLevelArea.classList.toggle('hidden', filterName === window.form.DEFAULT_FILTER);
 
     currentFilter = filterName;
     setDefaultLevel();

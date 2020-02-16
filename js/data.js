@@ -39,7 +39,7 @@
   };
 
   // создает массив из сгенерированных JS объектов
-  window.getArrayPhotos = function () {
+  var getArrayPhotos = function () {
     var photos = [];
 
     for (var i = 0; i < QUANTITY_MAX_OBJECT; i++) {
@@ -85,10 +85,10 @@
     return pictures.appendChild(fragment);
   };
 
-  renderPhotosInDom(window.getArrayPhotos());
+  renderPhotosInDom(getArrayPhotos());
 
   // заполняет комментарий
-  window.getCommentElement = function (data) {
+  var getCommentElement = function (data) {
     var commentItemCopy = socialComment.cloneNode(true);
     // находит элементы, которые нужно заполнить
     var socialCommentImg = commentItemCopy.querySelector('img');
@@ -103,6 +103,8 @@
 
   window.data = {
     templatePicture: templatePicture,
-    socialComment: socialComment
+    socialComment: socialComment,
+    getArrayPhotos: getArrayPhotos,
+    getCommentElement: getCommentElement
   };
 })();
