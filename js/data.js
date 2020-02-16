@@ -100,4 +100,9 @@
 
     return commentItemCopy;
   };
+
+  window.data = {
+    templatePicture: templatePicture,
+    socialComment: socialComment
+  };
 })();

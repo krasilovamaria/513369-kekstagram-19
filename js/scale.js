@@ -1,5 +1,5 @@
 'use strict';
-// модуль для отрисовки увеличенного изображения;
+// модуль для редактирования размера изображения;
 (function () {
   // Редактирование размера изображения
   var UPLOAD_RESIZE_STEP = 25;
@@ -9,10 +9,6 @@
   var uploadResizeField = document.querySelector('.scale__control--value');
   // находит изображение для трансформации
   var uploadImagePreviewForScale = document.querySelector('.img-upload__preview img');
-
-  window.preview = {
-    uploadResizeField: uploadResizeField
-  };
 
   // возвращает целое число
   var getScaleValue = function () {
@@ -51,5 +47,9 @@
 
   window.onResizeDec = function () {
     changeScale(-UPLOAD_RESIZE_STEP);
+  };
+
+  window.scale = {
+    uploadResizeField: uploadResizeField
   };
 })();

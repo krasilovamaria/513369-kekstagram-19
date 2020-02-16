@@ -1,5 +1,5 @@
 'use strict';
-// модуль для отрисовки миниатюры;
+// модуль для отрисовки увеличенного изображения;
 (function () {
   var bigPicture = document.querySelector('.big-picture');
   var socialCommentTemplate = document.querySelector('.social__comments');
@@ -70,12 +70,12 @@
   var links = window.getArrayPhotos();
 
   // открывает миниатюрные фотографии
-  for (var b = 0; b < miniPictures.length; b++) {
+  for (var i = 0; i < miniPictures.length; i++) {
     (function (data) {
-      miniPictures[b].addEventListener('click', function () {
+      miniPictures[i].addEventListener('click', function () {
         // индекс из цикла по коллекции картинок
         showBigPicture(data);
       });
-    })(links[b]);
+    })(links[i]);
   }
 })();
