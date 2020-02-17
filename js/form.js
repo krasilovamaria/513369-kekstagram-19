@@ -18,14 +18,14 @@
   // Загрузка изображения и показ формы редактирования
   // закрывает форму с помощью клавиатуры, только если нажата нужная клавиша и фокус не в тегах
   var onPopupEscPress = function (evt) {
-    if (evt.key === ESC_KEY && window.gallery.textHashtags !== document.activeElement && textDescription !== document.activeElement) {
+    if (evt.key === ESC_KEY && window.filter.textHashtags !== document.activeElement && textDescription !== document.activeElement) {
       closePopup();
     }
   };
 
   // открывает форму редактирования изображения
   var openPopup = function () {
-    window.gallery.uploadEffect.classList.remove('hidden');
+    window.filter.uploadEffect.classList.remove('hidden');
     // добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
     body.classList.add('modal-open');
     // позволяет закрыть форму с помощью клавиатуры
@@ -34,7 +34,7 @@
     uploadResizeInc.addEventListener('click', window.onResizeInc);
     uploadResizeDec.addEventListener('click', window.onResizeDec);
     // валидация хеш-тегов
-    window.gallery.textHashtags.addEventListener('change', window.gallery.getValidityHashtags);
+    window.filter.textHashtags.addEventListener('change', window.filter.getValidityHashtags);
   };
 
   // открывает форму редактирования изображения после загрузки изображения
@@ -45,7 +45,7 @@
 
   // закрывает форму редактирования изображения
   var closePopup = function () {
-    window.gallery.uploadEffect.classList.add('hidden');
+    window.filter.uploadEffect.classList.add('hidden');
     body.classList.remove('modal-open');
     // сбрасывает значение поля выбора файла
     inputLoad.value = '';
@@ -54,9 +54,9 @@
     // возвращает масштаб к 100%
     window.scale.uploadResizeField.value = DEFAULT_FILTER_LEVEL;
     // сбрасывает эффект на «Оригинал»
-    window.gallery.uploadImagePreview.style.filter = window.gallery.filterCssFunction[DEFAULT_FILTER]();
+    window.filter.uploadImagePreview.style.filter = window.filter.filterCssFunction[DEFAULT_FILTER]();
     // очищает поля для ввода хэш-тегов и комментария
-    window.gallery.textHashtags.value = '';
+    window.filter.textHashtags.value = '';
     textDescription.value = '';
   };
 

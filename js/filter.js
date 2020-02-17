@@ -98,7 +98,7 @@
     }
   };
 
-  window.gallery = {
+  window.filter = {
     uploadEffect: uploadEffect,
     uploadImagePreview: uploadImagePreview,
     textHashtags: textHashtags,
