@@ -1,6 +1,7 @@
 'use strict';
 // модуль для отрисовки увеличенного изображения;
 (function () {
+  var ESC_KEY = 'Escape';
   var bigPicture = document.querySelector('.big-picture');
   var socialCommentTemplate = document.querySelector('.social__comments');
   // описание фотографии description
@@ -11,7 +12,7 @@
   var pictureClose = document.querySelector('#picture-cancel');
 
   var onPictureEscPress = function (evt) {
-    if (evt.key === window.form.ESC_KEY) {
+    if (evt.key === ESC_KEY) {
       closeBigPicture();
     }
   };
@@ -30,7 +31,7 @@
     var fragment = document.createDocumentFragment();
     // заполняет новые комментарии
     for (var i = 0; i < item.comments.length; i++) {
-      fragment.appendChild(window.data.getCommentElement(item.comments[i]));
+      fragment.appendChild(window.element.getCommentElement(item.comments[i]));
     }
     // чистит блок комментариев в разметке
     socialCommentTemplate.innerHTML = '';

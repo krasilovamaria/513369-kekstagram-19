@@ -1,13 +1,6 @@
 'use strict';
 // модуль, который работает с элементами DOM
 (function () {
-  var MESSAGES = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
-  var NAMES = ['Марс', 'Юпитер', 'Луна', 'Солнце', 'Звезда', 'Космос'];
-  var QUANTITY_MAX_OBJECT = 25;
-  var QUANTITY_MIN_COMMENT = 1;
-  var QUANTITY_MAX_COMMENT = 6;
-  var QUANTITY_MIN_LIKE = 15;
-  var QUANTITY_MAX_LIKE = 200;
   // шаблон template в документе
   var templatePicture = document.querySelector('#picture').content;
 
@@ -61,13 +54,6 @@
   };
 
   window.element = {
-    MESSAGES: MESSAGES,
-    NAMES: NAMES,
-    QUANTITY_MAX_OBJECT: QUANTITY_MAX_OBJECT,
-    QUANTITY_MIN_COMMENT: QUANTITY_MIN_COMMENT,
-    QUANTITY_MAX_COMMENT: QUANTITY_MAX_COMMENT,
-    QUANTITY_MIN_LIKE: QUANTITY_MIN_LIKE,
-    QUANTITY_MAX_LIKE: QUANTITY_MAX_LIKE,
     templatePicture: templatePicture,
     getCommentElement: getCommentElement,
     socialComment: socialComment
