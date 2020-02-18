@@ -11,6 +11,11 @@
   var uploadImagePreview = document.querySelector('.img-upload__preview');
   var filterLevelArea = document.querySelector('.img-upload__effect-level');
   var filterUploadLevelValue = document.querySelector('.effect-level__value');
+
+  // слайдер, задающий глубину эффекта
+  var filterLevelPin = document.querySelector('.effect-level__pin');
+  var filterLevelBar = document.querySelector('.effect-level__line');
+  var filterLevelValue = document.querySelector('.effect-level__depth');
   var currentFilter = window.form.DEFAULT_FILTER;
 
   // собирает функции для формирования css строки фильтра в справочник
@@ -42,10 +47,6 @@
     uploadImagePreview.style.filter = effect;
   };
 
-  var setDefaultLevel = function () {
-    setFilterLevel(window.form.DEFAULT_FILTER_LEVEL);
-  };
-
   var setFilterForUploadImage = function (filterName) {
     filterLevelArea.classList.toggle('hidden', filterName === window.form.DEFAULT_FILTER);
 
@@ -58,6 +59,49 @@
       var filterName = evt.target.value;
       setFilterForUploadImage(filterName);
     }
+  });
+
+  var setDefaultLevel = function () {
+    setFilterLevel(window.form.DEFAULT_FILTER_LEVEL);
+    setFilterPinPosition(window.form.DEFAULT_FILTER_LEVEL);
+  };
+
+  // находит смещение пина
+  var getPinOffsetOfInPercent = function (value) {
+    // offsetWidth ширина элемента
+    var valueInRange = Math.min(filterLevelBar.offsetWidth, Math.max(0, value));
+    return valueInRange * 100 / filterLevelBar.offsetWidth;
+  };
+
+  // находит позицию пина в процентах
+  var setFilterPinPosition = function (position) {
+    filterLevelPin.style.left = position + '%';
+    filterLevelValue.style.width = position + '%';
+  };
+
+  filterLevelPin.addEventListener('mousedown', function (evt) {
+    // clientX числовое значение горизонтальной координаты
+    var startPosition = evt.clientX;
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      // offsetLeft возвращает смещение в пикселях верхнего левого угла текущего элемента от родительского
+      var shift = startPosition - moveEvt.clientX;
+      var newPosition = filterLevelPin.offsetLeft - shift;
+      var newOffset = getPinOffsetOfInPercent(newPosition);
+      setFilterPinPosition(newOffset);
+      setFilterLevel(newOffset);
+      startPosition = moveEvt.clientX;
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   });
 
   // !! Валидация хеш-тегов !!
