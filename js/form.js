@@ -35,6 +35,12 @@
     uploadResizeDec.addEventListener('click', window.onResizeDec);
     // валидация хеш-тегов
     window.filter.textHashtags.addEventListener('change', window.filter.getValidityHashtags);
+    // возвращает масштаб к 100%
+    window.scale.uploadResizeField.value = DEFAULT_FILTER_LEVEL;
+    // сбрасывает эффект на «Оригинал»
+    window.filter.uploadImagePreview.style.filter = window.filter.filterCssFunction[DEFAULT_FILTER]();
+    // скрывает ползунок
+    window.filter.filterLevelArea.classList.toggle('hidden');
   };
 
   // открывает форму редактирования изображения после загрузки изображения
