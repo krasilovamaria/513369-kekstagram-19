@@ -147,6 +147,7 @@
     uploadImagePreview: uploadImagePreview,
     textHashtags: textHashtags,
     filterCssFunction: filterCssFunction,
-    getValidityHashtags: getValidityHashtags
+    getValidityHashtags: getValidityHashtags,
+    filterLevelArea: filterLevelArea
   };
 })();
