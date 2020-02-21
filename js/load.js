@@ -13,17 +13,8 @@
   var CODE_500 = 500;
   // сервис недоступен
   var CODE_503 = 503;
-
-  var onSuccess = function (data) {
-    return data;
-  };
-
-  var onError = function (message) {
-    return message;
-  };
-
-  window.load.user('https://htmlacademy.ru', onSuccess, onError);
-  window.load.server('https://htmlacademy.ru', onSuccess, onError);
+  var URL = 'https://js.dump.academy/kekstagram/data';
+  var TIMEOUT_IN_MS = 10000;
 
   window.load = {
     user: function (url, onSuccess, onError) {
@@ -58,14 +49,14 @@
         onError('Произошла ошибка соединения');
       });
 
-      xhr.timeout = 10000; // 10s
+      xhr.timeout = TIMEOUT_IN_MS;
 
       xhr.addEventListener('timeout', function () {
         onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
       });
 
       // GET получает информацию от сервера
-      xhr.open('GET', url);
+      xhr.open('GET', URL);
       xhr.send();
     },
 
@@ -91,14 +82,14 @@
         onError('Произошла ошибка соединения');
       });
 
-      xhr.timeout = 10000; // 10s
+      xhr.timeout = TIMEOUT_IN_MS;
 
       xhr.addEventListener('timeout', function () {
         onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
       });
 
       // POST отправляет данные
-      xhr.open('POST', url);
+      xhr.open('POST', URL);
       xhr.send(data);
     }
   };

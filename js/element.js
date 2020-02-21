@@ -27,7 +27,7 @@
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < photos.length; i++) {
-    // добавляет моки в фрагмент
+      // добавляет моки в фрагмент
       fragment.appendChild(getPhotoElement(photos[i]));
     }
 
@@ -35,16 +35,17 @@
     return pictures.appendChild(fragment);
   };
 
-  renderPhotosInDom(window.data.getArrayPhotos());
-
   // находит блок для комментариев
   var socialComment = document.querySelector('.social__comment');
+
   // заполняет комментарий
   var getCommentElement = function (data) {
     var commentItemCopy = socialComment.cloneNode(true);
+
     // находит элементы, которые нужно заполнить
     var socialCommentImg = commentItemCopy.querySelector('img');
     var socialText = commentItemCopy.querySelector('.social__text');
+
     // заполняет фрагмент
     socialCommentImg.src = data.avatar;
     socialCommentImg.alt = data.name;
@@ -53,8 +54,28 @@
     return commentItemCopy;
   };
 
+  var onSuccess = function (data) {
+    renderPhotosInDom(data);
+  };
+
+  var onError = function (message) {
+    // шаблон ошибки в документе
+    var errorTemplate = document.querySelector('#error').content;
+    // клонирует шаблон
+    var errorElement = errorTemplate.cloneNode(true);
+
+    var errorTitle = errorElement.querySelector('.error__title"');
+    errorTitle.textContent = message;
+
+    // добавляет ошибку в DOM
+    var body = document.querySelector('body');
+    body.appendChild(errorElement);
+  };
+
+  window.load.user('https://js.dump.academy/kekstagram/data', onSuccess, onError);
+  window.load.server('https://js.dump.academy/kekstagram/data', onSuccess, onError);
+
   window.element = {
-    templatePicture: templatePicture,
     getCommentElement: getCommentElement,
     socialComment: socialComment
   };
