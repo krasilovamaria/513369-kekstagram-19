@@ -61,12 +61,13 @@
 
   // закрывает фотографию в полноразмерном режим
   pictureClose.addEventListener('click', onPictureCloseClick);
-  function onPictureCloseClick() {
+  var onPictureCloseClick = function () {
     closeBigPicture();
-  }
+  };
 
   window.picture = {
     showBigPicture: showBigPicture,
-    onPictureCloseClick: onPictureCloseClick
+    onPictureCloseClick: onPictureCloseClick,
+    pictureClose: pictureClose
   };
 })();

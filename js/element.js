@@ -4,9 +4,6 @@
   // шаблон template в документе
   var templatePicture = document.querySelector('#picture').content;
 
-  // находит минитюру изображений, чтобы при клике показать большое изображение
-  var miniPictures = document.querySelectorAll('a.picture');
-
   // заполняет один элемент, принимает объект с данным параметром и возвращает готовый элемент
   var getPhotoElement = function (data) {
     // копирует template
@@ -61,14 +58,17 @@
     renderPhotosInDom(data);
 
     // закрывает фотографию в полноразмерном режим
-    window.picture.onPictureCloseClick();
+    window.picture.pictureClose.addEventListener('click', window.picture.onPictureCloseClick);
+
+    // находит минитюру изображений, чтобы при клике показать большое изображение
+    var miniPictures = document.querySelectorAll('a.picture');
 
     // открывает миниатюрные фотографии
     for (var i = 0; i < miniPictures.length; i++) {
-      (function (elements) {
+      (function (element) {
         miniPictures[i].addEventListener('click', function () {
           // индекс из цикла по коллекции картинок
-          window.picture.showBigPicture(elements);
+          window.picture.showBigPicture(element);
         });
       })(data[i]);
     }
@@ -88,7 +88,7 @@
     body.appendChild(errorElement);
   };
 
-  window.load.user('https://js.dump.academy/kekstagram/data', onSuccess, onError);
+  window.load.user(window.load.URL, onSuccess, onError);
 
   window.element = {
     getCommentElement: getCommentElement,

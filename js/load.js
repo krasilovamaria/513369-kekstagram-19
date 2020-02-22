@@ -17,6 +17,7 @@
   var TIMEOUT_IN_MS = 10000;
 
   window.load = {
+    URL: URL,
     user: function (url, onSuccess, onError) {
       var xhr = new XMLHttpRequest();
 
