@@ -6,8 +6,6 @@
   var socialCommentTemplate = document.querySelector('.social__comments');
   // описание фотографии description
   var socialCaption = document.querySelector('.social__caption');
-  // находит минитюру изображений, чтобы при клике показать большое изображение
-  var miniPictures = document.querySelectorAll('a.picture');
   // находит кнопку для выхода из полноэкранного просмотра изображения
   var pictureClose = document.querySelector('#picture-cancel');
 
@@ -63,20 +61,13 @@
 
   // закрывает фотографию в полноразмерном режим
   pictureClose.addEventListener('click', onPictureCloseClick);
-  function onPictureCloseClick() {
+  var onPictureCloseClick = function () {
     closeBigPicture();
-  }
+  };
 
-  // массив с изображениями;
-  var links = window.data.getArrayPhotos();
-
-  // открывает миниатюрные фотографии
-  for (var i = 0; i < miniPictures.length; i++) {
-    (function (data) {
-      miniPictures[i].addEventListener('click', function () {
-        // индекс из цикла по коллекции картинок
-        showBigPicture(data);
-      });
-    })(links[i]);
-  }
+  window.picture = {
+    showBigPicture: showBigPicture,
+    onPictureCloseClick: onPictureCloseClick,
+    pictureClose: pictureClose
+  };
 })();

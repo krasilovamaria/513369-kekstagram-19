@@ -27,7 +27,7 @@
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < photos.length; i++) {
-    // добавляет моки в фрагмент
+      // добавляет моки в фрагмент
       fragment.appendChild(getPhotoElement(photos[i]));
     }
 
@@ -35,16 +35,17 @@
     return pictures.appendChild(fragment);
   };
 
-  renderPhotosInDom(window.data.getArrayPhotos());
-
   // находит блок для комментариев
   var socialComment = document.querySelector('.social__comment');
+
   // заполняет комментарий
   var getCommentElement = function (data) {
     var commentItemCopy = socialComment.cloneNode(true);
+
     // находит элементы, которые нужно заполнить
     var socialCommentImg = commentItemCopy.querySelector('img');
     var socialText = commentItemCopy.querySelector('.social__text');
+
     // заполняет фрагмент
     socialCommentImg.src = data.avatar;
     socialCommentImg.alt = data.name;
@@ -53,8 +54,43 @@
     return commentItemCopy;
   };
 
+  var onSuccess = function (data) {
+    renderPhotosInDom(data);
+
+    // закрывает фотографию в полноразмерном режим
+    window.picture.pictureClose.addEventListener('click', window.picture.onPictureCloseClick);
+
+    // находит минитюру изображений, чтобы при клике показать большое изображение
+    var miniPictures = document.querySelectorAll('a.picture');
+
+    // открывает миниатюрные фотографии
+    for (var i = 0; i < miniPictures.length; i++) {
+      (function (element) {
+        miniPictures[i].addEventListener('click', function () {
+          // индекс из цикла по коллекции картинок
+          window.picture.showBigPicture(element);
+        });
+      })(data[i]);
+    }
+  };
+
+  var onError = function (message) {
+    // шаблон ошибки в документе
+    var errorTemplate = document.querySelector('#error').content;
+    // клонирует шаблон
+    var errorElement = errorTemplate.cloneNode(true);
+
+    var errorTitle = errorElement.querySelector('.error__title');
+    errorTitle.textContent = message;
+
+    // добавляет ошибку в DOM
+    var body = document.querySelector('body');
+    body.appendChild(errorElement);
+  };
+
+  window.load.user(window.load.URL, onSuccess, onError);
+
   window.element = {
-    templatePicture: templatePicture,
     getCommentElement: getCommentElement,
     socialComment: socialComment
   };
