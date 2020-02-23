@@ -57,9 +57,6 @@
   var onSuccess = function (data) {
     renderPhotosInDom(data);
 
-    // закрывает фотографию в полноразмерном режим
-    window.picture.pictureClose.addEventListener('click', window.picture.onPictureCloseClick);
-
     // находит минитюру изображений, чтобы при клике показать большое изображение
     var miniPictures = document.querySelectorAll('a.picture');
 
@@ -84,14 +81,14 @@
     errorTitle.textContent = message;
 
     // добавляет ошибку в DOM
-    var body = document.querySelector('body');
-    body.appendChild(errorElement);
+    var main = document.querySelector('main');
+    main.appendChild(errorElement);
   };
 
   window.load.user(window.load.URL, onSuccess, onError);
 
   window.element = {
     getCommentElement: getCommentElement,
-    socialComment: socialComment
+    socialComment: socialComment,
   };
 })();

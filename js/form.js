@@ -1,9 +1,11 @@
 'use strict';
 // модуль, который работает с формой редактирования изображения;
 (function () {
+  var form = document.querySelector('#upload-select-image');
   var ESC_KEY = 'Escape';
   var DEFAULT_FILTER = 'none';
   var DEFAULT_FILTER_LEVEL = 100;
+
   var body = document.querySelector('body');
   // поле для загрузки изображения
   var inputLoad = document.querySelector('#upload-file');
@@ -44,10 +46,10 @@
   };
 
   // открывает форму редактирования изображения после загрузки изображения
-  inputLoad.addEventListener('change', onInputLoadChange);
-  function onInputLoadChange() {
+  var onInputLoadChange = function () {
     openPopup();
-  }
+  };
+  inputLoad.addEventListener('change', onInputLoadChange);
 
   // закрывает форму редактирования изображения
   var closePopup = function () {
@@ -67,6 +69,14 @@
   };
 
   buttonClosePopup.addEventListener('click', closePopup);
+
+  form.addEventListener('submit', function (evt) {
+    // отменяет действие формы по умолчанию
+    evt.preventDefault();
+    // отправляет данные формы посредством XHR на сервер
+    var data = new FormData(form);
+    window.load.server(window.load.URL_SERVER, data, window.element.onSuccess, window.element.onError);
+  });
 
   window.form = {
     DEFAULT_FILTER: DEFAULT_FILTER,
