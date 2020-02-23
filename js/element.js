@@ -90,5 +90,6 @@
   window.element = {
     getCommentElement: getCommentElement,
     socialComment: socialComment,
+    onError: onError
   };
 })();

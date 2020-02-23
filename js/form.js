@@ -75,7 +75,7 @@
     evt.preventDefault();
     // отправляет данные формы посредством XHR на сервер
     var data = new FormData(form);
-    window.load.server(window.load.URL_SERVER, data, window.element.onSuccess, window.element.onError);
+    window.load.server(window.load.URL_SERVER, data, closePopup(), window.element.onError);
   });
 
   window.form = {
