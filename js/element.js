@@ -56,9 +56,19 @@
     return commentItemCopy;
   };
 
+  // обработчик закрытия окна ошибки c помощью клавиатуры
+  var onWindowErrorEscPress = function (evt) {
+    if (evt.key === window.form.ESC_KEY) {
+      closeErrorWindow();
+    }
+  };
+
   // удаляет окно из main
-  var closeElement = function (element) {
-    main.querySelector(element).classList.add('hidden');
+  var closeErrorWindow = function () {
+    main.querySelector('.error').remove(); // ?? null is not an object (evaluating 'main.querySelector('.error').remove') ???
+
+    // снимает дополнительные обработчики
+    document.removeEventListener('keydown', onWindowErrorEscPress);
   };
 
   var onSuccess = function (data) {
@@ -76,28 +86,9 @@
         });
       })(data[i]);
     }
-
-    if (data === true) { // НЕ ЗНАЮ ЧТО СЮДА ПИСАТЬ, ХОЧУ СКАЗАТЬ ЕСЛИ ФОРМА УСПЕШНО ОТПРАВЛЕНА ТО, ДОБАВЬ СООБЩЕНИЕ
-      // шаблон сообщения об успешной загрузке
-      var successTemplate = document.querySelector('#success').content;
-      // клонирует шаблон
-      var successElement = successTemplate.cloneNode(true);
-
-      // добавляет сообщение об успешной загрузке
-      var successTitle = successElement.querySelector('.success__title');
-      successTitle.textContent = 'Изображение успешно загружено';
-
-      // закрывает окно
-      var successButton = successElement.querySelector('.success__button');
-      successButton.addEventListener('click', function () {
-        closeElement('#success');
-      });
-
-      // добавляет сообщение в DOM
-      main.appendChild(successTemplate);
-    }
   };
 
+  // ??? КАК МНЕ ОБОЗНАЧИТЬ КОГДА ДОЛЖНА ВЫВОДИТСЯ ОШИБКА, СЕЙЧАС ОНА ПОКАЗЫВЕТСЯ САМОСТОЯТЕЛЬНО ПОСЛЕ onButtonShowMessageCloseWindowSubmit()
   var onError = function (message) {
     // шаблон ошибки в документе
     var errorTemplate = document.querySelector('#error').content;
@@ -108,10 +99,18 @@
     var errorTitle = errorElement.querySelector('.error__title');
     errorTitle.textContent = message;
 
-    // закрывает окно ошибки
+    // закрывает окно ошибки c помощью кнопки
     var errorButton = errorElement.querySelector('.error__button');
     errorButton.addEventListener('click', function () {
-      closeElement('#error');
+      closeErrorWindow();
+    });
+
+    // закрывает окно ошибки c помощью клавиатуры
+    document.addEventListener('keydown', onWindowErrorEscPress);
+
+    // закрывает окно ошибки c помощью клавиатуры по клику на произвольную область экрана
+    main.addEventListener('click', function () {
+      closeErrorWindow();
     });
 
     // добавляет ошибку в DOM

@@ -2,6 +2,7 @@
 // модуль, который работает с формой редактирования изображения;
 (function () {
   var form = document.querySelector('#upload-select-image');
+  var main = document.querySelector('main');
   var ESC_KEY = 'Escape';
   var DEFAULT_FILTER = 'none';
   var DEFAULT_FILTER_LEVEL = 100;
@@ -70,15 +71,68 @@
 
   buttonClosePopup.addEventListener('click', closePopup);
 
+  // обработчик закрытия окна с сообщением c помощью клавиатуры
+  var onWindowSuccessEscPress = function (evt) {
+    if (evt.key === ESC_KEY) {
+      closeSuccessWindow();
+    }
+  };
+
+  // удаляет окно из main
+  var closeSuccessWindow = function () {
+    main.querySelector('.success').remove(); // ?? null is not an object (evaluating 'main.querySelector('.success').remove') ???
+
+    // снимает дополнительные обработчики
+    document.removeEventListener('keydown', onWindowSuccessEscPress);
+  };
+
+  // функция-обработчик, показывает сообщение и закрывает форму
+  var onButtonShowMessageCloseWindowSubmit = function () {
+    // закрывает форму
+    closePopup();
+
+    // показывает сообщение и позволяет его закрыть
+    // шаблон сообщения об успешной загрузке
+    var successTemplate = document.querySelector('#success').content;
+    // клонирует шаблон
+    var successElement = successTemplate.cloneNode(true);
+
+    // добавляет сообщение об успешной загрузке
+    var successTitle = successElement.querySelector('.success__title');
+    successTitle.textContent = 'Изображение успешно загружено';
+
+    // закрывает окно с помощью кнопки
+    var successButton = successElement.querySelector('.success__button');
+    successButton.addEventListener('click', function () {
+      closeSuccessWindow();
+    });
+
+    // закрывает окно c помощью клавиатуры
+    document.addEventListener('keydown', onWindowSuccessEscPress);
+
+    // закрывает окно c помощью клавиатуры по клику на произвольную область экрана
+    main.addEventListener('click', function () {
+      closeSuccessWindow();
+    });
+
+    // добавляет сообщение в DOM
+    main.appendChild(successTemplate);
+  };
+
   form.addEventListener('submit', function (evt) {
     // отменяет действие формы по умолчанию
     evt.preventDefault();
+
     // отправляет данные формы посредством XHR на сервер
     var data = new FormData(form);
-    window.load.server(window.load.URL_SERVER, data, closePopup(), window.element.onError);
+    window.load.server(window.load.URL_SERVER, data, closePopup, window.element.onError);
+
+    // показывает сообщение и позволяет его закрыть
+    onButtonShowMessageCloseWindowSubmit();
   });
 
   window.form = {
+    ESC_KEY: ESC_KEY,
     DEFAULT_FILTER: DEFAULT_FILTER,
     DEFAULT_FILTER_LEVEL: DEFAULT_FILTER_LEVEL,
     body: body
