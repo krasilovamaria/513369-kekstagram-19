@@ -4,6 +4,8 @@
   // шаблон template в документе
   var templatePicture = document.querySelector('#picture').content;
 
+  var main = document.querySelector('main');
+
   // заполняет один элемент, принимает объект с данным параметром и возвращает готовый элемент
   var getPhotoElement = function (data) {
     // копирует template
@@ -54,6 +56,11 @@
     return commentItemCopy;
   };
 
+  // удаляет окно из main
+  var closeElement = function (element) {
+    main.querySelector(element).classList.add('hidden');
+  };
+
   var onSuccess = function (data) {
     renderPhotosInDom(data);
 
@@ -69,6 +76,26 @@
         });
       })(data[i]);
     }
+
+    if (data === true) { // НЕ ЗНАЮ ЧТО СЮДА ПИСАТЬ, ХОЧУ СКАЗАТЬ ЕСЛИ ФОРМА УСПЕШНО ОТПРАВЛЕНА ТО, ДОБАВЬ СООБЩЕНИЕ
+      // шаблон сообщения об успешной загрузке
+      var successTemplate = document.querySelector('#success').content;
+      // клонирует шаблон
+      var successElement = successTemplate.cloneNode(true);
+
+      // добавляет сообщение об успешной загрузке
+      var successTitle = successElement.querySelector('.success__title');
+      successTitle.textContent = 'Изображение успешно загружено';
+
+      // закрывает окно
+      var successButton = successElement.querySelector('.success__button');
+      successButton.addEventListener('click', function () {
+        closeElement('#success');
+      });
+
+      // добавляет сообщение в DOM
+      main.appendChild(successTemplate);
+    }
   };
 
   var onError = function (message) {
@@ -77,11 +104,17 @@
     // клонирует шаблон
     var errorElement = errorTemplate.cloneNode(true);
 
+    // добавляет сообщение об ошибке
     var errorTitle = errorElement.querySelector('.error__title');
     errorTitle.textContent = message;
 
+    // закрывает окно ошибки
+    var errorButton = errorElement.querySelector('.error__button');
+    errorButton.addEventListener('click', function () {
+      closeElement('#error');
+    });
+
     // добавляет ошибку в DOM
-    var main = document.querySelector('main');
     main.appendChild(errorElement);
   };
 
