@@ -58,7 +58,7 @@
       });
 
       // GET получает информацию от сервера
-      xhr.open('GET', URL);
+      xhr.open('GET', url);
       xhr.send();
     },
 
