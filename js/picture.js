@@ -60,10 +60,10 @@
   };
 
   // закрывает фотографию в полноразмерном режим
-  pictureClose.addEventListener('click', onPictureCloseClick);
   var onPictureCloseClick = function () {
     closeBigPicture();
   };
+  pictureClose.addEventListener('click', onPictureCloseClick);
 
   window.picture = {
     showBigPicture: showBigPicture,

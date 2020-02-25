@@ -14,6 +14,7 @@
   // сервис недоступен
   var CODE_503 = 503;
   var URL = 'https://js.dump.academy/kekstagram/data';
+  var URL_SERVER = 'https://js.dump.academy/kekstagram';
   var TIMEOUT_IN_MS = 10000;
 
   window.load = {
@@ -61,7 +62,7 @@
       xhr.send();
     },
 
-    server: function (url, data, onError) {
+    server: function (url, data, onSuccess, onError) {
       var xhr = new XMLHttpRequest();
 
       xhr.addEventListener('load', function () {
@@ -75,12 +76,12 @@
             break;
 
           default:
-            onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
+            onSuccess('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
         }
       });
 
       xhr.addEventListener('error', function () {
-        onError('Произошла ошибка соединения');
+        onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       });
 
       xhr.timeout = TIMEOUT_IN_MS;
@@ -90,7 +91,7 @@
       });
 
       // POST отправляет данные
-      xhr.open('POST', URL);
+      xhr.open('POST', URL_SERVER);
       xhr.send(data);
     }
   };

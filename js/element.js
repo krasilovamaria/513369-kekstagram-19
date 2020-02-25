@@ -4,6 +4,8 @@
   // шаблон template в документе
   var templatePicture = document.querySelector('#picture').content;
 
+  var main = document.querySelector('main');
+
   // заполняет один элемент, принимает объект с данным параметром и возвращает готовый элемент
   var getPhotoElement = function (data) {
     // копирует template
@@ -54,11 +56,29 @@
     return commentItemCopy;
   };
 
+  // обработчик закрытия окна ошибки c помощью клавиатуры
+  var onWindowErrorEscPress = function (evt) {
+    if (evt.key === window.form.ESC_KEY) {
+      closeErrorWindow();
+    }
+  };
+
+  // обработчик закрытия окна ошибки c помощью клавиатуры по клику на произвольную область экрана
+  var onWindowErrorRandomClick = function () {
+    closeErrorWindow();
+  };
+
+  // удаляет окно из main
+  var closeErrorWindow = function () {
+    main.querySelector('.error').remove();
+
+    // снимает дополнительные обработчики
+    document.removeEventListener('keydown', onWindowErrorEscPress);
+    main.removeEventListener('click', onWindowErrorRandomClick);
+  };
+
   var onSuccess = function (data) {
     renderPhotosInDom(data);
-
-    // закрывает фотографию в полноразмерном режим
-    window.picture.pictureClose.addEventListener('click', window.picture.onPictureCloseClick);
 
     // находит минитюру изображений, чтобы при клике показать большое изображение
     var miniPictures = document.querySelectorAll('a.picture');
@@ -80,18 +100,31 @@
     // клонирует шаблон
     var errorElement = errorTemplate.cloneNode(true);
 
+    // добавляет сообщение об ошибке
     var errorTitle = errorElement.querySelector('.error__title');
     errorTitle.textContent = message;
 
+    // закрывает окно ошибки c помощью кнопки
+    var errorButton = errorElement.querySelector('.error__button');
+    errorButton.addEventListener('click', function () {
+      closeErrorWindow();
+    });
+
+    // закрывает окно ошибки c помощью клавиатуры
+    document.addEventListener('keydown', onWindowErrorEscPress);
+
+    // закрывает окно ошибки c помощью клавиатуры по клику на произвольную область экрана
+    main.addEventListener('click', onWindowErrorRandomClick);
+
     // добавляет ошибку в DOM
-    var body = document.querySelector('body');
-    body.appendChild(errorElement);
+    main.appendChild(errorElement);
   };
 
   window.load.user(window.load.URL, onSuccess, onError);
 
   window.element = {
     getCommentElement: getCommentElement,
-    socialComment: socialComment
+    socialComment: socialComment,
+    onError: onError
   };
 })();

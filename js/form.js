@@ -1,9 +1,12 @@
 'use strict';
 // модуль, который работает с формой редактирования изображения;
 (function () {
+  var form = document.querySelector('#upload-select-image');
+  var main = document.querySelector('main');
   var ESC_KEY = 'Escape';
   var DEFAULT_FILTER = 'none';
   var DEFAULT_FILTER_LEVEL = 100;
+
   var body = document.querySelector('body');
   // поле для загрузки изображения
   var inputLoad = document.querySelector('#upload-file');
@@ -44,10 +47,10 @@
   };
 
   // открывает форму редактирования изображения после загрузки изображения
-  inputLoad.addEventListener('change', onInputLoadChange);
-  function onInputLoadChange() {
+  var onInputLoadChange = function () {
     openPopup();
-  }
+  };
+  inputLoad.addEventListener('change', onInputLoadChange);
 
   // закрывает форму редактирования изображения
   var closePopup = function () {
@@ -68,7 +71,69 @@
 
   buttonClosePopup.addEventListener('click', closePopup);
 
+  // обработчик закрытия окна с сообщением c помощью клавиатуры
+  var onWindowSuccessEscPress = function (evt) {
+    if (evt.key === ESC_KEY) {
+      closeSuccessWindow();
+    }
+  };
+
+  // обработчик закрытия окна c помощью клавиатуры по клику на произвольную область экрана
+  var onWindowSuccessRandomClick = function () {
+    closeSuccessWindow();
+  };
+
+  // удаляет окно из main
+  var closeSuccessWindow = function () {
+    main.querySelector('.success').remove();
+
+    // снимает дополнительные обработчики
+    document.removeEventListener('keydown', onWindowSuccessEscPress);
+    main.removeEventListener('click', onWindowSuccessRandomClick);
+  };
+
+  // функция-обработчик, показывает сообщение и закрывает форму
+  var onUploadSuccess = function () {
+    // закрывает форму
+    closePopup();
+
+    // показывает сообщение и позволяет его закрыть
+    // шаблон сообщения об успешной загрузке
+    var successTemplate = document.querySelector('#success').content;
+    // клонирует шаблон
+    var successElement = successTemplate.cloneNode(true);
+
+    // добавляет сообщение об успешной загрузке
+    var successTitle = successElement.querySelector('.success__title');
+    successTitle.textContent = 'Изображение успешно загружено';
+
+    // закрывает окно с помощью кнопки
+    var successButton = successElement.querySelector('.success__button');
+    successButton.addEventListener('click', function () {
+      closeSuccessWindow();
+    });
+
+    // закрывает окно c помощью клавиатуры
+    document.addEventListener('keydown', onWindowSuccessEscPress);
+
+    // закрывает окно c помощью клавиатуры по клику на произвольную область экрана
+    main.addEventListener('click', onWindowSuccessRandomClick);
+
+    // добавляет сообщение в DOM
+    main.appendChild(successElement);
+  };
+
+  form.addEventListener('submit', function (evt) {
+    // отменяет действие формы по умолчанию
+    evt.preventDefault();
+
+    // отправляет данные формы посредством XHR на сервер
+    var data = new FormData(form);
+    window.load.server(window.load.URL_SERVER, data, onUploadSuccess, window.element.onError);
+  });
+
   window.form = {
+    ESC_KEY: ESC_KEY,
     DEFAULT_FILTER: DEFAULT_FILTER,
     DEFAULT_FILTER_LEVEL: DEFAULT_FILTER_LEVEL,
     body: body
