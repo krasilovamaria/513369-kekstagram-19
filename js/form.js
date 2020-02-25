@@ -76,14 +76,14 @@
   buttonClosePopup.addEventListener('click', onButtonClick);
 
   // обработчик закрытия окна с сообщением c помощью клавиатуры
-  var onWindowSuccessEscPress = function (evt) {
+  var onButtonEscPress = function (evt) {
     if (evt.key === ESC_KEY) {
       closeSuccessWindow();
     }
   };
 
   // обработчик закрытия окна c помощью клавиатуры по клику на произвольную область экрана
-  var onWindowSuccessClick = function () {
+  var onSuccessButtonClick = function () {
     closeSuccessWindow();
   };
 
@@ -92,8 +92,8 @@
     main.querySelector('.success').remove();
 
     // снимает дополнительные обработчики
-    document.removeEventListener('keydown', onWindowSuccessEscPress);
-    document.removeEventListener('click', onWindowSuccessClick);
+    document.removeEventListener('keydown', onButtonEscPress);
+    document.removeEventListener('click', onSuccessButtonClick);
   };
 
   // функция-обработчик, показывает сообщение и закрывает форму
@@ -118,10 +118,10 @@
     });
 
     // закрывает окно c помощью клавиатуры
-    document.addEventListener('keydown', onWindowSuccessEscPress);
+    document.addEventListener('keydown', onButtonEscPress);
 
     // закрывает окно c помощью клавиатуры по клику на произвольную область экрана
-    main.addEventListener('click', onWindowSuccessClick);
+    main.addEventListener('click', onSuccessButtonClick);
 
     // добавляет сообщение в DOM
     main.appendChild(successElement);

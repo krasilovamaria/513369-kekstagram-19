@@ -62,7 +62,8 @@
       xhr.send();
     },
 
-    server: function (url, data, onSuccess, onError) {
+    URL_SERVER: URL_SERVER,
+    server: function (url, data, onError) {
       var xhr = new XMLHttpRequest();
 
       xhr.addEventListener('load', function () {
@@ -76,12 +77,12 @@
             break;
 
           default:
-            onSuccess('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+            onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
         }
       });
 
       xhr.addEventListener('error', function () {
-        onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        onError('Произошла ошибка соединения');
       });
 
       xhr.timeout = TIMEOUT_IN_MS;
@@ -91,7 +92,7 @@
       });
 
       // POST отправляет данные
-      xhr.open('POST', URL_SERVER);
+      xhr.open('POST', url);
       xhr.send(data);
     }
   };

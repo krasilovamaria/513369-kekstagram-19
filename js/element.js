@@ -57,14 +57,14 @@
   };
 
   // обработчик закрытия окна ошибки c помощью клавиатуры
-  var onWindowErrorEscPress = function (evt) {
+  var onEscapePress = function (evt) {
     if (evt.key === window.form.ESC_KEY) {
       closeErrorWindow();
     }
   };
 
   // обработчик закрытия окна ошибки c помощью клавиатуры по клику на произвольную область экрана
-  var onWindowErrorClick = function () {
+  var onErrorButtonClick = function () {
     closeErrorWindow();
   };
 
@@ -73,8 +73,8 @@
     main.querySelector('.error').remove();
 
     // снимает дополнительные обработчики
-    document.removeEventListener('keydown', onWindowErrorEscPress);
-    document.removeEventListener('click', onWindowErrorClick);
+    document.removeEventListener('keydown', onEscapePress);
+    document.removeEventListener('click', onErrorButtonClick);
   };
 
   var onSuccess = function (data) {
@@ -111,10 +111,10 @@
     });
 
     // закрывает окно ошибки c помощью клавиатуры
-    document.addEventListener('keydown', onWindowErrorEscPress);
+    document.addEventListener('keydown', onEscapePress);
 
     // закрывает окно ошибки c помощью клавиатуры по клику на произвольную область экрана
-    main.addEventListener('click', onWindowErrorClick);
+    main.addEventListener('click', onErrorButtonClick);
 
     // добавляет ошибку в DOM
     main.appendChild(errorElement);
