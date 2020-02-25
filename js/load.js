@@ -76,12 +76,12 @@
             break;
 
           default:
-            onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+            onSuccess('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
         }
       });
 
       xhr.addEventListener('error', function () {
-        onError('Произошла ошибка соединения');
+        onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       });
 
       xhr.timeout = TIMEOUT_IN_MS;

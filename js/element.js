@@ -63,12 +63,18 @@
     }
   };
 
+  // обработчик закрытия окна ошибки c помощью клавиатуры по клику на произвольную область экрана
+  var onWindowErrorRandomClick = function () {
+    closeErrorWindow();
+  };
+
   // удаляет окно из main
   var closeErrorWindow = function () {
-    main.querySelector('.error').remove(); // ?? null is not an object (evaluating 'main.querySelector('.error').remove') ???
+    main.querySelector('.error').remove();
 
     // снимает дополнительные обработчики
     document.removeEventListener('keydown', onWindowErrorEscPress);
+    main.removeEventListener('click', onWindowErrorRandomClick);
   };
 
   var onSuccess = function (data) {
@@ -88,7 +94,6 @@
     }
   };
 
-  // ??? КАК МНЕ ОБОЗНАЧИТЬ КОГДА ДОЛЖНА ВЫВОДИТСЯ ОШИБКА, СЕЙЧАС ОНА ПОКАЗЫВЕТСЯ САМОСТОЯТЕЛЬНО ПОСЛЕ onButtonShowMessageCloseWindowSubmit()
   var onError = function (message) {
     // шаблон ошибки в документе
     var errorTemplate = document.querySelector('#error').content;
@@ -109,9 +114,7 @@
     document.addEventListener('keydown', onWindowErrorEscPress);
 
     // закрывает окно ошибки c помощью клавиатуры по клику на произвольную область экрана
-    main.addEventListener('click', function () {
-      closeErrorWindow();
-    });
+    main.addEventListener('click', onWindowErrorRandomClick);
 
     // добавляет ошибку в DOM
     main.appendChild(errorElement);

@@ -78,16 +78,22 @@
     }
   };
 
+  // обработчик закрытия окна c помощью клавиатуры по клику на произвольную область экрана
+  var onWindowSuccessRandomClick = function () {
+    closeSuccessWindow();
+  };
+
   // удаляет окно из main
   var closeSuccessWindow = function () {
-    main.querySelector('.success').remove(); // ?? null is not an object (evaluating 'main.querySelector('.success').remove') ???
+    main.querySelector('.success').remove();
 
     // снимает дополнительные обработчики
     document.removeEventListener('keydown', onWindowSuccessEscPress);
+    main.removeEventListener('click', onWindowSuccessRandomClick);
   };
 
   // функция-обработчик, показывает сообщение и закрывает форму
-  var onButtonShowMessageCloseWindowSubmit = function () {
+  var onUploadSuccess = function () {
     // закрывает форму
     closePopup();
 
@@ -111,12 +117,10 @@
     document.addEventListener('keydown', onWindowSuccessEscPress);
 
     // закрывает окно c помощью клавиатуры по клику на произвольную область экрана
-    main.addEventListener('click', function () {
-      closeSuccessWindow();
-    });
+    main.addEventListener('click', onWindowSuccessRandomClick);
 
     // добавляет сообщение в DOM
-    main.appendChild(successTemplate);
+    main.appendChild(successElement);
   };
 
   form.addEventListener('submit', function (evt) {
@@ -125,10 +129,7 @@
 
     // отправляет данные формы посредством XHR на сервер
     var data = new FormData(form);
-    window.load.server(window.load.URL_SERVER, data, closePopup, window.element.onError);
-
-    // показывает сообщение и позволяет его закрыть
-    onButtonShowMessageCloseWindowSubmit();
+    window.load.server(window.load.URL_SERVER, data, onUploadSuccess, window.element.onError);
   });
 
   window.form = {
