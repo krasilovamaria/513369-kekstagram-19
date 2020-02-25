@@ -78,17 +78,17 @@
   // обработчик закрытия окна с сообщением c помощью клавиатуры
   var onButtonEscPress = function (evt) {
     if (evt.key === ESC_KEY) {
-      closeSuccessWindow();
+      closeSuccess();
     }
   };
 
   // обработчик закрытия окна c помощью клавиатуры по клику на произвольную область экрана
   var onSuccessButtonClick = function () {
-    closeSuccessWindow();
+    closeSuccess();
   };
 
   // удаляет окно из main
-  var closeSuccessWindow = function () {
+  var closeSuccess = function () {
     main.querySelector('.success').remove();
 
     // снимает дополнительные обработчики
@@ -114,7 +114,7 @@
     // закрывает окно с помощью кнопки
     var successButton = successElement.querySelector('.success__button');
     successButton.addEventListener('click', function () {
-      closeSuccessWindow();
+      closeSuccess();
     });
 
     // закрывает окно c помощью клавиатуры

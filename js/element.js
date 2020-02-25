@@ -59,17 +59,17 @@
   // обработчик закрытия окна ошибки c помощью клавиатуры
   var onEscapePress = function (evt) {
     if (evt.key === window.form.ESC_KEY) {
-      closeErrorWindow();
+      closeError();
     }
   };
 
   // обработчик закрытия окна ошибки c помощью клавиатуры по клику на произвольную область экрана
   var onErrorButtonClick = function () {
-    closeErrorWindow();
+    closeError();
   };
 
   // удаляет окно из main
-  var closeErrorWindow = function () {
+  var closeError = function () {
     main.querySelector('.error').remove();
 
     // снимает дополнительные обработчики
@@ -107,7 +107,7 @@
     // закрывает окно ошибки c помощью кнопки
     var errorButton = errorElement.querySelector('.error__button');
     errorButton.addEventListener('click', function () {
-      closeErrorWindow();
+      closeError();
     });
 
     // закрывает окно ошибки c помощью клавиатуры
