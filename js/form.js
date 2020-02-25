@@ -69,7 +69,11 @@
     textDescription.value = '';
   };
 
-  buttonClosePopup.addEventListener('click', closePopup);
+  var onButtonClick = function () {
+    closePopup();
+  };
+
+  buttonClosePopup.addEventListener('click', onButtonClick);
 
   // обработчик закрытия окна с сообщением c помощью клавиатуры
   var onWindowSuccessEscPress = function (evt) {
@@ -79,7 +83,7 @@
   };
 
   // обработчик закрытия окна c помощью клавиатуры по клику на произвольную область экрана
-  var onWindowSuccessRandomClick = function () {
+  var onWindowSuccessClick = function () {
     closeSuccessWindow();
   };
 
@@ -89,7 +93,7 @@
 
     // снимает дополнительные обработчики
     document.removeEventListener('keydown', onWindowSuccessEscPress);
-    main.removeEventListener('click', onWindowSuccessRandomClick);
+    document.removeEventListener('click', onWindowSuccessClick);
   };
 
   // функция-обработчик, показывает сообщение и закрывает форму
@@ -117,7 +121,7 @@
     document.addEventListener('keydown', onWindowSuccessEscPress);
 
     // закрывает окно c помощью клавиатуры по клику на произвольную область экрана
-    main.addEventListener('click', onWindowSuccessRandomClick);
+    main.addEventListener('click', onWindowSuccessClick);
 
     // добавляет сообщение в DOM
     main.appendChild(successElement);

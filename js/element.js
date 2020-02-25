@@ -64,7 +64,7 @@
   };
 
   // обработчик закрытия окна ошибки c помощью клавиатуры по клику на произвольную область экрана
-  var onWindowErrorRandomClick = function () {
+  var onWindowErrorClick = function () {
     closeErrorWindow();
   };
 
@@ -74,7 +74,7 @@
 
     // снимает дополнительные обработчики
     document.removeEventListener('keydown', onWindowErrorEscPress);
-    main.removeEventListener('click', onWindowErrorRandomClick);
+    document.removeEventListener('click', onWindowErrorClick);
   };
 
   var onSuccess = function (data) {
@@ -114,7 +114,7 @@
     document.addEventListener('keydown', onWindowErrorEscPress);
 
     // закрывает окно ошибки c помощью клавиатуры по клику на произвольную область экрана
-    main.addEventListener('click', onWindowErrorRandomClick);
+    main.addEventListener('click', onWindowErrorClick);
 
     // добавляет ошибку в DOM
     main.appendChild(errorElement);
