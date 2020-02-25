@@ -89,7 +89,7 @@
 
   // удаляет окно из main
   var closeSuccess = function () {
-    main.querySelector('.success').remove();
+    document.querySelector('.success').remove();
 
     // снимает дополнительные обработчики
     document.removeEventListener('keydown', onButtonEscPress);

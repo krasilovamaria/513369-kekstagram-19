@@ -70,7 +70,7 @@
 
   // удаляет окно из main
   var closeError = function () {
-    main.querySelector('.error').remove();
+    document.querySelector('.error').remove();
 
     // снимает дополнительные обработчики
     document.removeEventListener('keydown', onEscapePress);
