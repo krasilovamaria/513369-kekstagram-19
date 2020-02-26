@@ -69,32 +69,11 @@
     textDescription.value = '';
   };
 
+  // функция-обработчик, позволяет закрыть форму
   var onButtonClick = function () {
     closePopup();
   };
-
   buttonClosePopup.addEventListener('click', onButtonClick);
-
-  // обработчик закрытия окна с сообщением c помощью клавиатуры
-  var onButtonEscPress = function (evt) {
-    if (evt.key === ESC_KEY) {
-      closeSuccess();
-    }
-  };
-
-  // обработчик закрытия окна c помощью клавиатуры по клику на произвольную область экрана
-  var onSuccessButtonClick = function () {
-    closeSuccess();
-  };
-
-  // удаляет окно из main
-  var closeSuccess = function () {
-    document.querySelector('.success').remove();
-
-    // снимает дополнительные обработчики
-    document.removeEventListener('keydown', onButtonEscPress);
-    document.removeEventListener('click', onSuccessButtonClick);
-  };
 
   // функция-обработчик, показывает сообщение и закрывает форму
   var onUploadSuccess = function () {
@@ -114,14 +93,14 @@
     // закрывает окно с помощью кнопки
     var successButton = successElement.querySelector('.success__button');
     successButton.addEventListener('click', function () {
-      closeSuccess();
+      window.element.closeWindow('.success');
     });
 
     // закрывает окно c помощью клавиатуры
-    document.addEventListener('keydown', onButtonEscPress);
+    document.addEventListener('keydown', window.element.onEscapePress);
 
     // закрывает окно c помощью клавиатуры по клику на произвольную область экрана
-    main.addEventListener('click', onSuccessButtonClick);
+    document.addEventListener('click', window.element.onButtonCloseClick);
 
     // добавляет сообщение в DOM
     main.appendChild(successElement);

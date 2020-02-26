@@ -4,6 +4,9 @@
   // шаблон template в документе
   var templatePicture = document.querySelector('#picture').content;
 
+  // находит контейнер для фотографий
+  var pictures = document.querySelector('.pictures');
+
   var main = document.querySelector('main');
 
   // заполняет один элемент, принимает объект с данным параметром и возвращает готовый элемент
@@ -24,8 +27,6 @@
 
   // отрисовывает сгенерированные DOM-элементы в блок .pictures
   var renderPhotosInDom = function (photos) {
-    // находит контейнер для фотографий
-    var pictures = document.querySelector('.pictures');
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < photos.length; i++) {
@@ -59,26 +60,30 @@
   // обработчик закрытия окна ошибки c помощью клавиатуры
   var onEscapePress = function (evt) {
     if (evt.key === window.form.ESC_KEY) {
-      closeError();
+      closeWindow(); // ?? КАК МНЕ СЮДА ТЕПЕРЬ ПЕРЕДАТЬ .error, а в form.js в onUploadSuccess() .success ??
     }
   };
 
   // обработчик закрытия окна ошибки c помощью клавиатуры по клику на произвольную область экрана
-  var onErrorButtonClick = function () {
-    closeError();
+  var onButtonCloseClick = function () {
+    closeWindow(); // ?? КАК МНЕ СЮДА ТЕПЕРЬ ПЕРЕДАТЬ .error, а в form.js в onUploadSuccess() .success ??
   };
 
   // удаляет окно из main
-  var closeError = function () {
-    document.querySelector('.error').remove();
+  var closeWindow = function (element) {
+    document.querySelector(element).remove();
 
     // снимает дополнительные обработчики
     document.removeEventListener('keydown', onEscapePress);
-    document.removeEventListener('click', onErrorButtonClick);
+    document.removeEventListener('click', onButtonCloseClick);
   };
 
   var onSuccess = function (data) {
     renderPhotosInDom(data);
+
+    // после завершения загрузки изображений с сервера показывает фильтры изображений
+    var filterSection = document.querySelector('.img-filters');
+    filterSection.classList.remove('img-filters--inactive');
 
     // находит минитюру изображений, чтобы при клике показать большое изображение
     var miniPictures = document.querySelectorAll('a.picture');
@@ -107,14 +112,14 @@
     // закрывает окно ошибки c помощью кнопки
     var errorButton = errorElement.querySelector('.error__button');
     errorButton.addEventListener('click', function () {
-      closeError();
+      closeWindow('.error');
     });
 
     // закрывает окно ошибки c помощью клавиатуры
     document.addEventListener('keydown', onEscapePress);
 
     // закрывает окно ошибки c помощью клавиатуры по клику на произвольную область экрана
-    main.addEventListener('click', onErrorButtonClick);
+    document.addEventListener('click', onButtonCloseClick);
 
     // добавляет ошибку в DOM
     main.appendChild(errorElement);
@@ -125,6 +130,12 @@
   window.element = {
     getCommentElement: getCommentElement,
     socialComment: socialComment,
-    onError: onError
+    onError: onError,
+    onEscapePress: onEscapePress,
+    onButtonCloseClick: onButtonCloseClick,
+    closeWindow: closeWindow,
+    renderPhotosInDom: renderPhotosInDom,
+    onSuccess: onSuccess,
+    pictures: pictures
   };
 })();
