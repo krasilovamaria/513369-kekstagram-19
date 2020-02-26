@@ -1,6 +1,7 @@
 'use strict';
 // модуль, который добавляет фильтрацию изображений
 (function () {
+  // 10 случайных фотографий
   var RANDOM_PHOTO = 10;
 
   var filterButton = document.querySelector('.img-filters__button');
@@ -20,7 +21,9 @@
       filterActive.classList.remove('img-filters__button--active');
       // и добавляет активный фильтр на котором произошел клик
       target.classList.add('img-filters__button--active');
-    };
+      // создает копию массива
+      var dataCopy = window.element.??data???.slice(); // ?? НЕ МОГУ ПОНЯТЬ КАК ПОЛУЧИТЬ data из onSuccess
+    }
   };
 
   // По умолчанию — фотографии в изначальном порядке с сервера
