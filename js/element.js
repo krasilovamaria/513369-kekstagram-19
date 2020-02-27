@@ -4,10 +4,11 @@
   // шаблон template в документе
   var templatePicture = document.querySelector('#picture').content;
 
+  // находит блок для комментариев
+  var socialComment = document.querySelector('.social__comment');
+
   // находит контейнер для фотографий
   var pictures = document.querySelector('.pictures');
-
-  var main = document.querySelector('main');
 
   // заполняет один элемент, принимает объект с данным параметром и возвращает готовый элемент
   var getPhotoElement = function (data) {
@@ -38,9 +39,6 @@
     return pictures.appendChild(fragment);
   };
 
-  // находит блок для комментариев
-  var socialComment = document.querySelector('.social__comment');
-
   // заполняет комментарий
   var getCommentElement = function (data) {
     var commentItemCopy = socialComment.cloneNode(true);
@@ -55,27 +53,6 @@
     socialText.textContent = data.message;
 
     return commentItemCopy;
-  };
-
-  // обработчик закрытия окна ошибки c помощью клавиатуры
-  var onEscapePress = function (evt) {
-    if (evt.key === window.form.ESC_KEY) {
-      closeWindow(); // ?? КАК МНЕ СЮДА ТЕПЕРЬ ПЕРЕДАТЬ .error, а в form.js в onUploadSuccess() .success ??
-    }
-  };
-
-  // обработчик закрытия окна ошибки c помощью клавиатуры по клику на произвольную область экрана
-  var onButtonCloseClick = function () {
-    closeWindow(); // ?? КАК МНЕ СЮДА ТЕПЕРЬ ПЕРЕДАТЬ .error, а в form.js в onUploadSuccess() .success ??
-  };
-
-  // удаляет окно из main
-  var closeWindow = function (element) {
-    document.querySelector(element).remove();
-
-    // снимает дополнительные обработчики
-    document.removeEventListener('keydown', onEscapePress);
-    document.removeEventListener('click', onButtonCloseClick);
   };
 
   var onSuccess = function (data) {
@@ -97,32 +74,12 @@
         });
       })(data[i]);
     }
+    window.element.data = data;
   };
 
+  // показывает сообщение об ошибке и позволяет его закрыть
   var onError = function (message) {
-    // шаблон ошибки в документе
-    var errorTemplate = document.querySelector('#error').content;
-    // клонирует шаблон
-    var errorElement = errorTemplate.cloneNode(true);
-
-    // добавляет сообщение об ошибке
-    var errorTitle = errorElement.querySelector('.error__title');
-    errorTitle.textContent = message;
-
-    // закрывает окно ошибки c помощью кнопки
-    var errorButton = errorElement.querySelector('.error__button');
-    errorButton.addEventListener('click', function () {
-      closeWindow('.error');
-    });
-
-    // закрывает окно ошибки c помощью клавиатуры
-    document.addEventListener('keydown', onEscapePress);
-
-    // закрывает окно ошибки c помощью клавиатуры по клику на произвольную область экрана
-    document.addEventListener('click', onButtonCloseClick);
-
-    // добавляет ошибку в DOM
-    main.appendChild(errorElement);
+    window.form.createTemplate('#error', '.error__title', '.error__button', message);
   };
 
   window.load.user(window.load.URL, onSuccess, onError);
@@ -131,9 +88,6 @@
     getCommentElement: getCommentElement,
     socialComment: socialComment,
     onError: onError,
-    onEscapePress: onEscapePress,
-    onButtonCloseClick: onButtonCloseClick,
-    closeWindow: closeWindow,
     renderPhotosInDom: renderPhotosInDom,
     onSuccess: onSuccess,
     pictures: pictures

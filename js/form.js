@@ -75,35 +75,64 @@
   };
   buttonClosePopup.addEventListener('click', onButtonClick);
 
+  // функция, которая находит шаблон и ставит на старницу
+  var createTemplate = function (selector, title, button, message) {
+    // находит контент для шаблона в разметке
+    var template = document.querySelector(selector).content;
+    // клонирует
+    var element = template.cloneNode(true);
+
+    // добавляет в шаблон сообщение
+    var titleMessage = element.querySelector(title);
+    titleMessage.textContent = message;
+
+    // закрывает окно с помощью кнопки
+    var closeButton = element.querySelector(button);
+    closeButton.addEventListener('click', function (evt) {
+      var messageName = evt.target;
+      closeWindow(messageName);
+    });
+
+    // закрывает окно c помощью клавиатуры
+    document.addEventListener('keydown', onEscapePress);
+
+    // закрывает окно c помощью клавиатуры по клику на произвольную область экрана
+    document.addEventListener('click', onButtonCloseClick);
+
+    // добавляет сообщение в DOM
+    main.appendChild(element);
+  };
+
+  // обработчик закрытия окна c помощью клавиатуры
+  var onEscapePress = function (evt) {
+    if (evt.key === window.form.ESC_KEY) {
+      var messageName = evt.target;
+      closeWindow(messageName);
+    }
+  };
+
+  // обработчик закрытия окна c помощью клавиатуры по клику на произвольную область экрана
+  var onButtonCloseClick = function (evt) {
+    var messageName = evt.target;
+    closeWindow(messageName);
+  };
+
+  // удаляет окно из main
+  var closeWindow = function (element) {
+    document.querySelector(element).remove();
+
+    // снимает дополнительные обработчики
+    document.removeEventListener('keydown', onEscapePress);
+    document.removeEventListener('click', onButtonCloseClick);
+  };
+
   // функция-обработчик, показывает сообщение и закрывает форму
   var onUploadSuccess = function () {
     // закрывает форму
     closePopup();
 
-    // показывает сообщение и позволяет его закрыть
-    // шаблон сообщения об успешной загрузке
-    var successTemplate = document.querySelector('#success').content;
-    // клонирует шаблон
-    var successElement = successTemplate.cloneNode(true);
-
-    // добавляет сообщение об успешной загрузке
-    var successTitle = successElement.querySelector('.success__title');
-    successTitle.textContent = 'Изображение успешно загружено';
-
-    // закрывает окно с помощью кнопки
-    var successButton = successElement.querySelector('.success__button');
-    successButton.addEventListener('click', function () {
-      window.element.closeWindow('.success');
-    });
-
-    // закрывает окно c помощью клавиатуры
-    document.addEventListener('keydown', window.element.onEscapePress);
-
-    // закрывает окно c помощью клавиатуры по клику на произвольную область экрана
-    document.addEventListener('click', window.element.onButtonCloseClick);
-
-    // добавляет сообщение в DOM
-    main.appendChild(successElement);
+    // показывает сообщение об успешной загрузке и позволяет его закрыть
+    createTemplate('#success', '.success__title', '.success__button', 'Изображение успешно загружено');
   };
 
   form.addEventListener('submit', function (evt) {
@@ -119,6 +148,7 @@
     ESC_KEY: ESC_KEY,
     DEFAULT_FILTER: DEFAULT_FILTER,
     DEFAULT_FILTER_LEVEL: DEFAULT_FILTER_LEVEL,
-    body: body
+    body: body,
+    createTemplate: createTemplate
   };
 })();
