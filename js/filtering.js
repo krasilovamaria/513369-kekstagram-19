@@ -18,8 +18,6 @@
       filterActive.classList.remove('img-filters__button--active');
       // и добавляет активный фильтр на котором произошел клик
       target.classList.add('img-filters__button--active');
-      // ссылка на элемент, которая обновляется при смене активного фильтра
-      filterActive = target;
 
       // убирает все фотографии отрисованные ранее
       window.element.pictures.innerHTML = '';
@@ -29,7 +27,9 @@
 
       if (target.textContent === 'Случайные') {
         // выводит 10 случайных, не повторяющихся фотографий
-        dataCopy = dataCopy.slice(0, RANDOM_PHOTO); // КАК СДЕЛАТЬ НЕ ПОВТОРЯЮЩИЕСЯ ФОТО???
+        dataCopy = dataCopy.slice(0, RANDOM_PHOTO);
+        // взять копию массива с данными и в цикле вызвать для нее splice
+        // на случайном элементе - он удаляет элемент из массива и второй раз элемент в выборку уже не попадет
       } else if (target.textContent === 'Обсуждаемые') {
         // фотографии, отсортированные в порядке убывания количества комментариев
         dataCopy = dataCopy.slice().sort(function (a, b) {
@@ -41,6 +41,7 @@
     }
   };
 
+  // тут еще нужен debounce
   filterButton.addEventListener('click', onFilterClick);
 })();
 

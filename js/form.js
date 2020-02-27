@@ -76,7 +76,7 @@
   buttonClosePopup.addEventListener('click', onButtonClick);
 
   // функция, которая находит шаблон и ставит на старницу
-  var createTemplate = function (selector, title, button, message) {
+  var completeTemplate = function (selector, title, button, message) {
     // находит контент для шаблона в разметке
     var template = document.querySelector(selector).content;
     // клонирует
@@ -89,8 +89,8 @@
     // закрывает окно с помощью кнопки
     var closeButton = element.querySelector(button);
     closeButton.addEventListener('click', function (evt) {
-      var messageName = evt.target;
-      closeWindow(messageName);
+      var link = evt.target;
+      closeWindow(link);
     });
 
     // закрывает окно c помощью клавиатуры
@@ -106,15 +106,17 @@
   // обработчик закрытия окна c помощью клавиатуры
   var onEscapePress = function (evt) {
     if (evt.key === window.form.ESC_KEY) {
-      var messageName = evt.target;
-      closeWindow(messageName);
+      var link = evt.target;
+      // тут может быть произвольный элемент в evt.target
+      // там где пользователь сфокусировался. можно ссылку на текущее открытое окно сохранить в переменную при открытии
+      closeWindow(link);
     }
   };
 
   // обработчик закрытия окна c помощью клавиатуры по клику на произвольную область экрана
   var onButtonCloseClick = function (evt) {
-    var messageName = evt.target;
-    closeWindow(messageName);
+    var link = evt.target;
+    closeWindow(link);
   };
 
   // удаляет окно из main
@@ -132,7 +134,7 @@
     closePopup();
 
     // показывает сообщение об успешной загрузке и позволяет его закрыть
-    createTemplate('#success', '.success__title', '.success__button', 'Изображение успешно загружено');
+    completeTemplate('#success', '.success__title', '.success__button', 'Изображение успешно загружено');
   };
 
   form.addEventListener('submit', function (evt) {
@@ -149,6 +151,6 @@
     DEFAULT_FILTER: DEFAULT_FILTER,
     DEFAULT_FILTER_LEVEL: DEFAULT_FILTER_LEVEL,
     body: body,
-    createTemplate: createTemplate
+    completeTemplate: completeTemplate
   };
 })();

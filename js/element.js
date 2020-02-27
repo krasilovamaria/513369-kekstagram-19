@@ -79,7 +79,7 @@
 
   // показывает сообщение об ошибке и позволяет его закрыть
   var onError = function (message) {
-    window.form.createTemplate('#error', '.error__title', '.error__button', message);
+    window.form.completeTemplate('#error', '.error__title', '.error__button', message);
   };
 
   window.load.user(window.load.URL, onSuccess, onError);
