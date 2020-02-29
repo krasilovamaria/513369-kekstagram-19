@@ -25,26 +25,31 @@
       // создает копию массива
       var dataCopy = window.element.data.slice();
 
-      if (target.textContent === 'Случайные') {
-        // выводит 10 случайных, не повторяющихся фотографий
-        for (var i = 0; i < dataCopy.length; i++) {
-          dataCopy = dataCopy.splice(0, RANDOM_PHOTO);
+      window.debounce(function () {
+        if (target.textContent === 'Случайные') {
+          // выводит 10 случайных, не повторяющихся фотографий
+          for (var i = 0; i < dataCopy.length; i++) {
+            dataCopy = dataCopy.splice(0, RANDOM_PHOTO);
+            // splice удалит элементы из массива и вернет удаленные, чтобы получить случайные,
+            // нам нужно на каждой итерации брать один случайный из оставшихся и собирать их в массив для отрисовки
+          }
+        } else if (target.textContent === 'Обсуждаемые') {
+          // фотографии, отсортированные в порядке убывания количества комментариев
+          dataCopy = dataCopy.slice().sort(function (a, b) {
+            return b.comments.length - a.comments.length;
+          });
         }
-      } else if (target.textContent === 'Обсуждаемые') {
-        // фотографии, отсортированные в порядке убывания количества комментариев
-        dataCopy = dataCopy.slice().sort(function (a, b) {
-          return b.comments.length - a.comments.length;
-        });
-      }
-
-      window.element.onSuccess(dataCopy);
+        // window.element.onSuccess перезаписывает данные,
+        // делает window.element.data = data; он должен отработать только после загрузки,
+        // а для отрисовки давай сделаем отдельную функцию
+        window.element.onSuccess(dataCopy);
+      });
     }
   };
 
-  window.debounce(function () {
-    filterButtons.forEach(function (it) {
-      it.addEventListener('click', onFilterClick);
-    });
+
+  filterButtons.forEach(function (it) {
+    it.addEventListener('click', onFilterClick);
   });
 })();
 

@@ -89,7 +89,6 @@
     socialComment: socialComment,
     onError: onError,
     renderPhotosInDom: renderPhotosInDom,
-    onSuccess: onSuccess,
     pictures: pictures
   };
 })();

@@ -75,6 +75,15 @@
   };
   buttonClosePopup.addEventListener('click', onButtonClick);
 
+  // удаляет всплывающее окно об ошибке или об успешной загрузке
+  var closeWindow = function (element) {
+    element.remove();
+
+    // снимает дополнительные обработчики
+    document.removeEventListener('keydown', onEscapePress);
+    document.removeEventListener('click', onButtonCloseClick);
+  };
+
   // функция, которая находит шаблон и ставит на старницу
   var completeTemplate = function (selector, title, button, message) {
     // находит контент для шаблона в разметке
@@ -89,7 +98,7 @@
     // закрывает окно с помощью кнопки
     var closeButton = element.querySelector(button);
     closeButton.addEventListener('click', function (evt) {
-      var link = evt.target;
+      var link = evt.target.closest('section');
       closeWindow(link);
     });
 
@@ -105,27 +114,16 @@
 
   // обработчик закрытия окна c помощью клавиатуры
   var onEscapePress = function (evt) {
-    if (evt.key === window.form.ESC_KEY) {
-      var link = evt.target;
-      // тут может быть произвольный элемент в evt.target
-      // там где пользователь сфокусировался. можно ссылку на текущее открытое окно сохранить в переменную при открытии
+    if (evt.key === ESC_KEY) {
+      var link = evt.target; // ????
       closeWindow(link);
     }
   };
 
   // обработчик закрытия окна c помощью клавиатуры по клику на произвольную область экрана
   var onButtonCloseClick = function (evt) {
-    var link = evt.target;
+    var link = evt.target.closest('section');
     closeWindow(link);
-  };
-
-  // удаляет окно из main
-  var closeWindow = function (element) {
-    document.querySelector(element).remove();
-
-    // снимает дополнительные обработчики
-    document.removeEventListener('keydown', onEscapePress);
-    document.removeEventListener('click', onButtonCloseClick);
   };
 
   // функция-обработчик, показывает сообщение и закрывает форму
