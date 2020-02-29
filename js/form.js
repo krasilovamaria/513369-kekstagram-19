@@ -115,7 +115,7 @@
   // обработчик закрытия окна c помощью клавиатуры
   var onEscapePress = function (evt) {
     if (evt.key === ESC_KEY) {
-      var link = evt.target; // ????
+      var link = evt.target.querySelector('.success', '.error');
       closeWindow(link);
     }
   };
