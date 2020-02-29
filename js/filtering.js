@@ -1,10 +1,26 @@
 'use strict';
 // модуль, который добавляет фильтрацию изображений
 (function () {
-  var RANDOM_PHOTO = 10;
-
   var filterButtons = document.querySelectorAll('.img-filters button');
   var filterActive;
+
+  // отрисовывает изображения
+  // ??? НЕ ЗНАЮ ЧТО ЗДЕСЬ ПИСАТЬ ???
+  var showPhoto = function (data) {
+    window.element.renderPhotosInDom(data);
+
+    window.filtering.data = data;
+  };
+
+  // для фильтра 'Случайные' собирает массив из 'оставшихся' фотографий
+  var unrepetitivePhoto = function (array) {
+    for (var i = 0; i < array.length; i++) {
+      var randomCountPhoto = Math.floor(Math.random() * (array.length - 1));
+      array[i] = array[randomCountPhoto];
+    }
+
+    return array;
+  };
 
   // обработчик изменения фильтров
   var onFilterClick = function (evt) {
@@ -23,30 +39,24 @@
       window.element.pictures.innerHTML = '';
 
       // создает копию массива
-      var dataCopy = window.element.data.slice();
+      var dataCopy = window.filtering.data.slice();
 
       window.debounce(function () {
         if (target.textContent === 'Случайные') {
           // выводит 10 случайных, не повторяющихся фотографий
-          for (var i = 0; i < dataCopy.length; i++) {
-            dataCopy = dataCopy.splice(0, RANDOM_PHOTO);
-            // splice удалит элементы из массива и вернет удаленные, чтобы получить случайные,
-            // нам нужно на каждой итерации брать один случайный из оставшихся и собирать их в массив для отрисовки
-          }
+          // 11 - 'каждый элемент с 11 будет удален'
+          dataCopy = unrepetitivePhoto(dataCopy).splice(11);
         } else if (target.textContent === 'Обсуждаемые') {
           // фотографии, отсортированные в порядке убывания количества комментариев
-          dataCopy = dataCopy.slice().sort(function (a, b) {
+          dataCopy = dataCopy.sort(function (a, b) {
             return b.comments.length - a.comments.length;
           });
         }
-        // window.element.onSuccess перезаписывает данные,
-        // делает window.element.data = data; он должен отработать только после загрузки,
-        // а для отрисовки давай сделаем отдельную функцию
-        window.element.onSuccess(dataCopy);
+
+        showPhoto(dataCopy);
       });
     }
   };
-
 
   filterButtons.forEach(function (it) {
     it.addEventListener('click', onFilterClick);
