@@ -16,14 +16,14 @@
     for (var i = 0; i < RANDOM_PHOTO; i++) {
       var randomCountPhoto = Math.floor(Math.random() * (photos.length - 1));
 
-      renewed[i] = photos.splice(randomCountPhoto, 1);
+      renewed[i] = photos.splice(randomCountPhoto, 1)[0];
     }
 
     return renewed;
   };
 
   // обработчик изменения фильтров
-  var onFilterClick = function (evt) {
+  var onFilterClick = window.debounce(function (evt) {
     // находит фильтр на котором произошел клик
     var target = evt.target;
 
@@ -53,7 +53,7 @@
 
       showPhoto(dataCopy);
     }
-  };
+  });
 
   filterButtons.forEach(function (it) {
     it.addEventListener('click', onFilterClick);
