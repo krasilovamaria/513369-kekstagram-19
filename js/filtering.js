@@ -8,6 +8,8 @@
   // отрисовывает изображения
   var showPhoto = function (data) {
     window.element.renderPhotosInDom(data);
+
+    window.element.onMiniPicturesClick(data);
   };
 
   // для фильтра 'Случайные' собирает массив из 'оставшихся' фотографий

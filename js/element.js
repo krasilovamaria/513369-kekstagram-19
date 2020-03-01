@@ -54,13 +54,8 @@
     return commentItemCopy;
   };
 
-  var onSuccess = function (data) {
-    renderPhotosInDom(data);
-
-    // после завершения загрузки изображений с сервера показывает фильтры изображений
-    var filterSection = document.querySelector('.img-filters');
-    filterSection.classList.remove('img-filters--inactive');
-
+  // открывает минитюру изображений, чтобы при клике показать большое изображение
+  var onMiniPicturesClick = function (data) {
     // находит минитюру изображений, чтобы при клике показать большое изображение
     var miniPictures = document.querySelectorAll('a.picture');
 
@@ -73,6 +68,16 @@
         });
       })(data[i]);
     }
+  };
+
+  var onSuccess = function (data) {
+    renderPhotosInDom(data);
+
+    // после завершения загрузки изображений с сервера показывает фильтры изображений
+    var filterSection = document.querySelector('.img-filters');
+    filterSection.classList.remove('img-filters--inactive');
+
+    onMiniPicturesClick(data);
 
     window.element.data = data;
   };
@@ -89,6 +94,7 @@
     socialComment: socialComment,
     onError: onError,
     renderPhotosInDom: renderPhotosInDom,
+    onMiniPicturesClick: onMiniPicturesClick,
     pictures: pictures
   };
 })();
