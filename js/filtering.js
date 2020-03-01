@@ -1,25 +1,25 @@
 'use strict';
 // модуль, который добавляет фильтрацию изображений
 (function () {
+  var RANDOM_PHOTO = 10;
   var filterButtons = document.querySelectorAll('.img-filters button');
   var filterActive;
 
   // отрисовывает изображения
-  // ??? НЕ ЗНАЮ ЧТО ЗДЕСЬ ПИСАТЬ ???
   var showPhoto = function (data) {
     window.element.renderPhotosInDom(data);
-
-    window.filtering.data = data;
   };
 
   // для фильтра 'Случайные' собирает массив из 'оставшихся' фотографий
-  var unrepetitivePhoto = function (array) {
-    for (var i = 0; i < array.length; i++) {
-      var randomCountPhoto = Math.floor(Math.random() * (array.length - 1));
-      array[i] = array[randomCountPhoto];
+  var unrepetitivePhoto = function (photos) {
+    var renewed = [];
+    for (var i = 0; i < RANDOM_PHOTO; i++) {
+      var randomCountPhoto = Math.floor(Math.random() * (photos.length - 1));
+
+      renewed[i] = photos.splice(randomCountPhoto, 1);
     }
 
-    return array;
+    return renewed;
   };
 
   // обработчик изменения фильтров
@@ -39,22 +39,19 @@
       window.element.pictures.innerHTML = '';
 
       // создает копию массива
-      var dataCopy = window.filtering.data.slice();
+      var dataCopy = window.element.data.slice();
 
-      window.debounce(function () {
-        if (target.textContent === 'Случайные') {
-          // выводит 10 случайных, не повторяющихся фотографий
-          // 11 - 'каждый элемент с 11 будет удален'
-          dataCopy = unrepetitivePhoto(dataCopy).splice(11);
-        } else if (target.textContent === 'Обсуждаемые') {
-          // фотографии, отсортированные в порядке убывания количества комментариев
-          dataCopy = dataCopy.sort(function (a, b) {
-            return b.comments.length - a.comments.length;
-          });
-        }
+      if (target.textContent === 'Случайные') {
+        // выводит 10 случайных, не повторяющихся фотографий
+        dataCopy = unrepetitivePhoto(dataCopy);
+      } else if (target.textContent === 'Обсуждаемые') {
+        // фотографии, отсортированные в порядке убывания количества комментариев
+        dataCopy = dataCopy.sort(function (a, b) {
+          return b.comments.length - a.comments.length;
+        });
+      }
 
-        showPhoto(dataCopy);
-      });
+      showPhoto(dataCopy);
     }
   };
 

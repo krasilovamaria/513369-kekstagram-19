@@ -31,7 +31,6 @@
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < photos.length; i++) {
-      // добавляет моки в фрагмент
       fragment.appendChild(getPhotoElement(photos[i]));
     }
 
@@ -74,6 +73,8 @@
         });
       })(data[i]);
     }
+
+    window.element.data = data;
   };
 
   // показывает сообщение об ошибке и позволяет его закрыть
