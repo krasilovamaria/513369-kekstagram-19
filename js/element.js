@@ -55,7 +55,7 @@
   };
 
   // открывает минитюру изображений, чтобы при клике показать большое изображение
-  var onMiniPicturesClick = function (data) {
+  var setPicturesHandlers = function (data) {
     // находит минитюру изображений, чтобы при клике показать большое изображение
     var miniPictures = document.querySelectorAll('a.picture');
 
@@ -77,7 +77,7 @@
     var filterSection = document.querySelector('.img-filters');
     filterSection.classList.remove('img-filters--inactive');
 
-    onMiniPicturesClick(data);
+    setPicturesHandlers(data);
 
     window.element.data = data;
   };
@@ -94,7 +94,7 @@
     socialComment: socialComment,
     onError: onError,
     renderPhotosInDom: renderPhotosInDom,
-    onMiniPicturesClick: onMiniPicturesClick,
+    setPicturesHandlers: setPicturesHandlers,
     pictures: pictures
   };
 })();

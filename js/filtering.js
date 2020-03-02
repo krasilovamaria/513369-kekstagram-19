@@ -9,19 +9,19 @@
   var showPhoto = function (data) {
     window.element.renderPhotosInDom(data);
 
-    window.element.onMiniPicturesClick(data);
+    window.element.setPicturesHandlers(data);
   };
 
   // для фильтра 'Случайные' собирает массив из 'оставшихся' фотографий
-  var unrepetitivePhoto = function (photos) {
-    var renewed = [];
+  var getUnrepetitivePhoto = function (photos) {
+    var images = [];
     for (var i = 0; i < RANDOM_PHOTO; i++) {
-      var randomCountPhoto = Math.floor(Math.random() * (photos.length - 1));
+      var j = Math.floor(Math.random() * (photos.length - 1));
 
-      renewed[i] = photos.splice(randomCountPhoto, 1)[0];
+      images[i] = photos.splice(j, 1)[0];
     }
 
-    return renewed;
+    return images;
   };
 
   // обработчик изменения фильтров
@@ -45,7 +45,7 @@
 
       if (target.textContent === 'Случайные') {
         // выводит 10 случайных, не повторяющихся фотографий
-        dataCopy = unrepetitivePhoto(dataCopy);
+        dataCopy = getUnrepetitivePhoto(dataCopy);
       } else if (target.textContent === 'Обсуждаемые') {
         // фотографии, отсортированные в порядке убывания количества комментариев
         dataCopy = dataCopy.sort(function (a, b) {
