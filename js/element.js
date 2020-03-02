@@ -4,7 +4,11 @@
   // шаблон template в документе
   var templatePicture = document.querySelector('#picture').content;
 
-  var main = document.querySelector('main');
+  // находит блок для комментариев
+  var socialComment = document.querySelector('.social__comment');
+
+  // находит контейнер для фотографий
+  var pictures = document.querySelector('.pictures');
 
   // заполняет один элемент, принимает объект с данным параметром и возвращает готовый элемент
   var getPhotoElement = function (data) {
@@ -24,21 +28,15 @@
 
   // отрисовывает сгенерированные DOM-элементы в блок .pictures
   var renderPhotosInDom = function (photos) {
-    // находит контейнер для фотографий
-    var pictures = document.querySelector('.pictures');
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < photos.length; i++) {
-      // добавляет моки в фрагмент
       fragment.appendChild(getPhotoElement(photos[i]));
     }
 
     // добавляет фрагмент в блок pictures
     return pictures.appendChild(fragment);
   };
-
-  // находит блок для комментариев
-  var socialComment = document.querySelector('.social__comment');
 
   // заполняет комментарий
   var getCommentElement = function (data) {
@@ -56,30 +54,8 @@
     return commentItemCopy;
   };
 
-  // обработчик закрытия окна ошибки c помощью клавиатуры
-  var onWindowErrorEscPress = function (evt) {
-    if (evt.key === window.form.ESC_KEY) {
-      closeErrorWindow();
-    }
-  };
-
-  // обработчик закрытия окна ошибки c помощью клавиатуры по клику на произвольную область экрана
-  var onWindowErrorRandomClick = function () {
-    closeErrorWindow();
-  };
-
-  // удаляет окно из main
-  var closeErrorWindow = function () {
-    main.querySelector('.error').remove();
-
-    // снимает дополнительные обработчики
-    document.removeEventListener('keydown', onWindowErrorEscPress);
-    main.removeEventListener('click', onWindowErrorRandomClick);
-  };
-
-  var onSuccess = function (data) {
-    renderPhotosInDom(data);
-
+  // открывает минитюру изображений, чтобы при клике показать большое изображение
+  var setPicturesHandlers = function (data) {
     // находит минитюру изображений, чтобы при клике показать большое изображение
     var miniPictures = document.querySelectorAll('a.picture');
 
@@ -94,30 +70,21 @@
     }
   };
 
+  var onSuccess = function (data) {
+    renderPhotosInDom(data);
+
+    // после завершения загрузки изображений с сервера показывает фильтры изображений
+    var filterSection = document.querySelector('.img-filters');
+    filterSection.classList.remove('img-filters--inactive');
+
+    setPicturesHandlers(data);
+
+    window.element.data = data;
+  };
+
+  // показывает сообщение об ошибке и позволяет его закрыть
   var onError = function (message) {
-    // шаблон ошибки в документе
-    var errorTemplate = document.querySelector('#error').content;
-    // клонирует шаблон
-    var errorElement = errorTemplate.cloneNode(true);
-
-    // добавляет сообщение об ошибке
-    var errorTitle = errorElement.querySelector('.error__title');
-    errorTitle.textContent = message;
-
-    // закрывает окно ошибки c помощью кнопки
-    var errorButton = errorElement.querySelector('.error__button');
-    errorButton.addEventListener('click', function () {
-      closeErrorWindow();
-    });
-
-    // закрывает окно ошибки c помощью клавиатуры
-    document.addEventListener('keydown', onWindowErrorEscPress);
-
-    // закрывает окно ошибки c помощью клавиатуры по клику на произвольную область экрана
-    main.addEventListener('click', onWindowErrorRandomClick);
-
-    // добавляет ошибку в DOM
-    main.appendChild(errorElement);
+    window.form.completeTemplate('#error', '.error__title', '.error__button', message);
   };
 
   window.load.user(window.load.URL, onSuccess, onError);
@@ -125,6 +92,9 @@
   window.element = {
     getCommentElement: getCommentElement,
     socialComment: socialComment,
-    onError: onError
+    onError: onError,
+    renderPhotosInDom: renderPhotosInDom,
+    setPicturesHandlers: setPicturesHandlers,
+    pictures: pictures
   };
 })();
