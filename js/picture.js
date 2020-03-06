@@ -37,6 +37,11 @@
     var commentsCollection = comments.slice(count, COMMENT_STEP + count);
     count += COMMENT_STEP;
     createFragmentComments(commentsCollection);
+    if (comments.length <= count) {
+      commentsLoader.classList.add('hidden');
+    } else {
+      commentsLoader.classList.remove('hidden');
+    }
   };
 
   // показывает фотографию в полноразмерном режиме
@@ -45,6 +50,10 @@
     var bigPictureImg = bigPicture.querySelector('img');
     var likesCount = bigPicture.querySelector('.likes-count');
     var commentsCount = bigPicture.querySelector('.comments-count');
+
+    // var socialCount = bigPicture.querySelector('.social__comment-count');
+    // socialCount ???
+
     // заполняет фрагмент
     bigPictureImg.src = item.url;
     likesCount.textContent = item.likes;
@@ -55,14 +64,14 @@
     socialCommentTemplate.innerHTML = '';
 
     // если комменатриев больше 5, то покажи кнопку 'загрузить еще'
-    if (item.comments.length > COMMENT_STEP) {
+    if (item.comments.length >= COMMENT_STEP) {
+      getCommentWithStep(item.comments);
       // загружает еще комментарии
       commentsLoader.addEventListener('click', function () {
         getCommentWithStep(item.comments);
       });
-      commentsLoader.classList.remove('hidden');
-    } else { // иначе покажи комментарии, которых меньше 5 и удали кнопку
-      createFragmentComments(item.comments);
+    } else { // иначе покажи все комментарии, потому что их меньше 5 и скрой кнопку 'загрузить еще'
+      getCommentWithStep(item.comments);
       commentsLoader.classList.add('hidden');
     }
 
