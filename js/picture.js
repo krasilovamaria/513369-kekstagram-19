@@ -8,6 +8,8 @@
   var socialCaption = document.querySelector('.social__caption');
   // находит кнопку для выхода из полноэкранного просмотра изображения
   var pictureClose = document.querySelector('#picture-cancel');
+  // кнопка 'загрузить еще'
+  var commentsLoader = document.querySelector('.comments-loader');
   var COMMENT_STEP = 5;
   var count = 0;
 
@@ -18,7 +20,7 @@
   };
 
   // создает фрагмент, для вставки комменатриев
-  var crateFragmentComments = function (comments) {
+  var createFragmentComments = function (comments) {
     // создает фрагмент, для вставки комменатриев
     var fragment = document.createDocumentFragment();
 
@@ -32,13 +34,9 @@
 
   // показывает только 'нужные' комментарии
   var getCommentWithStep = function (comments) {
-    var commentsCollection;
-    if (comments.length > count) {
-      commentsCollection = comments.slice(0, COMMENT_STEP + count);
-    }
-    commentsCollection = comments;
-
-    return crateFragmentComments(commentsCollection);
+    var commentsCollection = comments.slice(count, COMMENT_STEP + count);
+    count += COMMENT_STEP;
+    createFragmentComments(commentsCollection);
   };
 
   // показывает фотографию в полноразмерном режиме
@@ -56,11 +54,17 @@
     // чистит блок комментариев в разметке
     socialCommentTemplate.innerHTML = '';
 
-    // блоки счётчика комментариев
-    var commentsLoader = document.querySelector('.comments-loader');
-
-    // загружает еще комментарии
-    commentsLoader.addEventListener('click', getCommentWithStep(???НЕ МОГУ ПОНЯТЬ ЧТО СЮДА ПЕРЕДАТЬ));
+    // если комменатриев больше 5, то покажи кнопку 'загрузить еще'
+    if (item.comments.length > COMMENT_STEP) {
+      // загружает еще комментарии
+      commentsLoader.addEventListener('click', function () {
+        getCommentWithStep(item.comments);
+      });
+      commentsLoader.classList.remove('hidden');
+    } else { // иначе покажи комментарии, которых меньше 5 и удали кнопку
+      createFragmentComments(item.comments);
+      commentsLoader.classList.add('hidden');
+    }
 
     // добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
     window.form.body.classList.add('modal-open');
