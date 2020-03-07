@@ -6,16 +6,17 @@
   var MAX_HEAT = 3;
   var QUANTITY_MAX_HASHTAGS = 5;
   var MAX_LENGTH_HASHTAG = 20;
+  var EFFECT_VALUE = 100;
   var uploadEffect = document.querySelector('.img-upload__overlay');
-  var textHashtags = document.querySelector('.text__hashtags');
-  var uploadImagePreview = document.querySelector('.img-upload__preview');
-  var filterLevelArea = document.querySelector('.img-upload__effect-level');
-  var filterUploadLevelValue = document.querySelector('.effect-level__value');
+  var textHashtags = uploadEffect.querySelector('.text__hashtags');
+  var uploadImagePreview = uploadEffect.querySelector('.img-upload__preview');
 
   // слайдер, задающий глубину эффекта
-  var filterLevelPin = document.querySelector('.effect-level__pin');
-  var filterLevelBar = document.querySelector('.effect-level__line');
-  var filterLevelValue = document.querySelector('.effect-level__depth');
+  var filterLevelArea = uploadEffect.querySelector('.img-upload__effect-level');
+  var filterUploadLevelValue = filterLevelArea.querySelector('.effect-level__value');
+  var filterLevelBar = filterLevelArea.querySelector('.effect-level__line');
+  var filterLevelPin = filterLevelBar.querySelector('.effect-level__pin');
+  var filterLevelValue = filterLevelBar.querySelector('.effect-level__depth');
   var currentFilter = window.form.DEFAULT_FILTER;
 
   // собирает функции для формирования css строки фильтра в справочник
@@ -24,19 +25,19 @@
       return '';
     },
     'chrome': function (level) {
-      return 'grayscale(' + level / 100 + ')';
+      return 'grayscale(' + level / EFFECT_VALUE + ')';
     },
     'sepia': function (level) {
-      return 'sepia(' + level / 100 + ')';
+      return 'sepia(' + level / EFFECT_VALUE + ')';
     },
     'marvin': function (level) {
       return 'invert(' + level + '%)';
     },
     'phobos': function (level) {
-      return 'blur(' + level / 100 * MAX_BLUR + 'px)';
+      return 'blur(' + level / EFFECT_VALUE * MAX_BLUR + 'px)';
     },
     'heat': function (level) {
-      return 'brightness(' + (level / 100 * (MAX_HEAT - MIN_HEAT) + MIN_HEAT) + ')';
+      return 'brightness(' + (level / EFFECT_VALUE * (MAX_HEAT - MIN_HEAT) + MIN_HEAT) + ')';
     }
   };
 
@@ -70,7 +71,7 @@
   var getPinOffsetOfInPercent = function (value) {
     // offsetWidth ширина элемента
     var valueInRange = Math.min(filterLevelBar.offsetWidth, Math.max(0, value));
-    return valueInRange * 100 / filterLevelBar.offsetWidth;
+    return valueInRange * EFFECT_VALUE / filterLevelBar.offsetWidth;
   };
 
   // находит позицию пина в процентах

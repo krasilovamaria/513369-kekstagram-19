@@ -37,8 +37,12 @@
       // и добавляет активный фильтр на котором произошел клик
       target.classList.add('img-filters__button--active');
 
-      // убирает все фотографии отрисованные ранее
-      window.element.pictures.innerHTML = '';
+      // при переключении фильтров оставляет блок загрузки изображения
+      // и чистит блок picture для новых фотографий
+      var pictures = document.querySelectorAll('.picture');
+      pictures.forEach(function (it) {
+        it.remove();
+      });
 
       // создает копию массива
       var dataCopy = window.element.data.slice();

@@ -3,15 +3,14 @@
 (function () {
   var ESC_KEY = 'Escape';
   var bigPicture = document.querySelector('.big-picture');
-  var socialCommentTemplate = document.querySelector('.social__comments');
-  // описание фотографии description
-  var socialCaption = document.querySelector('.social__caption');
+  var socialCount = bigPicture.querySelector('.social__comment-count');
+  var commentsCount = socialCount.querySelector('.comments-count');
+  var socialCommentTemplate = bigPicture.querySelector('.social__comments');
+  var socialCaption = bigPicture.querySelector('.social__caption');
   // находит кнопку для выхода из полноэкранного просмотра изображения
-  var pictureClose = document.querySelector('#picture-cancel');
+  var pictureClose = bigPicture.querySelector('#picture-cancel');
   // кнопка 'загрузить еще'
-  var commentsLoader = document.querySelector('.comments-loader');
-  var commentsCount = document.querySelector('.comments-count');
-  var socialCount = document.querySelector('.social__comment-count');
+  var commentsLoader = bigPicture.querySelector('.comments-loader');
   var COMMENT_STEP = 5;
   var count = 0;
 

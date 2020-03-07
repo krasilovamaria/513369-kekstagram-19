@@ -1,22 +1,22 @@
 'use strict';
 // модуль, который работает с формой редактирования изображения;
 (function () {
-  var form = document.querySelector('#upload-select-image');
-  var main = document.querySelector('main');
+  var body = document.querySelector('body');
+  var main = body.querySelector('main');
+  var form = main.querySelector('#upload-select-image');
   var ESC_KEY = 'Escape';
   var DEFAULT_FILTER = 'none';
   var DEFAULT_FILTER_LEVEL = 100;
 
-  var body = document.querySelector('body');
   // поле для загрузки изображения
-  var inputLoad = document.querySelector('#upload-file');
+  var inputLoad = form.querySelector('#upload-file');
   // находит кнопку для закрытия формы редактирования изображения
-  var buttonClosePopup = document.querySelector('#upload-cancel');
+  var buttonClosePopup = form.querySelector('#upload-cancel');
   // находит кнопки для изменения изображения
-  var uploadResizeInc = document.querySelector('.scale__control--bigger');
-  var uploadResizeDec = document.querySelector('.scale__control--smaller');
+  var uploadResizeInc = form.querySelector('.scale__control--bigger');
+  var uploadResizeDec = form.querySelector('.scale__control--smaller');
   // Находит поле для ввода комментариев
-  var textDescription = document.querySelector('.text__description');
+  var textDescription = form.querySelector('.text__description');
 
   // Загрузка изображения и показ формы редактирования
   // закрывает форму с помощью клавиатуры, только если нажата нужная клавиша и фокус не в тегах
