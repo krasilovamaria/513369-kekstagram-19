@@ -10,6 +10,8 @@
   var pictureClose = document.querySelector('#picture-cancel');
   // кнопка 'загрузить еще'
   var commentsLoader = document.querySelector('.comments-loader');
+  var commentsCount = document.querySelector('.comments-count');
+  var socialCount = document.querySelector('.social__comment-count');
   var COMMENT_STEP = 5;
   var count = 0;
 
@@ -37,11 +39,9 @@
     var commentsCollection = comments.slice(count, COMMENT_STEP + count);
     count += COMMENT_STEP;
     createFragmentComments(commentsCollection);
-    if (comments.length <= count) {
-      commentsLoader.classList.add('hidden');
-    } else {
-      commentsLoader.classList.remove('hidden');
-    }
+    commentsLoader.classList.toggle('hidden', comments.length <= count);
+    socialCount.firstChild.textContent = Math.min(count, comments.length) + ' из ';
+    commentsCount.textContent = comments.length;
   };
 
   // показывает фотографию в полноразмерном режиме
@@ -49,10 +49,6 @@
   // находит элементы, которые нужно заполнить
     var bigPictureImg = bigPicture.querySelector('img');
     var likesCount = bigPicture.querySelector('.likes-count');
-    var commentsCount = bigPicture.querySelector('.comments-count');
-
-    // var socialCount = bigPicture.querySelector('.social__comment-count');
-    // socialCount ???
 
     // заполняет фрагмент
     bigPictureImg.src = item.url;
@@ -63,17 +59,17 @@
     // чистит блок комментариев в разметке
     socialCommentTemplate.innerHTML = '';
 
-    // если комменатриев больше 5, то покажи кнопку 'загрузить еще'
-    if (item.comments.length >= COMMENT_STEP) {
+    // показывает 'начальные' комментарии
+    count = 0;
+    getCommentWithStep(item.comments);
+
+    // обработчик для кнопки 'загрузить еще'
+    window.picture.onCommentsLoaderClick = function () {
       getCommentWithStep(item.comments);
-      // загружает еще комментарии
-      commentsLoader.addEventListener('click', function () {
-        getCommentWithStep(item.comments);
-      });
-    } else { // иначе покажи все комментарии, потому что их меньше 5 и скрой кнопку 'загрузить еще'
-      getCommentWithStep(item.comments);
-      commentsLoader.classList.add('hidden');
-    }
+    };
+
+    // загружает еще комментарии
+    commentsLoader.addEventListener('click', window.picture.onCommentsLoaderClick);
 
     // добавляет на <body> класс modal-open, чтобы контейнер с фотографиями позади не прокручивался при скролле
     window.form.body.classList.add('modal-open');
@@ -89,6 +85,7 @@
     document.removeEventListener('keydown', onPictureEscPress);
     bigPicture.classList.add('hidden');
     window.form.body.classList.remove('modal-open');
+    commentsLoader.removeEventListener('click', window.picture.onCommentsLoaderClick);
   };
 
   // закрывает фотографию в полноразмерном режим
