@@ -116,8 +116,8 @@
       return;
     }
     // набор хэш-тегов из input превращает в массив
-    var arrayHashtags = inputHashtags.toLowerCase().split(' ');
-    if (arrayHashtags.length >= QUANTITY_MAX_HASHTAGS) {
+    var hashtags = inputHashtags.toLowerCase().split(' ');
+    if (hashtags.length >= QUANTITY_MAX_HASHTAGS) {
       textHashtags.setCustomValidity('Нельзя указывать больше пяти хэш-тегов');
       // дальше не будем проверять отдельные теги
       return;
@@ -125,21 +125,21 @@
     // объект для проверки тегов на уникальность, записывает встреченные теги
     var uniqTag = {};
     // цикл, который ходит по полученному массиву и проверяет каждый из хэш-тегов на предмет соответствия ограничениям
-    for (var i = 0; i < arrayHashtags.length; i++) {
-      if (!arrayHashtags[i].match(/^#[a-zA-Z0-9а-яА-Я]+$/)) {
+    for (var i = 0; i < hashtags.length; i++) {
+      if (!hashtags[i].match(/^#[a-zA-Z0-9а-яА-Я]+$/)) {
         textHashtags.setCustomValidity('Хэш-тег должен начинаться с символа # (решётка) и должен состоять только из букв и чисел');
         break;
       }
-      if (arrayHashtags[i].length > MAX_LENGTH_HASHTAG) {
+      if (hashtags[i].length > MAX_LENGTH_HASHTAG) {
         textHashtags.setCustomValidity('Максимальная длина одного хэш-тега должна быть не больше 20 символов, включая решётку');
         break;
       }
-      if (uniqTag[arrayHashtags[i]]) {
+      if (uniqTag[hashtags[i]]) {
         textHashtags.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
         break;
       }
       // если все в порядке, записывает тег в список уникальных
-      uniqTag[arrayHashtags[i]] = true;
+      uniqTag[hashtags[i]] = true;
     }
   };
 
