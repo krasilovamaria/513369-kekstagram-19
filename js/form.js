@@ -28,7 +28,8 @@
 
   // открывает форму редактирования изображения после загрузки изображения
   var onInputLoadChange = function () {
-    window.fileUpload.addFile(openPopup);
+    window.fileUpload.addFile();
+    openPopup();
   };
   inputLoad.addEventListener('change', onInputLoadChange);
 
@@ -60,7 +61,6 @@
     inputLoad.value = '';
     // снимает обработчик при закрытии формы
     document.removeEventListener('keydown', onPopupEscPress);
-    inputLoad.removeEventListener('change', onInputLoadChange);
     // возвращает масштаб к 100%
     window.scale.uploadResizeField.value = DEFAULT_FILTER_LEVEL;
     // сбрасывает эффект на «Оригинал»

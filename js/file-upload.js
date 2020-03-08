@@ -3,7 +3,7 @@
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
-  var fileChooser = document.querySelector('.img-upload__input input[type=file]');
+  var fileChooser = document.querySelector('#upload-file');
   var preview = document.querySelector('.img-upload__preview img');
 
   window.fileUpload = {

@@ -60,14 +60,12 @@
     var miniPictures = document.querySelectorAll('a.picture');
 
     // открывает миниатюрные фотографии
-    for (var i = 0; i < miniPictures.length; i++) {
-      (function (element) {
-        miniPictures[i].addEventListener('click', function () {
-          // индекс из цикла по коллекции картинок
-          window.picture.showBigPicture(element);
-        });
-      })(data[i]);
-    }
+    miniPictures.forEach(function (it, i) {
+      it.addEventListener('click', function () {
+        // индекс из цикла по коллекции картинок
+        window.picture.showBigPicture(data[i]);
+      });
+    });
   };
 
   var onSuccess = function (data) {
